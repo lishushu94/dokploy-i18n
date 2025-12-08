@@ -1,0 +1,32 @@
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+
+export const AcceptInvitation = () => {
+	const { query } = useRouter();
+	const { t } = useTranslation("common");
+
+	const invitationId = query["accept-invitation"];
+
+	// const { data: organization } = api.organization.getById.useQuery({
+	//     id: id as string
+	// })
+
+	return (
+		<div>
+			<Button
+				onClick={async () => {
+					const result = await authClient.organization.acceptInvitation({
+						invitationId: invitationId as string,
+					});
+					console.log(result);
+				}}
+			>
+				{t("invitations.accept.title")}
+			</Button>
+		</div>
+	);
+};
+
+export default AcceptInvitation;
