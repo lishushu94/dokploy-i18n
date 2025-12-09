@@ -6,190 +6,282 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+
 import { GitlabIcon } from "@/components/icons/data-tools-icons";
 import { AlertBlock } from "@/components/shared/alert-block";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
 } from "@/components/ui/command";
 import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { api } from "@/utils/api";
 
 const createGitlabProviderSchema = (t: (key: string) => string) =>
-	z.object({
-		composePath: z
-			.string()
-			.min(1, {
-				message: t("compose.git.validation.composePathRequired"),
-			}),
-		repository: z
-			.object({
-				repo: z.string().min(1, {
-					message: t("compose.git.validation.repoRequired"),
-				}),
-				owner: z.string().min(1, {
-					message: t("compose.git.validation.ownerRequired"),
-				}),
-				id: z.number().nullable(),
-				gitlabPathNamespace: z.string().min(1),
-			})
-			.required(),
-		branch: z.string().min(1, {
-			message: t("compose.git.validation.branchRequired"),
-		}),
-		gitlabId: z.string().min(1, {
-			message: t("compose.git.validation.providerRequired"),
-		}),
-		watchPaths: z.array(z.string()).optional(),
-		enableSubmodules: z.boolean().default(false),
-	});
+  z.object({
+    composePath: z.string().min(1, {
+      message: t("compose.git.validation.composePathRequired"),
+    }),
+    repository: z
+      .object({
+        repo: z.string().min(1, {
+          message: t("compose.git.validation.repoRequired"),
+        }),
+        owner: z.string().min(1, {
+          message: t("compose.git.validation.ownerRequired"),
+        }),
+        id: z.number().nullable(),
+        gitlabPathNamespace: z.string().min(1),
+      })
+      .required(),
+    branch: z.string().min(1, {
+      message: t("compose.git.validation.branchRequired"),
+    }),
+    gitlabId: z.string().min(1, {
+      message: t("compose.git.validation.providerRequired"),
+    }),
+    watchPaths: z.array(z.string()).optional(),
+    enableSubmodules: z.boolean().default(false),
+  });
 
 type GitlabProvider = z.infer<ReturnType<typeof createGitlabProviderSchema>>;
 
 interface Props {
-	composeId: string;
+  composeId: string;
 }
 
 export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
-	const { t } = useTranslation("common");
-	const { data: gitlabProviders } = api.gitlab.gitlabProviders.useQuery();
-	const { data, refetch } = api.compose.one.useQuery({ composeId });
-	const watchPathInputRef = useRef<HTMLInputElement | null>(null);
+  const { t } = useTranslation("common");
+  const watchPathInputRef = useRef<HTMLInputElement | null>(null);
+  const { data: gitlabProviders } = api.gitlab.gitlabProviders.useQuery();
+  const { data, refetch } = api.compose.one.useQuery({ composeId });
 
-	const { mutateAsync, isLoading: isSavingGitlabProvider } =
-		api.compose.update.useMutation();
+  const { mutateAsync, isLoading: isSavingGitlabProvider } =
+    api.compose.update.useMutation();
 
-	const schema = createGitlabProviderSchema(t);
-	const form = useForm<GitlabProvider>({
-		defaultValues: {
-			composePath: "./docker-compose.yml",
-			repository: {
-				owner: "",
-				repo: "",
-				gitlabPathNamespace: "",
-				id: null,
-			},
-			gitlabId: "",
-			branch: "",
-			watchPaths: [],
-			enableSubmodules: false,
-		},
-		resolver: zodResolver(schema),
-	});
+  const schema = createGitlabProviderSchema(t);
+  const form = useForm<GitlabProvider>({
+    defaultValues: {
+      composePath: "./docker-compose.yml",
 
-	const repository = form.watch("repository");
-	const gitlabId = form.watch("gitlabId");
+      repository: {
+        owner: "",
+        repo: "",
+        gitlabPathNamespace: "",
+        id: null,
+      },
+      gitlabId: "",
+      branch: "",
+      watchPaths: [],
+      enableSubmodules: false,
+    },
+    resolver: zodResolver(schema),
+  });
 
-	const {
-		data: repositories,
-		isLoading: isLoadingRepositories,
-		error,
-	} = api.gitlab.getGitlabRepositories.useQuery(
-		{
-			gitlabId,
-		},
-		{
-			enabled: !!gitlabId,
-		},
-	);
+  const repository = form.watch("repository");
+  const gitlabId = form.watch("gitlabId");
 
-	const {
-		data: branches,
-		fetchStatus,
-		status,
-	} = api.gitlab.getGitlabBranches.useQuery(
-		{
-			owner: repository?.owner,
-			repo: repository?.repo,
-			id: repository?.id || 0,
-			gitlabId: gitlabId,
-		},
-		{
-			enabled: !!repository?.owner && !!repository?.repo && !!gitlabId,
-		},
-	);
+  const {
+    data: repositories,
+    isLoading: isLoadingRepositories,
+    error,
+  } = api.gitlab.getGitlabRepositories.useQuery(
+    {
+      gitlabId,
+    },
+    {
+      enabled: !!gitlabId,
+    },
+  );
 
-	useEffect(() => {
-		if (data) {
-			form.reset({
-				branch: data.gitlabBranch || "",
-				repository: {
-					repo: data.gitlabRepository || "",
-					owner: data.gitlabOwner || "",
-					id: data.gitlabProjectId,
-					gitlabPathNamespace: data.gitlabPathNamespace || "",
-				},
-				composePath: data.composePath,
-				gitlabId: data.gitlabId || "",
-				watchPaths: data.watchPaths || [],
-				enableSubmodules: data.enableSubmodules ?? false,
-			});
-		}
-	}, [form.reset, data?.composeId, form]);
+  const {
+    data: branches,
+    fetchStatus,
+    status,
+  } = api.gitlab.getGitlabBranches.useQuery(
+    {
+      owner: repository?.owner,
+      repo: repository?.repo,
+      id: repository?.id || 0,
+      gitlabId: gitlabId,
+    },
+    {
+      enabled: !!repository?.owner && !!repository?.repo && !!gitlabId,
+    },
+  );
 
-	const onSubmit = async (data: GitlabProvider) => {
-		await mutateAsync({
-			gitlabBranch: data.branch,
-			gitlabRepository: data.repository.repo,
-			gitlabOwner: data.repository.owner,
-			composePath: data.composePath,
-			gitlabId: data.gitlabId,
-			composeId,
-			gitlabProjectId: data.repository.id,
-			gitlabPathNamespace: data.repository.gitlabPathNamespace,
-			sourceType: "gitlab",
-			composeStatus: "idle",
-			watchPaths: data.watchPaths,
-			enableSubmodules: data.enableSubmodules,
-		})
-			.then(async () => {
-				toast.success(t("application.git.gitlab.toast.saveSuccess"));
-				await refetch();
-			})
-			.catch(() => {
-				toast.error(t("application.git.gitlab.toast.saveError"));
-			});
-	};
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        branch: data.gitlabBranch || "",
+        repository: {
+          repo: data.gitlabRepository || "",
+          owner: data.gitlabOwner || "",
+          id: data.gitlabProjectId,
+          gitlabPathNamespace: data.gitlabPathNamespace || "",
+        },
+        composePath: data.composePath,
+        gitlabId: data.gitlabId || "",
+        watchPaths: data.watchPaths || [],
+        enableSubmodules: data.enableSubmodules ?? false,
+      });
+    }
+  }, [form.reset, data?.composeId, form]);
 
-	return (
-		<div>
-			<Form {...form}>
-				<form
+  const onSubmit = async (data: GitlabProvider) => {
+    await mutateAsync({
+      gitlabBranch: data.branch,
+      gitlabRepository: data.repository.repo,
+      gitlabOwner: data.repository.owner,
+      composePath: data.composePath,
+      gitlabId: data.gitlabId,
+      composeId,
+      gitlabProjectId: data.repository.id,
+      gitlabPathNamespace: data.repository.gitlabPathNamespace,
+      sourceType: "gitlab",
+      composeStatus: "idle",
+      watchPaths: data.watchPaths,
+      enableSubmodules: data.enableSubmodules,
+    })
+      .then(async () => {
+        toast.success(t("application.git.gitlab.toast.saveSuccess"));
+        await refetch();
+      })
+      .catch(() => {
+        toast.error(t("application.git.gitlab.toast.saveError"));
+      });
+  };
 
+  return (
+    <div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid w-full gap-4 py-3"
+        >
+          {error && <AlertBlock type="error">{error?.message}</AlertBlock>}
+          <div className="grid md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="gitlabId"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2 flex flex-col">
+                  <FormLabel>
+                    {t("application.git.gitlab.form.gitlabAccountLabel")}
+                  </FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      form.setValue("repository", {
+                        owner: "",
+                        repo: "",
+                        gitlabPathNamespace: "",
+                        id: null,
+                      });
+                      form.setValue("branch", "");
+                    }}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={t(
+                            "application.git.gitlab.form.gitlabAccountPlaceholder",
+                          )}
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {gitlabProviders?.map((gitlabProvider: any) => (
+                        <SelectItem
+                          key={gitlabProvider.gitlabId}
+                          value={gitlabProvider.gitlabId}
+                        >
+                          {gitlabProvider.gitProvider.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="repository"
+              render={({ field }: { field: any }) => (
+                <FormItem className="md:col-span-2 flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <FormLabel>
+                      {t("application.git.gitlab.form.repositoryLabel")}
+                    </FormLabel>
+                    {field.value.owner && field.value.repo && (
+                      <Link
+                        href={`https://gitlab.com/${field.value.owner}/${field.value.repo}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+                      >
+                        <GitlabIcon className="h-4 w-4" />
+                        <span>
+                          {t("application.git.gitlab.form.viewRepository")}
+                        </span>
+                      </Link>
+                    )}
+                  </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-between !bg-input",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {isLoadingRepositories
+                            ? t("application.git.gitlab.state.loadingRepositories")
+                            : field.value.owner
+                                ? repositories?.find(
+                                    (repo) => repo.name === field.value.repo,
+                                  )?.name
+                                : t(
+                                    "application.git.gitlab.form.repositorySelectPlaceholder",
+                                  )}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
@@ -217,36 +309,38 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                                 {t("application.git.gitlab.state.noRepositories")}
                               </CommandEmpty>
                             )}
-                            {repositories?.map((repo) => (
-                              <CommandItem
-                                value={repo.url}
-                                key={repo.url}
-                                onSelect={() => {
-                                  form.setValue("repository", {
-                                    owner: repo.owner.username as string,
-                                    repo: repo.name,
-                                    id: repo.id,
-                                    gitlabPathNamespace: repo.url,
-                                  });
-                                  form.setValue("branch", "");
-                                }}
-                              >
-                                <span className="flex items-center gap-2">
-                                  <span>{repo.name}</span>
-                                  <span className="text-muted-foreground text-xs">
-                                    {repo.owner.username}
+                            {repositories?.map((repo: any) => {
+                              return (
+                                <CommandItem
+                                  value={repo.url}
+                                  key={repo.url}
+                                  onSelect={() => {
+                                    form.setValue("repository", {
+                                      owner: repo.owner.username as string,
+                                      repo: repo.name,
+                                      id: repo.id,
+                                      gitlabPathNamespace: repo.url,
+                                    });
+                                    form.setValue("branch", "");
+                                  }}
+                                >
+                                  <span className="flex items-center gap-2">
+                                    <span>{repo.name}</span>
+                                    <span className="text-muted-foreground text-xs">
+                                      {repo.owner.username}
+                                    </span>
                                   </span>
-                                </span>
-                                <CheckIcon
-                                  className={cn(
-                                    "ml-auto h-4 w-4",
-                                    repo.url === field.value.gitlabPathNamespace
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto h-4 w-4",
+                                      repo.url === field.value.gitlabPathNamespace
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                </CommandItem>
+                              );
+                            })}
                           </CommandGroup>
                         </ScrollArea>
                       </Command>
@@ -254,7 +348,7 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                   </Popover>
                   {form.formState.errors.repository && (
                     <p className={cn("text-sm font-medium text-destructive")}>
-                      {t("application.git.gitlab.validation.repositoryRequired")}
+                      {t("compose.git.validation.repoRequired")}
                     </p>
                   )}
                 </FormItem>
@@ -263,9 +357,11 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
             <FormField
               control={form.control}
               name="branch"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem className="block w-full">
-                  <FormLabel>{t("application.git.gitlab.form.branchLabel")}</FormLabel>
+                  <FormLabel>
+                    {t("compose.git.form.branchLabel")}
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -279,11 +375,12 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                           {status === "loading" && fetchStatus === "fetching"
                             ? t("application.git.gitlab.state.loadingBranches")
                             : field.value
-                              ? branches?.find(
-                                  (branch) => branch.name === field.value,
-                                )?.name
-                              : t("application.git.gitlab.form.branchSelectPlaceholder")}
-
+                                ? branches?.find(
+                                    (branch) => branch.name === field.value,
+                                  )?.name
+                                : t(
+                                    "application.git.gitlab.form.branchSelectPlaceholder",
+                                  )}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
@@ -310,9 +407,8 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                           <CommandEmpty>
                             {t("application.git.gitlab.state.noBranches")}
                           </CommandEmpty>
-
                           <CommandGroup>
-                            {branches?.map((branch) => (
+                            {branches?.map((branch: any) => (
                               <CommandItem
                                 value={branch.name}
                                 key={branch.commit.id}
@@ -336,23 +432,23 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
               name="composePath"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem>
-                  <FormLabel>{t("compose.git.form.composePathLabel")}</FormLabel>
+                  <FormLabel>
+                    {t("compose.git.form.composePathLabel")}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t("compose.git.form.composePathPlaceholder")}
                       {...field}
                     />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -360,10 +456,12 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
             <FormField
               control={form.control}
               name="watchPaths"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem className="md:col-span-2">
                   <div className="flex items-center gap-2">
-                    <FormLabel>{t("application.git.gitlab.form.watchPathsLabel")}</FormLabel>
+                    <FormLabel>
+                      {t("application.git.watchPathsLabel")}
+                    </FormLabel>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
@@ -372,7 +470,9 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{t("application.git.gitlab.form.watchPathsTooltip")}</p>
+                          <p>
+                            {t("application.git.watchPathsTooltip")}
+                          </p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -395,14 +495,12 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                   <FormControl>
                     <div className="flex gap-2">
                       <Input
-                        placeholder={t(
-                          "application.git.gitlab.form.watchPathsPlaceholder",
-                        )}
+                        placeholder={t("application.git.watchPathsPlaceholder")}
                         ref={watchPathInputRef}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             e.preventDefault();
-                            const input = watchPathInputRef.current;
+                            const input = e.currentTarget;
                             const value = input.value.trim();
                             if (value) {
                               const newPaths = [...(field.value || []), value];
@@ -437,7 +535,7 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
             <FormField
               control={form.control}
               name="enableSubmodules"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem className="flex items-center space-x-2">
                   <FormControl>
                     <Switch
@@ -446,7 +544,7 @@ export const SaveGitlabProviderCompose = ({ composeId }: Props) => {
                     />
                   </FormControl>
                   <FormLabel className="!mt-0">
-                    {t("application.git.gitlab.form.enableSubmodulesLabel")}
+                    {t("application.git.enableSubmodulesLabel")}
                   </FormLabel>
                 </FormItem>
               )}

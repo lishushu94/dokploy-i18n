@@ -27,7 +27,42 @@
 </div>
 
 
-Dokploy 是一款免费、可自托管的 PaaS（平台即服务），用于简化应用和数据库的部署与管理。本仓库基于官方 Dokploy，增加了中文界面与部分本地化改动。
+Dokploy 是一款免费、可自托管的 PaaS（平台即服务），用于简化应用和数据库的部署与管理。本仓库基于官方 Dokploy，增加了多语言界面（i18n）支持。
+
+## 🌐 选择语言 / Choose Language / 言語を選択 / 선택 언어
+
+本项目提供多语言 README 文档。请选择您的语言：
+
+This project provides multi-language README documents. Please select your language:
+
+このプロジェクトは多言語 README ドキュメントを提供します。言語を選択してください：
+
+- [简体中文 (Simplified Chinese)](README-zh-Hans.md)
+- [繁體中文 (Traditional Chinese)](README-zh-Hant.md)
+- [English](README-en.md)
+- [Español (Spanish)](README-es.md)
+- [Deutsch (German)](README-de.md)
+- [Français (French)](README-fr.md)
+- [Italiano (Italian)](README-it.md)
+- [日本語 (Japanese)](README-ja.md)
+- [한국어 (Korean)](README-ko.md)
+- [Русский (Russian)](README-ru.md)
+- [Türkçe (Turkish)](README-tr.md)
+- [Português (Brasil)](README-pt-br.md)
+- [Nederlands (Dutch)](README-nl.md)
+- [Norsk (Norwegian)](README-no.md)
+- [Polski (Polish)](README-pl.md)
+- [Українська (Ukrainian)](README-uk.md)
+- [فارسی (Persian/Farsi)](README-fa.md)
+- [Bahasa Indonesia](README-id.md)
+- [Қазақша (Kazakh)](README-kz.md)
+- [Azərbaycanca (Azerbaijani)](README-az.md)
+- [മലയാളം (Malayalam)](README-ml.md)
+
+---
+
+以下是简体中文版本的快速预览：
+
 
 
 ## ✨ 功能特性
@@ -47,9 +82,11 @@ Dokploy 提供了一系列能力，帮助你在自己的服务器上更轻松地
 - **多服务器管理**：统一管理远程服务器上的部署。
 - **自托管**：在你的 VPS / 物理机上完全自托管运行。
 
-## 🚀 快速开始（中文镜像）
+## 🚀 快速开始 / Quick Start
 
-在一台全新的 Linux 服务器上运行以下命令即可安装本仓库构建的中文 Dokploy：
+在一台全新的 Linux 服务器上运行以下命令即可安装 Dokploy：
+
+Run the following command on a fresh Linux server to install Dokploy:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/Frankieli123/dokploy-i18n/main/install.sh | bash
@@ -62,34 +99,20 @@ curl -sSL https://raw.githubusercontent.com/Frankieli123/dokploy-i18n/main/insta
 如需使用官方 Dokploy Cloud，请访问：[Dokploy Cloud](https://app.dokploy.com)。  
 更多使用文档可参考官方文档：[docs.dokploy.com](https://docs.dokploy.com)。
 
-## 🌐 语言 / Language Support
+## 🌐 语言支持 / Language Support
 
-**简体中文：**  
 当前版本内置多语言界面（i18n），支持以下语言：
-- 简体中文（zh-Hans）
-- 繁體中文（zh-Hant）
-- English（en）
-- Deutsch（de） 
-- Español（es）
-- Français（fr）
-- Italiano（it）
-- 日本語（ja）
-- 한국어（ko）
-- Русский（ru）
-- Türkçe（tr）
-- Nederlands（nl）
-- Norsk（no）
-- Português (Brasil)（pt-br）
-- فارسی‎ (Farsi)（fa）
-- Bahasa Indonesia（id）
-- Українська（uk）
-- Қазақша（kz）
-- Azərbaycanca（az）
-- മലയാളം（ml）
-- Polski（pl）
 
-**English:**  
-This fork ships with a fully localized multi-language UI (i18n) and currently supports all the languages listed above. You can switch the language from the top-right corner of the Dokploy dashboard.
+The current version comes with a built-in multi-language interface (i18n) and supports the following languages:
+
+- 简体中文（zh-Hans）| 繁體中文（zh-Hant）| English（en）| Deutsch（de）| Español（es）
+- Français（fr）| Italiano（it）| 日本語（ja）| 한국어（ko）| Русский（ru）
+- Türkçe（tr）| Nederlands（nl）| Norsk（no）| Português (Brasil)（pt-br）| فارسی‎ (Farsi)（fa）
+- Bahasa Indonesia（id）| Українська（uk）| Қазақша（kz）| Azərbaycanca（az）| മലയാളം（ml）| Polski（pl）
+
+你可以从 Dokploy 仪表板的右上角切换语言。
+
+You can switch the language from the top-right corner of the Dokploy dashboard.
 
 ## ♥️ Sponsors
 

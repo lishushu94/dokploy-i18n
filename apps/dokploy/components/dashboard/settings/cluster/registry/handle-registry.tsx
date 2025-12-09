@@ -37,9 +37,9 @@ import {
 import { api } from "@/utils/api";
 
 const addRegistryBaseSchema = z.object({
-	registryName: z.string().min(1),
-	username: z.string().min(1),
-	password: z.string().min(1),
+	registryName: z.string(),
+	username: z.string(),
+	password: z.string(),
 	registryUrl: z.string(),
 	imagePrefix: z.string(),
 	serverId: z.string().optional(),
@@ -66,9 +66,9 @@ interface Props {
 
 export const HandleRegistry = ({ registryId }: Props) => {
 	const { t } = useTranslation("settings");
+	const defaultRegistryName = t("settings.registry.form.defaultName");
 	const utils = api.useUtils();
 	const [isOpen, setIsOpen] = useState(false);
-	const schema = useMemo(() => createAddRegistrySchema(t), [t]);
 
 	const { data: registry } = api.registry.one.useQuery(
 		{
@@ -91,6 +91,7 @@ export const HandleRegistry = ({ registryId }: Props) => {
 		error: testRegistryError,
 		isError: testRegistryIsError,
 	} = api.registry.testRegistry.useMutation();
+	const schema = useMemo(() => createAddRegistrySchema(t), [t]);
 	const form = useForm<AddRegistry>({
 		defaultValues: {
 			username: "",
@@ -179,9 +180,7 @@ export const HandleRegistry = ({ registryId }: Props) => {
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-2xl">
 				<DialogHeader>
-					<DialogTitle>
-						{t("settings.registry.form.title")}
-					</DialogTitle>
+					<DialogTitle>{t("settings.registry.form.title")}</DialogTitle>
 					<DialogDescription>
 						{t("settings.registry.form.description")}
 					</DialogDescription>
@@ -205,12 +204,12 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="registryName"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.registry.form.name")}
-										</FormLabel>
+										<FormLabel>{t("settings.registry.form.name")}</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={t("settings.registry.form.namePlaceholder")}
+												placeholder={t(
+													"settings.registry.form.namePlaceholder",
+												)}
 												{...field}
 											/>
 										</FormControl>
@@ -226,12 +225,12 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="username"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.registry.form.username")}
-										</FormLabel>
+										<FormLabel>{t("settings.registry.form.username")}</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={t("settings.registry.form.usernamePlaceholder")}
+												placeholder={t(
+													"settings.registry.form.usernamePlaceholder",
+												)}
 												autoComplete="username"
 												{...field}
 											/>
@@ -248,12 +247,12 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="password"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.registry.form.password")}
-										</FormLabel>
+										<FormLabel>{t("settings.registry.form.password")}</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={t("settings.registry.form.passwordPlaceholder")}
+												placeholder={t(
+													"settings.registry.form.passwordPlaceholder",
+												)}
 												autoComplete="one-time-code"
 												{...field}
 												type="password"
@@ -271,13 +270,13 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="imagePrefix"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.registry.form.imagePrefix")}
-										</FormLabel>
+										<FormLabel>{t("settings.registry.form.imagePrefix")}</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
-												placeholder={t("settings.registry.form.imagePrefixPlaceholder")}
+												placeholder={t(
+													"settings.registry.form.imagePrefixPlaceholder",
+												)}
 											/>
 										</FormControl>
 
@@ -292,12 +291,12 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="registryUrl"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.registry.form.registryUrl")}
-										</FormLabel>
+										<FormLabel>{t("settings.registry.form.registryUrl")}</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={t("settings.registry.form.registryUrlPlaceholder")}
+												placeholder={t(
+													"settings.registry.form.registryUrlPlaceholder",
+												)}
 												{...field}
 											/>
 										</FormControl>
@@ -329,7 +328,9 @@ export const HandleRegistry = ({ registryId }: Props) => {
 											>
 												<SelectTrigger className="w-full">
 													<SelectValue
-														placeholder={t("settings.registry.form.server.placeholder")}
+														placeholder={t(
+															"settings.registry.form.server.placeholder",
+														)}
 													/>
 												</SelectTrigger>
 												<SelectContent>
@@ -348,9 +349,6 @@ export const HandleRegistry = ({ registryId }: Props) => {
 														<SelectItem value={"none"}>
 															{t("settings.registry.form.server.none")}
 														</SelectItem>
-														<SelectItem value={"none"}>
-															{t("settings.registry.form.server.none")}
-														</SelectItem>
 													</SelectGroup>
 												</SelectContent>
 											</Select>
@@ -363,6 +361,20 @@ export const HandleRegistry = ({ registryId }: Props) => {
 						</div>
 
 						<DialogFooter className="flex flex-col w-full sm:justify-between gap-4 flex-wrap sm:flex-col col-span-2">
+							<div className="flex flex-row gap-2 justify-between">
+								<Button
+									type="button"
+									variant={"secondary"}
+									isLoading={isLoading}
+									onClick={async () => {
+										const validationResult = schema.safeParse({
+											username,
+											password,
+											registryUrl,
+										registryName: registryName || defaultRegistryName,
+											imagePrefix,
+											serverId,
+										});
 
 										if (!validationResult.success) {
 											for (const issue of validationResult.error.issues) {
@@ -378,20 +390,26 @@ export const HandleRegistry = ({ registryId }: Props) => {
 											username: username,
 											password: password,
 											registryUrl: registryUrl,
-											registryName: registryName,
+											registryName: registryName || defaultRegistryName,
 											registryType: "cloud",
 											imagePrefix: imagePrefix,
 											serverId: serverId,
 										})
 											.then((data) => {
 												if (data) {
-													toast.success(t("settings.registry.form.testSuccess"));
+													toast.success(
+														"" + t("settings.registry.form.testSuccess"),
+													);
 												} else {
-													toast.error(t("settings.registry.form.testFailed"));
+													toast.error(
+														"" + t("settings.registry.form.testFailed"),
+													);
 												}
 											})
 											.catch(() => {
-												toast.error(t("settings.registry.form.testError"));
+												toast.error(
+													"" + t("settings.registry.form.testError"),
+												);
 											});
 									}}
 								>

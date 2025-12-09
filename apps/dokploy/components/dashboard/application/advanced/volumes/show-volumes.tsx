@@ -47,6 +47,7 @@ export const ShowVolumes = ({ id, type }: Props) => {
 				<div>
 					<CardTitle className="text-xl">
 						{t("volumes.card.title")}
+					</CardTitle>
 				</div>
 
 				{data && data?.mounts.length > 0 && (
