@@ -175,6 +175,7 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 			}),
 		});
 	};
+
 	if (isError) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full space-y-4">
@@ -188,6 +189,7 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 			</div>
 		);
 	}
+
 	if (isLoading) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full space-y-4">
@@ -207,14 +209,10 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 		<div className="flex flex-col h-full gap-6">
 			<div className="flex-grow overflow-auto pb-8">
 				<div className="space-y-6">
-					<h2 className="text-lg font-semibold">
-						{t("ai.stepTwo.title")}
-					</h2>
+					<h2 className="text-lg font-semibold">{t("ai.stepTwo.title")}</h2>
 					{!selectedVariant && (
 						<div className="space-y-4">
-							<div>
-								{t("ai.stepTwo.suggestionsIntro")}
-							</div>
+							<div>{t("ai.stepTwo.suggestionsIntro")}</div>
 							<RadioGroup
 								// value={selectedVariant?.}
 								onValueChange={(value) => {
@@ -314,7 +312,9 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 																		e.target.value,
 																	)
 																}
-																placeholder={t("ai.stepTwo.env.placeholderName")}
+																placeholder={t(
+																	"ai.stepTwo.env.placeholderName",
+																)}
 																className="flex-1"
 															/>
 															<div className="relative">
@@ -328,7 +328,9 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 																			e.target.value,
 																		)
 																	}
-																	placeholder={t("ai.stepTwo.env.placeholderValue")}
+																	placeholder={t(
+																		"ai.stepTwo.env.placeholderValue",
+																	)}
 																/>
 															</div>
 															<Button
@@ -376,7 +378,9 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 																		e.target.value,
 																	)
 																}
-																placeholder={t("ai.stepTwo.domains.placeholderHost")}
+																placeholder={t(
+																	"ai.stepTwo.domains.placeholderHost",
+																)}
 																className="flex-1"
 															/>
 															<Input
@@ -389,7 +393,9 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 																		Number.parseInt(e.target.value),
 																	)
 																}
-																placeholder={t("ai.stepTwo.domains.placeholderPort")}
+																placeholder={t(
+																	"ai.stepTwo.domains.placeholderPort",
+																)}
 																className="w-24"
 															/>
 															<Input
@@ -401,7 +407,9 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 																		e.target.value,
 																	)
 																}
-																placeholder={t("ai.stepTwo.domains.placeholderServiceName")}
+																placeholder={t(
+																	"ai.stepTwo.domains.placeholderServiceName",
+																)}
 																className="flex-1"
 															/>
 															<Button
@@ -453,9 +461,12 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 																					{config.filePath}
 																				</Label>
 																				<p className="text-xs text-muted-foreground">
-																					{t("ai.stepTwo.configFiles.mountedAs", {
-																						filePath: config.filePath,
-																					})}
+																					{t(
+																						"ai.stepTwo.configFiles.mountedAs",
+																						{
+																							filePath: config.filePath,
+																						},
+																					)}
 																				</p>
 																			</div>
 																		</div>
@@ -522,3 +533,6 @@ export const StepTwo = ({ templateInfo, setTemplateInfo }: StepProps) => {
 			</div>
 		</div>
 	);
+};
+
+export default StepTwo;

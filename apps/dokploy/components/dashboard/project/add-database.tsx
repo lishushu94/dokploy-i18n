@@ -683,3 +683,5 @@ export const AddDatabase = ({ environmentId, projectName }: Props) => {
 		</Dialog>
 	);
 };
+
+export default AddDatabase;
