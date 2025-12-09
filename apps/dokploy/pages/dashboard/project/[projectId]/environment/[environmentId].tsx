@@ -1230,8 +1230,6 @@ const EnvironmentPage = (
 											)}
 										</div>
 									</div>
-								</div>
-
 								<div className="flex w-full gap-8">
 									{emptyServices ? (
 										<div className="flex h-[70vh] w-full flex-col items-center justify-center">
