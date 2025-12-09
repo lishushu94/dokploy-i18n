@@ -230,8 +230,8 @@ export const UpdateVolume = ({
 									name="hostPath"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Host Path</FormLabel>
 											<FormLabel>{t("volumes.form.hostPathLabel")}</FormLabel>
+											<FormLabel>{t("volumes.form.hostPathDescription")}</FormLabel>
 											<FormControl>
 												<Input
 													placeholder={t("volumes.form.hostPathPlaceholder")}
@@ -289,150 +289,51 @@ export const UpdateVolume = ({
 
 									<FormField
 										control={form.control}
+										name="filePath"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>{t("volumes.form.filePathLabel")}</FormLabel>
+												<FormControl>
+													<Input
+														disabled
+														placeholder={t("volumes.form.filePathPlaceholder")}
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</>
+							)}
+							{serviceType !== "compose" && (
+								<FormField
+									control={form.control}
+									name="mountPath"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("volumes.form.mountPathLabel")}</FormLabel>
+											<FormControl>
+												<Input
+													placeholder={t("volumes.form.mountPathPlaceholder")}
+													{...field}
+												/>
+											</FormControl>
+
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							)}
+						</div>
+						<DialogFooter>
+							<Button isLoading={isLoading} type="submit">
+								{t("volumes.form.submit.update")}
+							</Button>
+						</DialogFooter>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
+	);
 };
-
-return (
-  <Dialog open={isOpen} onOpenChange={setIsOpen}>
-    <DialogTrigger asChild>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="group hover:bg-blue-500/10 "
-        isLoading={isLoading}
-      >
-        <PenBoxIcon className="size-3.5  text-primary group-hover:text-blue-500" />
-      </Button>
-    </DialogTrigger>
-    <DialogContent className="sm:max-w-3xl">
-      <DialogHeader>
-        <DialogTitle>{t("volumes.dialog.updateTitle")}</DialogTitle>
-        <DialogDescription>
-          {t("volumes.dialog.updateDescription")}
-        </DialogDescription>
-      </DialogHeader>
-      {isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
-      {type === "file" && (
-        <AlertBlock type="warning">
-          {t("volumes.alert.updateFileWarning")}
-        </AlertBlock>
-      )}
-
-      <Form {...form}>
-        <form
-          id="hook-form-update-volume"
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid w-full gap-4"
-        >
-          <div className="flex flex-col gap-4">
-            {type === "bind" && (
-              <FormField
-                control={form.control}
-                name="hostPath"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("volumes.form.hostPathLabel")}</FormLabel>
-                    <FormLabel>{t("volumes.form.hostPathDescription")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("volumes.form.hostPathPlaceholder")}
-                        {...field}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-            {type === "volume" && (
-              <FormField
-                control={form.control}
-                name="volumeName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("volumes.form.volumeNameLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("volumes.form.volumeNamePlaceholder")}
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            {type === "file" && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem className="max-w-full max-w-[45rem]">
-                      <FormLabel>{t("volumes.form.contentLabel")}</FormLabel>
-                      <FormControl>
-                        <FormControl>
-                          <CodeEditor
-                            language="properties"
-                            placeholder={t("volumes.form.contentPlaceholder")}
-                            className="h-96 font-mono w-full"
-                            {...field}
-                          />
-                        </FormControl>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="filePath"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("volumes.form.filePathLabel")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled
-                          placeholder={t("volumes.form.filePathPlaceholder")}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-            {serviceType !== "compose" && (
-              <FormField
-                control={form.control}
-                name="mountPath"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("volumes.form.mountPathLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("volumes.form.mountPathPlaceholder")}
-                        {...field}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-          </div>
-          <DialogFooter>
-            <Button isLoading={isLoading} type="submit">
-              {t("volumes.form.submit.update")}
-            </Button>
-          </DialogFooter>
-        </form>
-      </Form>
-    </DialogContent>
-  </Dialog>
-);

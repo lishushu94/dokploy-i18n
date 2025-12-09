@@ -406,7 +406,9 @@ export const ShowDomains = ({ id, type }: Props) => {
 																		<p>{validationState.error}</p>
 																	</div>
 																) : (
-																	{t("application.domains.dns.tooltip.validate")}
+																	<p>
+																		{t("application.domains.dns.tooltip.validate")}
+																	</p>
 																)}
 															</TooltipContent>
 														</Tooltip>
