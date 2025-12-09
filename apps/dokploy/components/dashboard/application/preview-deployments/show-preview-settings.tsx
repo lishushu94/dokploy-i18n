@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HelpCircle, Plus, Settings2, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -66,7 +65,7 @@ const schema = z
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
 				path: ["previewCustomCertResolver"],
-				message: "application.preview.validation.customCertResolverRequired",
+				message: "Required",
 			});
 		}
 	});
@@ -80,7 +79,6 @@ interface Props {
 export const ShowPreviewSettings = ({ applicationId }: Props) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isEnabled, setIsEnabled] = useState(false);
-	const { t } = useTranslation("common");
 	const { mutateAsync: updateApplication, isLoading } =
 		api.application.update.useMutation();
 
@@ -145,7 +143,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 				formData.previewRequireCollaboratorPermissions,
 		})
 			.then(() => {
-				toast.success(t("application.preview.update.success"));
+				toast.success("Preview Deployments settings updated");
 			})
 			.catch((error) => {
 				toast.error(error.message);
@@ -157,16 +155,16 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 				<DialogTrigger asChild>
 					<Button variant="outline">
 						<Settings2 className="size-4" />
-						{t("application.preview.button.configure")}
+						Configure
 					</Button>
 				</DialogTrigger>
 				<DialogContent className="sm:max-w-5xl w-full">
 					<DialogHeader>
-						<DialogTitle>
-							{t("application.preview.dialog.title")}
-						</DialogTitle>
+						<DialogTitle>Preview Deployment Settings</DialogTitle>
 						<DialogDescription>
-							{t("application.preview.dialog.description")}
+							Adjust the settings for preview deployments of this application,
+							including environment variables, build options, and deployment
+							rules.
 						</DialogDescription>
 					</DialogHeader>
 					<div className="grid gap-4">
@@ -182,16 +180,9 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="wildcardDomain"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													{t("application.preview.field.wildcardDomain.label")}
-												</FormLabel>
+												<FormLabel>Wildcard Domain</FormLabel>
 												<FormControl>
-													<Input
-														placeholder={t(
-															"application.preview.field.wildcardDomain.placeholder",
-														)}
-														{...field}
-													/>
+													<Input placeholder="*.traefik.me" {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -202,16 +193,9 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="previewPath"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													{t("application.preview.field.path.label")}
-												</FormLabel>
+												<FormLabel>Preview Path</FormLabel>
 												<FormControl>
-													<Input
-														placeholder={t(
-															"application.preview.field.path.placeholder",
-														)}
-														{...field}
-													/>
+													<Input placeholder="/" {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -222,16 +206,9 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="port"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													{t("application.preview.field.port.label")}
-												</FormLabel>
+												<FormLabel>Port</FormLabel>
 												<FormControl>
-													<NumberInput
-														placeholder={t(
-															"application.preview.field.port.placeholder",
-														)}
-														{...field}
-													/>
+													<NumberInput placeholder="3000" {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -243,9 +220,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										render={({ field }) => (
 											<FormItem className="md:col-span-2">
 												<div className="flex items-center gap-2">
-													<FormLabel>
-														{t("application.preview.field.labels.label")}
-													</FormLabel>
+													<FormLabel>Preview Labels</FormLabel>
 													<TooltipProvider>
 														<Tooltip>
 															<TooltipTrigger asChild>
@@ -253,7 +228,10 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 															</TooltipTrigger>
 															<TooltipContent>
 																<p>
-																	{t("application.preview.field.labels.tooltip")}
+																	Add a labels that will trigger a preview
+																	deployment for a pull request. If no labels
+																	are specified, all pull requests will trigger
+																	a preview deployment.
 																</p>
 															</TooltipContent>
 														</Tooltip>
@@ -281,9 +259,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 												<div className="flex gap-2">
 													<FormControl>
 														<Input
-															placeholder={t(
-																"application.preview.field.labels.inputPlaceholder",
-															)}
+															placeholder="Enter a label (e.g. enhancements, needs-review)"
 															onKeyDown={(e) => {
 																if (e.key === "Enter") {
 																	e.preventDefault();
@@ -327,16 +303,9 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="previewLimit"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>
-													{t("application.preview.field.limit.label")}
-												</FormLabel>
+												<FormLabel>Preview Limit</FormLabel>
 												<FormControl>
-													<NumberInput
-														placeholder={t(
-															"application.preview.field.limit.placeholder",
-														)}
-														{...field}
-													/>
+													<NumberInput placeholder="3000" {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -348,223 +317,224 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										render={({ field }) => (
 											<FormItem className="flex flex-row items-center justify-between p-3 mt-4 border rounded-lg shadow-sm">
 												<div className="space-y-0.5">
-													<FormLabel>
-														{t("application.preview.field.https.label")}
-													</FormLabel>
+													<FormLabel>HTTPS</FormLabel>
 													<FormDescription>
-														{t("application.preview.field.https.description")}
+														Automatically provision SSL Certificate.
 													</FormDescription>
 													<FormMessage />
 												</div>
 												<FormControl>
-									<Switch
-										checked={field.value}
-										onCheckedChange={field.onChange}
-									/>
-								</FormControl>
-							</FormItem>
-						)}
-					/>
-					{previewHttps && (
-						<FormField
-							control={form.control}
-							name="previewCertificateType"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>
-										{t("application.preview.field.certificateType.label")}
-									</FormLabel>
-									<Select
-										onValueChange={field.onChange}
-										defaultValue={field.value || ""}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue
-													placeholder={t(
-														"application.preview.field.certificateType.placeholder",
-													)}
-												/>
-											</SelectTrigger>
-										</FormControl>
-
-										<SelectContent>
-											<SelectItem value="none">
-												{t(
-													"application.preview.field.certificateType.option.none",
-												)}
-											</SelectItem>
-											<SelectItem value={"letsencrypt"}>
-												{t(
-													"application.preview.field.certificateType.option.letsencrypt",
-												)}
-											</SelectItem>
-											<SelectItem value={"custom"}>
-												{t(
-													"application.preview.field.certificateType.option.custom",
-												)}
-											</SelectItem>
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					)}
-
-					{form.watch("previewCertificateType") === "custom" && (
-						<FormField
-							control={form.control}
-							name="previewCustomCertResolver"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>
-										{t(
-											"application.preview.field.customCertResolver.label",
+													<Switch
+														checked={field.value}
+														onCheckedChange={field.onChange}
+													/>
+												</FormControl>
+											</FormItem>
 										)}
-									</FormLabel>
-									<FormControl>
-										<Input
-											placeholder={t(
-												"application.preview.field.customCertResolver.placeholder",
-											)}
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					)}
-					</div>
-					<div className="grid gap-4 lg:grid-cols-2">
-						<div className="flex flex-row items-center justify-between rounded-lg border p-4 col-span-2">
-							<div className="space-y-0.5">
-								<FormLabel className="text-base">
-									{t("application.preview.field.enabled.label")}
-								</FormLabel>
-								<FormDescription>
-									{t("application.preview.field.enabled.description")}
-								</FormDescription>
-							</div>
-							<Switch
-								checked={isEnabled}
-								onCheckedChange={(checked) => {
-									updateApplication({
-										isPreviewDeploymentsActive: checked,
-										applicationId,
-									})
-										.then(() => {
-											refetch();
-											toast.success(
-												checked
-													? t("application.preview.toast.enabled")
-													: t("application.preview.toast.disabled"),
-											);
-										})
-										.catch((error) => {
-											toast.error(error.message);
-										});
-								}}
-							/>
-						</div>
-					</div>
-
-					<div className="grid gap-4 lg:grid-cols-2">
-						<FormField
-							control={form.control}
-							name="previewRequireCollaboratorPermissions"
-							render={({ field }) => (
-								<FormItem className="flex flex-row items-center justify-between p-3 mt-4 border rounded-lg shadow-sm col-span-2">
-									<div className="space-y-0.5">
-										<FormLabel>
-											{t("application.preview.field.requirePermissions.label")}
-										</FormLabel>
-										<FormDescription>
-											{t("application.preview.field.requirePermissions.description")}
-											<ul>
-												<li>Admin</li>
-												<li>Maintain</li>
-												<li>Write</li>
-											</ul>
-										</FormDescription>
-									</div>
-									<FormControl>
-										<Switch
-											checked={field.value}
-											onCheckedChange={field.onChange}
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-					</div>
-
-					<FormField
-						control={form.control}
-						name="env"
-						render={() => (
-							<FormItem>
-								<FormControl>
-									<Secrets
-										name="env"
-										title={t("application.environment.card.title")}
-										description={t("application.environment.card.description")}
-										placeholder={t("application.environment.placeholder.env")}
 									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					{data?.buildType === "dockerfile" && (
-						<Secrets
-							name="buildArgs"
-							title={t("application.environment.buildArgs.title")}
-							description={
-								<span>
-									{t("application.environment.buildArgs.description")}
-									<a
-										className="text-primary"
-										href="https://docs.docker.com/build/building/variables/"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										{t("application.environment.buildArgs.link")}
-									</a>
-									.
-								</span>
-							}
-							placeholder={t("application.environment.placeholder.buildArgs")}
-						/>
-					)}
-					{data?.buildType === "dockerfile" && (
-						<Secrets
-							name="buildSecrets"
-							title={t("application.environment.buildSecrets.title")}
-							description={
-								<span>
-									{t("application.environment.buildSecrets.description")}
-									<a
-										className="text-primary"
-										href="https://docs.docker.com/build/building/secrets/"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										{t("application.environment.buildSecrets.link")}
-									</a>
-									.
-								</span>
-							}
-							placeholder={t("application.environment.placeholder.buildSecrets")}
-						/>
-					)}
-				</div>
-			</form>
-		</Form>
-	</div>
+									{previewHttps && (
+										<FormField
+											control={form.control}
+											name="previewCertificateType"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Certificate Provider</FormLabel>
+													<Select
+														onValueChange={field.onChange}
+														defaultValue={field.value || ""}
+													>
+														<FormControl>
+															<SelectTrigger>
+																<SelectValue placeholder="Select a certificate provider" />
+															</SelectTrigger>
+														</FormControl>
+
+														<SelectContent>
+															<SelectItem value="none">None</SelectItem>
+															<SelectItem value={"letsencrypt"}>
+																Let's Encrypt
+															</SelectItem>
+															<SelectItem value={"custom"}>Custom</SelectItem>
+														</SelectContent>
+													</Select>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									)}
+
+									{form.watch("previewCertificateType") === "custom" && (
+										<FormField
+											control={form.control}
+											name="previewCustomCertResolver"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Certificate Provider</FormLabel>
+													<FormControl>
+														<Input
+															placeholder="my-custom-resolver"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									)}
+								</div>
+								<div className="grid gap-4 lg:grid-cols-2">
+									<div className="flex flex-row items-center justify-between rounded-lg border p-4 col-span-2">
+										<div className="space-y-0.5">
+											<FormLabel className="text-base">
+												Enable preview deployments
+											</FormLabel>
+											<FormDescription>
+												Enable or disable preview deployments for this
+												application.
+											</FormDescription>
+										</div>
+										<Switch
+											checked={isEnabled}
+											onCheckedChange={(checked) => {
+												updateApplication({
+													isPreviewDeploymentsActive: checked,
+													applicationId,
+												})
+													.then(() => {
+														refetch();
+														toast.success(
+															checked
+																? "Preview deployments enabled"
+																: "Preview deployments disabled",
+														);
+													})
+													.catch((error) => {
+														toast.error(error.message);
+													});
+											}}
+										/>
+									</div>
+								</div>
+
+								<div className="grid gap-4 lg:grid-cols-2">
+									<FormField
+										control={form.control}
+										name="previewRequireCollaboratorPermissions"
+										render={({ field }) => (
+											<FormItem className="flex flex-row items-center justify-between p-3 mt-4 border rounded-lg shadow-sm col-span-2">
+												<div className="space-y-0.5">
+													<FormLabel>
+														Require Collaborator Permissions
+													</FormLabel>
+													<FormDescription>
+														Require collaborator permissions to preview
+														deployments, valid roles are:
+														<ul>
+															<li>Admin</li>
+															<li>Maintain</li>
+															<li>Write</li>
+														</ul>
+													</FormDescription>
+												</div>
+												<FormControl>
+													<Switch
+														checked={field.value}
+														onCheckedChange={field.onChange}
+													/>
+												</FormControl>
+											</FormItem>
+										)}
+									/>
+								</div>
+
+								<FormField
+									control={form.control}
+									name="env"
+									render={() => (
+										<FormItem>
+											<FormControl>
+												<Secrets
+													name="env"
+													title="Environment Settings"
+													description="You can add environment variables to your resource."
+													placeholder={[
+														"NODE_ENV=production",
+														"PORT=3000",
+													].join("\n")}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								{data?.buildType === "dockerfile" && (
+									<Secrets
+										name="buildArgs"
+										title="Build-time Arguments"
+										description={
+											<span>
+												Arguments are available only at build-time. See
+												documentation&nbsp;
+												<a
+													className="text-primary"
+													href="https://docs.docker.com/build/building/variables/"
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													here
+												</a>
+												.
+											</span>
+										}
+										placeholder="NPM_TOKEN=xyz"
+									/>
+								)}
+								{data?.buildType === "dockerfile" && (
+									<Secrets
+										name="buildSecrets"
+										title="Build-time Secrets"
+										description={
+											<span>
+												Secrets are specially designed for sensitive information
+												and are only available at build-time. See
+												documentation&nbsp;
+												<a
+													className="text-primary"
+													href="https://docs.docker.com/build/building/secrets/"
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													here
+												</a>
+												.
+											</span>
+										}
+										placeholder="NPM_TOKEN=xyz"
+									/>
+								)}
+							</form>
+						</Form>
+					</div>
+					<DialogFooter>
+						<Button
+							variant="secondary"
+							onClick={() => {
+								setIsOpen(false);
+							}}
+						>
+							Cancel
+						</Button>
+						<Button
+							isLoading={isLoading}
+							form="hook-form-delete-application"
+							type="submit"
+						>
+							Save
+						</Button>
+					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+			{/* */}
 		</div>
 	);
 };
