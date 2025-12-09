@@ -52,12 +52,12 @@ Dokploy 提供了一系列能力，帮助你在自己的服务器上更轻松地
 在一台全新的 Linux 服务器上运行以下命令即可安装本仓库构建的中文 Dokploy：
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Frankieli123/dokploy/i18n/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/Frankieli123/dokploy-i18n/main/install.sh | bash
 ```
 
 上面的脚本会自动拉取镜像：
 
-- 面板主服务：`a3180623/dokploy:i18n`
+- 面板主服务：`a3180623/dokploy-i18n:<版本号>`
 
 如需使用官方 Dokploy Cloud，请访问：[Dokploy Cloud](https://app.dokploy.com)。  
 更多使用文档可参考官方文档：[docs.dokploy.com](https://docs.dokploy.com)。
@@ -69,7 +69,7 @@ curl -sSL https://raw.githubusercontent.com/Frankieli123/dokploy/i18n/install.sh
 - 简体中文（zh-Hans）
 - 繁體中文（zh-Hant）
 - English（en）
-- Deutsch（de）
+- Deutsch（de） 
 - Español（es）
 - Français（fr）
 - Italiano（it）

@@ -23,11 +23,11 @@ export const DEFAULT_UPDATE_DATA: IUpdateData = {
 
 /** Returns current Dokploy docker image tag or `latest` by default. */
 export const getDokployImageTag = () => {
-	return process.env.RELEASE_TAG || "i18n";
+	return process.env.RELEASE_TAG || "latest";
 };
 
 export const getDokployImage = () => {
-	return `a3180623/dokploy:${getDokployImageTag()}`;
+	return `a3180623/dokploy-i18n:${getDokployImageTag()}`;
 };
 
 export const pullLatestRelease = async () => {
@@ -65,7 +65,7 @@ export const getUpdateData = async (): Promise<IUpdateData> => {
 	}
 
 	const baseUrl =
-		"https://hub.docker.com/v2/repositories/a3180623/dokploy/tags";
+		"https://hub.docker.com/v2/repositories/a3180623/dokploy-i18n/tags";
 	let url: string | null = `${baseUrl}?page_size=100`;
 	let allResults: { digest: string; name: string }[] = [];
 	while (url) {

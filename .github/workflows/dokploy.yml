@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: a3180623/dokploy
+  IMAGE_NAME: a3180623/dokploy-i18n
 
 jobs:
   docker-amd:

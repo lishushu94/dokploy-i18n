@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Detect version from environment variable or default to i18n
+# Detect version from environment variable or default to latest
 # Usage: DOKPLOY_VERSION=canary bash install.sh
 # Usage: DOKPLOY_VERSION=feature bash install.sh
-# Usage: bash install.sh (defaults to i18n)
+# Usage: bash install.sh (defaults to latest)
 detect_version() {
-    local version="${DOKPLOY_VERSION:-i18n}"
+    local version="${DOKPLOY_VERSION:-latest}"
     echo "$version"
 }
 
@@ -27,7 +27,7 @@ is_proxmox_lxc() {
 install_dokploy() {
     # Detect version tag
     VERSION_TAG=$(detect_version)
-    DOCKER_IMAGE="a3180623/dokploy:${VERSION_TAG}"
+    DOCKER_IMAGE="a3180623/dokploy-i18n:${VERSION_TAG}"
     
     echo "Installing Dokploy version: ${VERSION_TAG}"
     if [ "$(id -u)" != "0" ]; then
@@ -196,7 +196,7 @@ install_dokploy() {
     # Installation
     # Set RELEASE_TAG environment variable for canary/feature versions
     release_tag_env=""
-    if [ "$VERSION_TAG" != "i18n" ]; then
+    if [ "$VERSION_TAG" != "latest" ]; then
         release_tag_env="-e RELEASE_TAG=$VERSION_TAG"
     fi
     
@@ -272,7 +272,7 @@ install_dokploy() {
 update_dokploy() {
     # Detect version tag
     VERSION_TAG=$(detect_version)
-    DOCKER_IMAGE="a3180623/dokploy:${VERSION_TAG}"
+    DOCKER_IMAGE="a3180623/dokploy-i18n:${VERSION_TAG}"
     
     echo "Updating Dokploy to version: ${VERSION_TAG}"
     

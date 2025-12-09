@@ -16,7 +16,13 @@ const localeFiles = ["settings.json", "common.json"];
  */
 function readJson(filePath) {
 	const raw = fs.readFileSync(filePath, "utf8");
-	return JSON.parse(raw);
+	try {
+		return JSON.parse(raw);
+	} catch (error) {
+		console.error(`Failed to parse JSON: ${filePath}`);
+		console.error(error?.message ?? error);
+		return null;
+	}
 }
 
 /**
@@ -46,6 +52,12 @@ function syncLocaleFile(localesDir, locale, baseLocale, fileName) {
 
 	const baseJson = readJson(basePath);
 	const targetJson = readJson(targetPath);
+
+	// 如果基础语言或目标语言 JSON 无法解析，跳过该文件
+	if (!baseJson || !targetJson) {
+		console.error(`Skip syncing ${fileName} for locale: ${locale} due to invalid JSON`);
+		return;
+	}
 
 	const baseKeys = Object.keys(baseJson);
 	const merged = {};
