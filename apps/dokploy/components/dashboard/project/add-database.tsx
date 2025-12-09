@@ -63,7 +63,10 @@ const dockerImageDefaultPlaceholder: Record<DbType, string> = {
 	redis: "redis:7",
 };
 
-const databasesUserDefaultPlaceholder: Record<Exclude<DbType, "redis">, string> = {
+const databasesUserDefaultPlaceholder: Record<
+	Exclude<DbType, "redis">,
+	string
+> = {
 	mongo: "mongo",
 	mariadb: "mariadb",
 	mysql: "mysql",
@@ -437,7 +440,9 @@ export const AddDatabase = ({ environmentId, projectName }: Props) => {
 																{!isCloud && (
 																	<SelectItem value="dokploy">
 																		<span className="flex items-center gap-2 justify-between w-full">
-																			<span>{t("services.filter.server.dokploy")}</span>
+																			<span>
+																				{t("services.filter.server.dokploy")}
+																			</span>
 																			<span className="text-muted-foreground text-xs self-center">
 																				{t("service.form.defaultServerSuffix")}
 																			</span>
@@ -460,11 +465,12 @@ export const AddDatabase = ({ environmentId, projectName }: Props) => {
 															</SelectGroup>
 														</SelectContent>
 													</Select>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									)}
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								)}
 								<FormField
 									control={form.control}
 									name="appName"
@@ -526,7 +532,9 @@ export const AddDatabase = ({ environmentId, projectName }: Props) => {
 												</FormLabel>
 												<FormControl>
 													<Input
-														placeholder={t("database.form.databaseNamePlaceholder")}
+														placeholder={t(
+															"database.form.databaseNamePlaceholder",
+														)}
 														{...field}
 													/>
 												</FormControl>
@@ -553,7 +561,8 @@ export const AddDatabase = ({ environmentId, projectName }: Props) => {
 														placeholder={t(
 															"database.form.databaseUserPlaceholder",
 															{
-																defaultUser: databasesUserDefaultPlaceholder[type],
+																defaultUser:
+																	databasesUserDefaultPlaceholder[type],
 															},
 														)}
 														autoComplete="off"
@@ -626,7 +635,8 @@ export const AddDatabase = ({ environmentId, projectName }: Props) => {
 														placeholder={t(
 															"database.form.dockerImagePlaceholder",
 															{
-																defaultImage: dockerImageDefaultPlaceholder[type],
+																defaultImage:
+																	dockerImageDefaultPlaceholder[type],
 															},
 														)}
 														{...field}
