@@ -7,6 +7,7 @@ import superjson from "superjson";
 import { ShowBilling } from "@/components/dashboard/settings/billing/show-billing";
 import { DashboardLayout } from "@/components/layouts/dashboard-layout";
 import { appRouter } from "@/server/api/root";
+import { getLocale, serverSideTranslations } from "@/utils/i18n";
 
 const Page = () => {
 	return <ShowBilling />;
@@ -59,9 +60,12 @@ export async function getServerSideProps(
 
 	await helpers.settings.isCloud.prefetch();
 
+	const locale = getLocale((req as any).cookies ?? {});
+
 	return {
 		props: {
 			trpcState: helpers.dehydrate(),
+			...(await serverSideTranslations(locale, ["settings"])),
 		},
 	};
 }

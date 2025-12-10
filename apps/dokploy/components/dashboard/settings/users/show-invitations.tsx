@@ -37,6 +37,18 @@ export const ShowInvitations = () => {
 	const { data, isLoading, refetch } =
 		api.organization.allInvitations.useQuery();
 
+	const roleLabels: Record<string, string> = {
+		owner: t("settings.invitations.role.owner"),
+		admin: t("settings.invitations.role.admin"),
+		member: t("settings.invitations.role.member"),
+	};
+
+	const statusLabels: Record<string, string> = {
+		pending: t("settings.invitations.status.pending"),
+		accepted: t("settings.invitations.status.accepted"),
+		canceled: t("settings.invitations.status.canceled"),
+	};
+
 	const { mutateAsync: removeInvitation } =
 		api.organization.removeInvitation.useMutation();
 
@@ -112,7 +124,8 @@ export const ShowInvitations = () => {
 																			: "secondary"
 																	}
 																>
-																	{invitation.role}
+																	{roleLabels[invitation.role] ||
+																		invitation.role}
 																</Badge>
 															</TableCell>
 															<TableCell className="text-center">
@@ -125,7 +138,8 @@ export const ShowInvitations = () => {
 																				: "default"
 																	}
 																>
-																	{invitation.status}
+																	{statusLabels[invitation.status] ||
+																		invitation.status}
 																</Badge>
 															</TableCell>
 															<TableCell className="text-center">

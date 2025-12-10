@@ -7,8 +7,8 @@ import {
 	Rocket,
 	Terminal,
 } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
 import { ShowBuildChooseForm } from "@/components/dashboard/application/build/show";
 import { ShowProviderForm } from "@/components/dashboard/application/general/generic/show";
@@ -55,7 +55,9 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 		<>
 			<Card className="bg-background">
 				<CardHeader>
-					<CardTitle className="text-xl">Deploy Settings</CardTitle>
+					<CardTitle className="text-xl">
+						{t("application.deploySettings.title")}
+					</CardTitle>
 				</CardHeader>
 				<CardContent className="flex flex-row gap-4 flex-wrap">
 					<TooltipProvider delayDuration={0} disableHoverableContent={false}>
@@ -88,14 +90,12 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 									<TooltipTrigger asChild>
 										<div className="flex items-center">
 											<Rocket className="size-4 mr-1" />
-											Deploy
+											{t("button.deploy")}
 										</div>
 									</TooltipTrigger>
 									<TooltipPrimitive.Portal>
 										<TooltipContent sideOffset={5} className="z-[60]">
-											<p>
-												Downloads the source code and performs a complete build
-											</p>
+											<p>{t("application.deploySettings.tooltip.deploy")}</p>
 										</TooltipContent>
 									</TooltipPrimitive.Portal>
 								</Tooltip>
@@ -128,12 +128,12 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 									<TooltipTrigger asChild>
 										<div className="flex items-center">
 											<RefreshCcw className="size-4 mr-1" />
-											Reload
+											{t("button.reload")}
 										</div>
 									</TooltipTrigger>
 									<TooltipPrimitive.Portal>
 										<TooltipContent sideOffset={5} className="z-[60]">
-											<p>Reload the application without rebuilding it</p>
+											<p>{t("application.deploySettings.tooltip.reload")}</p>
 										</TooltipContent>
 									</TooltipPrimitive.Portal>
 								</Tooltip>
@@ -165,15 +165,12 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 									<TooltipTrigger asChild>
 										<div className="flex items-center">
 											<Hammer className="size-4 mr-1" />
-											Rebuild
+											{t("button.rebuild")}
 										</div>
 									</TooltipTrigger>
 									<TooltipPrimitive.Portal>
 										<TooltipContent sideOffset={5} className="z-[60]">
-											<p>
-												Only rebuilds the application without downloading new
-												code
-											</p>
+											<p>{t("application.deploySettings.tooltip.rebuild")}</p>
 										</TooltipContent>
 									</TooltipPrimitive.Portal>
 								</Tooltip>
@@ -207,15 +204,12 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 										<TooltipTrigger asChild>
 											<div className="flex items-center">
 												<CheckCircle2 className="size-4 mr-1" />
-												Start
+												{t("button.start")}
 											</div>
 										</TooltipTrigger>
 										<TooltipPrimitive.Portal>
 											<TooltipContent sideOffset={5} className="z-[60]">
-												<p>
-													Start the application (requires a previous successful
-													build)
-												</p>
+												<p>{t("application.deploySettings.tooltip.start")}</p>
 											</TooltipContent>
 										</TooltipPrimitive.Portal>
 									</Tooltip>
@@ -247,12 +241,12 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 										<TooltipTrigger asChild>
 											<div className="flex items-center">
 												<Ban className="size-4 mr-1" />
-												Stop
+												{t("button.stop")}
 											</div>
 										</TooltipTrigger>
 										<TooltipPrimitive.Portal>
 											<TooltipContent sideOffset={5} className="z-[60]">
-												<p>Stop the currently running application</p>
+												<p>{t("application.deploySettings.tooltip.stop")}</p>
 											</TooltipContent>
 										</TooltipPrimitive.Portal>
 									</Tooltip>
@@ -269,13 +263,15 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 							className="flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-offset-2"
 						>
 							<Terminal className="size-4 mr-1" />
-							Open Terminal
+							{t("button.openTerminal")}
 						</Button>
 					</DockerTerminalModal>
 					<div className="flex flex-row items-center gap-2 rounded-md px-4 py-2 border">
-						<span className="text-sm font-medium">Autodeploy</span>
+						<span className="text-sm font-medium">
+							{t("application.deploySettings.autoDeploy")}
+						</span>
 						<Switch
-							aria-label="Toggle autodeploy"
+							aria-label={t("application.deploySettings.autoDeploy")}
 							checked={data?.autoDeploy || false}
 							onCheckedChange={async (enabled) => {
 								await update({
@@ -295,9 +291,11 @@ export const ShowGeneralApplication = ({ applicationId }: Props) => {
 					</div>
 
 					<div className="flex flex-row items-center gap-2 rounded-md px-4 py-2 border">
-						<span className="text-sm font-medium">Clean Cache</span>
+						<span className="text-sm font-medium">
+							{t("application.deploySettings.cleanCache")}
+						</span>
 						<Switch
-							aria-label="Toggle clean cache"
+							aria-label={t("application.deploySettings.cleanCache")}
 							checked={data?.cleanCache || false}
 							onCheckedChange={async (enabled) => {
 								await update({

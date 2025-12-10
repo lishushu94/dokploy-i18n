@@ -42,7 +42,7 @@ export const UpdateServer = ({
 	isOpen: isOpenProp,
 	onOpenChange: onOpenChangeProp,
 }: Props) => {
-	const { t } = useTranslation("settings");
+	const { t } = useTranslation(["settings", "common"]);
 	const [hasCheckedUpdate, setHasCheckedUpdate] = useState(!!updateData);
 	const [isUpdateAvailable, setIsUpdateAvailable] = useState(
 		!!updateData?.updateAvailable,

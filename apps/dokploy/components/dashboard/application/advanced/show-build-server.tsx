@@ -121,11 +121,7 @@ export const ShowBuildServer = ({ applicationId }: Props) => {
 				</AlertBlock>
 
 				<AlertBlock type="info">
-					📊 <strong>Important:</strong> Once the build finishes, you'll need to
-					wait a few seconds for the deployment server to download the image.
-					These download logs will <strong>NOT</strong> appear in the build
-					deployment logs. Check the <strong>Logs</strong> tab to see when the
-					container starts running.
+					{t("buildServer.alert.downloadReminder")}
 				</AlertBlock>
 
 				{!registries || registries.length === 0 ? (

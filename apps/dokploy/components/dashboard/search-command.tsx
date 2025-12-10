@@ -26,6 +26,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/utils/api";
 import { StatusTooltip } from "../shared/status-tooltip";
+import { useTranslation } from "next-i18next";
 
 // Extended Services type to include environmentId and environmentName for search navigation
 type SearchServices = Services & {
@@ -61,6 +62,10 @@ export const SearchCommand = () => {
 		enabled: !!session,
 	});
 	const { data: isCloud } = api.settings.isCloud.useQuery();
+	const { t } = useTranslation("common");
+
+	const formatEnvName = (envName?: string) =>
+		envName === "production" ? t("environment.default.production") : envName;
 
 	React.useEffect(() => {
 		const down = (e: KeyboardEvent) => {
@@ -106,7 +111,7 @@ export const SearchCommand = () => {
 										}}
 									>
 										<BookIcon className="size-4 text-muted-foreground mr-2" />
-										{project.name} / {productionEnvironment!.name}
+										{project.name} / {formatEnvName(productionEnvironment!.name)}
 									</CommandItem>
 								);
 							})}

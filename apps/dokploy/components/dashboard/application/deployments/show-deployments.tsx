@@ -157,6 +157,23 @@ export const ShowDeployments = ({
 		}
 	}, [t, type]);
 
+	const statusLabels: Record<string, string> = {
+		done: t("deployments.status.done"),
+		running: t("deployments.status.running"),
+		error: t("deployments.status.error"),
+		pending: t("deployments.status.pending"),
+		queued: t("deployments.status.queued"),
+	};
+
+	const formatTitle = (title?: string) => {
+		if (!title) return "";
+		const trimmed = title.trim();
+		if (trimmed.toLowerCase() === "manual deployment") {
+			return t("deployments.title.manual");
+		}
+		return trimmed;
+	};
+
 	return (
 		<Card className="bg-background border-none">
 			<CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2">
@@ -176,7 +193,8 @@ export const ShowDeployments = ({
 					{type === "application" && (
 						<ShowRollbackSettings applicationId={id}>
 							<Button variant="outline">
-								Configure Rollbacks <Settings className="size-4" />
+								{t("deployments.rollback.button")}
+								<Settings className="size-4" />
 							</Button>
 						</ShowRollbackSettings>
 					)}
@@ -193,9 +211,7 @@ export const ShowDeployments = ({
 								<div className="font-medium text-sm mb-1">
 									{t("deployments.stuck.title")}
 								</div>
-								<p className="text-sm">
-									{t("deployments.stuck.description")}
-								</p>
+								<p className="text-sm">{t("deployments.stuck.description")}</p>
 							</div>
 							<Button
 								variant="destructive"
@@ -266,11 +282,17 @@ export const ShowDeployments = ({
 				) : (
 					<div className="flex flex-col gap-4">
 						{deployments?.map((deployment, index) => {
-							const titleText = deployment?.title?.trim() || "";
+							const rawTitle = deployment?.title?.trim() || "";
+							const titleText = formatTitle(rawTitle);
 							const needsTruncation = titleText.length > MAX_DESCRIPTION_LENGTH;
 							const isExpanded = expandedDescriptions.has(
 								deployment.deploymentId,
 							);
+							const statusKey = deployment.status || "";
+							const statusLabel =
+								(statusKey && statusLabels[statusKey]) ||
+								deployment.status ||
+								"";
 
 							return (
 								<div
@@ -279,7 +301,7 @@ export const ShowDeployments = ({
 								>
 									<div className="flex flex-col">
 										<span className="flex items-center gap-4 font-medium capitalize text-foreground">
-											{index + 1}. {deployment.status}
+											{index + 1}. {statusLabel}
 											<StatusTooltip
 												status={deployment?.status}
 												className="size-2.5"
@@ -363,7 +385,9 @@ export const ShowDeployments = ({
 															deploymentId: deployment.deploymentId,
 														})
 															.then(() => {
-																toast.success(t("deployments.kill.toast.success"));
+																toast.success(
+																	t("deployments.kill.toast.success"),
+																);
 															})
 															.catch(() => {
 																toast.error(t("deployments.kill.toast.error"));
@@ -399,10 +423,14 @@ export const ShowDeployments = ({
 																rollbackId: deployment.rollback.rollbackId,
 															})
 																.then(() => {
-																	toast.success(t("deployments.rollback.toast.success"));
+																	toast.success(
+																		t("deployments.rollback.toast.success"),
+																	);
 																})
 																.catch(() => {
-																	toast.error(t("deployments.rollback.toast.error"));
+																	toast.error(
+																		t("deployments.rollback.toast.error"),
+																	);
 																});
 														}}
 													>

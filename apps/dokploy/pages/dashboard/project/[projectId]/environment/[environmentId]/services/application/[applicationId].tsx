@@ -202,7 +202,7 @@ const Service = (
 											})}
 										</span>
 										<span className="text-center text-base text-muted-foreground">
-											{t("common.goTo")} {" "}
+											{t("common.goTo")}{" "}
 											<Link
 												href="/dashboard/settings/billing"
 												className="text-primary"
@@ -246,9 +246,7 @@ const Service = (
 											<TabsTrigger value="volume-backups">
 												{t("tabs.volumeBackups")}
 											</TabsTrigger>
-											<TabsTrigger value="logs">
-												{t("tabs.logs")}
-											</TabsTrigger>
+											<TabsTrigger value="logs">{t("tabs.logs")}</TabsTrigger>
 											{((data?.serverId && isCloud) || !data?.server) && (
 												<TabsTrigger value="monitoring">
 													{t("tabs.monitoring")}
@@ -443,7 +441,7 @@ export async function getServerSideProps(
 					applicationId: params?.applicationId,
 					activeTab: (activeTab || "general") as TabState,
 					environmentId: params?.environmentId,
-					...(await serverSideTranslations(locale)),
+					...(await serverSideTranslations(locale, ["settings"])),
 				},
 			};
 		} catch {

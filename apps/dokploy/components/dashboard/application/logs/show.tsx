@@ -106,10 +106,12 @@ export const ShowDockerLogs = ({ appName, serverId }: Props) => {
 
 			<CardContent className="flex flex-col gap-4">
 				<div className="flex flex-row justify-between items-center gap-2">
-					<Label>{t("monitoring.compose.selectLabel")}</Label>
+					<Label>{t("logs.select.label")}</Label>
 					<div className="flex flex-row gap-2 items-center">
 						<span className="text-sm text-muted-foreground">
-							{option === "native" ? "Native" : "Swarm"}
+							{option === "native"
+								? t("logs.option.native")
+								: t("logs.option.swarm")}
 						</span>
 						<Switch
 							checked={option === "native"}

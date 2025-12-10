@@ -6,6 +6,7 @@ import superjson from "superjson";
 import { ShowDestinations } from "@/components/dashboard/settings/ssh-keys/show-ssh-keys";
 import { DashboardLayout } from "@/components/layouts/dashboard-layout";
 import { appRouter } from "@/server/api/root";
+import { getLocale, serverSideTranslations } from "@/utils/i18n";
 
 const Page = () => {
 	return (
@@ -37,6 +38,7 @@ export async function getServerSideProps(
 		};
 	}
 	const { req, res } = ctx;
+	const locale = getLocale((req as any).cookies ?? {});
 	const helpers = createServerSideHelpers({
 		router: appRouter,
 		ctx: {
@@ -70,11 +72,14 @@ export async function getServerSideProps(
 		return {
 			props: {
 				trpcState: helpers.dehydrate(),
+				...(await serverSideTranslations(locale, ["settings"])),
 			},
 		};
 	} catch {
 		return {
-			props: {},
+			props: {
+				...(await serverSideTranslations(locale, ["settings"])),
+			},
 		};
 	}
 }

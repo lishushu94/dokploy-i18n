@@ -1,16 +1,9 @@
 import type { findEnvironmentsByProjectId } from "@dokploy/server";
-import {
-	ChevronDownIcon,
-	PencilIcon,
-	PlusIcon,
-	Terminal,
-	TrashIcon,
-} from "lucide-react";
+import { ChevronDownIcon, PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import { toast } from "sonner";
-import { EnvironmentVariables } from "@/components/dashboard/project/environment-variables";
 import { AlertBlock } from "@/components/shared/alert-block";
 import { Button } from "@/components/ui/button";
 import {
@@ -201,6 +194,9 @@ export const AdvancedEnvironmentSelector = ({
 		(env) => env.environmentId === currentEnvironmentId,
 	);
 
+	const formatEnvName = (envName?: string) =>
+		envName === "production" ? t("environment.default.production") : envName;
+
 	return (
 		<>
 			<DropdownMenu>
@@ -209,7 +205,8 @@ export const AdvancedEnvironmentSelector = ({
 						<div className="flex items-center gap-1">
 							<span className="text-muted-foreground">/</span>
 							<span>
-								{currentEnv?.name || t("environment.selector.placeholder")}
+								{formatEnvName(currentEnv?.name) ||
+									t("environment.selector.placeholder")}
 							</span>
 							<ChevronDownIcon className="h-4 w-4 text-muted-foreground" />
 						</div>
@@ -245,7 +242,7 @@ export const AdvancedEnvironmentSelector = ({
 								>
 									<div className="flex items-center justify-between w-full">
 										<span>
-											{environment.name} ({servicesCount})
+											{formatEnvName(environment.name)} ({servicesCount})
 										</span>
 										{environment.environmentId === currentEnvironmentId && (
 											<div className="w-2 h-2 bg-blue-500 rounded-full" />
@@ -323,9 +320,7 @@ export const AdvancedEnvironmentSelector = ({
 
 					<div className="space-y-4">
 						<div className="space-y-1">
-							<Label htmlFor="name">
-								{t("environment.form.name")}
-							</Label>
+							<Label htmlFor="name">{t("environment.form.name")}</Label>
 							<Input
 								id="name"
 								value={name}
@@ -381,9 +376,7 @@ export const AdvancedEnvironmentSelector = ({
 
 					<div className="space-y-4">
 						<div className="space-y-1">
-							<Label htmlFor="edit-name">
-								{t("environment.form.name")}
-							</Label>
+							<Label htmlFor="edit-name">{t("environment.form.name")}</Label>
 							<Input
 								id="edit-name"
 								value={name}
@@ -464,7 +457,9 @@ export const AdvancedEnvironmentSelector = ({
 								!selectedEnvironment
 							}
 						>
-							{deleteEnvironment.isLoading ? t("common.deleting") : t("common.delete")}
+							{deleteEnvironment.isLoading
+								? t("common.deleting")
+								: t("common.delete")}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

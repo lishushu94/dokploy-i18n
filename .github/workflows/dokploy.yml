@@ -128,10 +128,6 @@ jobs:
               ${IMAGE_NAME}:${TAG}-amd64 \
               ${IMAGE_NAME}:${TAG}-arm64
 
-            # 新增 v 前缀标签，兼容前端更新检测逻辑
-            docker buildx imagetools create -t ${IMAGE_NAME}:v${VERSION} \
-              ${IMAGE_NAME}:${TAG}-amd64 \
-              ${IMAGE_NAME}:${TAG}-arm64
 
           elif [ "${{ github.ref }}" = "refs/heads/canary" ]; then
             TAG="canary"

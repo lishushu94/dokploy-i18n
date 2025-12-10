@@ -753,7 +753,9 @@ export const AddUserPermissions = ({ userId }: Props) => {
 																								<div className="flex items-center gap-2">
 																									<div className="w-2 h-2 bg-blue-500 rounded-full" />
 																									<FormLabel className="text-sm font-medium text-foreground cursor-pointer">
-																		{environment.name}
+																	{environment.name === "production"
+																		? t("environment.default.production")
+																		: environment.name}
 																	</FormLabel>
 																									<span className="text-xs text-muted-foreground">
 																		{t(

@@ -99,6 +99,7 @@ import {
 import { cn } from "@/lib/utils";
 import { appRouter } from "@/server/api/root";
 import { api } from "@/utils/api";
+import { getLocale, serverSideTranslations } from "@/utils/i18n";
 
 export type Services = {
 	appName: string;
@@ -1372,6 +1373,7 @@ export async function getServerSideProps(
 	const { params } = ctx;
 
 	const { req, res } = ctx;
+	const locale = getLocale(req.cookies);
 	const { user, session } = await validateRequest(req);
 	if (!user) {
 		return {
@@ -1415,6 +1417,7 @@ export async function getServerSideProps(
 
 			return {
 				props: {
+					...(await serverSideTranslations(locale)),
 					trpcState: helpers.dehydrate(),
 					projectId: params.projectId,
 					environmentId: params.environmentId,

@@ -143,7 +143,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 				formData.previewRequireCollaboratorPermissions,
 		})
 			.then(() => {
-				toast.success("Preview Deployments settings updated");
+				toast.success(t("preview.settings.toast.saved"));
 			})
 			.catch((error) => {
 				toast.error(error.message);
@@ -155,16 +155,14 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 				<DialogTrigger asChild>
 					<Button variant="outline">
 						<Settings2 className="size-4" />
-						Configure
+						{t("preview.settings.button")}
 					</Button>
 				</DialogTrigger>
 				<DialogContent className="sm:max-w-5xl w-full">
 					<DialogHeader>
-						<DialogTitle>Preview Deployment Settings</DialogTitle>
+						<DialogTitle>{t("preview.settings.title")}</DialogTitle>
 						<DialogDescription>
-							Adjust the settings for preview deployments of this application,
-							including environment variables, build options, and deployment
-							rules.
+							{t("preview.settings.description")}
 						</DialogDescription>
 					</DialogHeader>
 					<div className="grid gap-4">
@@ -180,7 +178,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="wildcardDomain"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Wildcard Domain</FormLabel>
+												<FormLabel>{t("preview.settings.wildcardDomain")}</FormLabel>
 												<FormControl>
 													<Input placeholder="*.traefik.me" {...field} />
 												</FormControl>
@@ -193,7 +191,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="previewPath"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Preview Path</FormLabel>
+												<FormLabel>{t("preview.settings.previewPath")}</FormLabel>
 												<FormControl>
 													<Input placeholder="/" {...field} />
 												</FormControl>
@@ -206,7 +204,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="port"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Port</FormLabel>
+												<FormLabel>{t("preview.settings.port")}</FormLabel>
 												<FormControl>
 													<NumberInput placeholder="3000" {...field} />
 												</FormControl>
@@ -220,7 +218,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										render={({ field }) => (
 											<FormItem className="md:col-span-2">
 												<div className="flex items-center gap-2">
-													<FormLabel>Preview Labels</FormLabel>
+													<FormLabel>{t("preview.settings.previewLabels")}</FormLabel>
 													<TooltipProvider>
 														<Tooltip>
 															<TooltipTrigger asChild>
@@ -228,10 +226,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 															</TooltipTrigger>
 															<TooltipContent>
 																<p>
-																	Add a labels that will trigger a preview
-																	deployment for a pull request. If no labels
-																	are specified, all pull requests will trigger
-																	a preview deployment.
+																	{t("preview.settings.previewLabelsHelp")}
 																</p>
 															</TooltipContent>
 														</Tooltip>
@@ -303,7 +298,7 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										name="previewLimit"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Preview Limit</FormLabel>
+												<FormLabel>{t("preview.settings.previewLimit")}</FormLabel>
 												<FormControl>
 													<NumberInput placeholder="3000" {...field} />
 												</FormControl>
@@ -317,9 +312,9 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 										render={({ field }) => (
 											<FormItem className="flex flex-row items-center justify-between p-3 mt-4 border rounded-lg shadow-sm">
 												<div className="space-y-0.5">
-													<FormLabel>HTTPS</FormLabel>
+													<FormLabel>{t("preview.settings.previewHttps")}</FormLabel>
 													<FormDescription>
-														Automatically provision SSL Certificate.
+														{t("preview.settings.previewHttpsDesc")}
 													</FormDescription>
 													<FormMessage />
 												</div>
@@ -338,23 +333,33 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 											name="previewCertificateType"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Certificate Provider</FormLabel>
+												<FormLabel>
+													{t("preview.settings.previewCertificateType")}
+												</FormLabel>
 													<Select
 														onValueChange={field.onChange}
 														defaultValue={field.value || ""}
 													>
 														<FormControl>
 															<SelectTrigger>
-																<SelectValue placeholder="Select a certificate provider" />
+															<SelectValue
+																placeholder={t(
+																	"preview.settings.previewCertificatePlaceholder",
+																)}
+															/>
 															</SelectTrigger>
 														</FormControl>
 
 														<SelectContent>
-															<SelectItem value="none">None</SelectItem>
-															<SelectItem value={"letsencrypt"}>
-																Let's Encrypt
-															</SelectItem>
-															<SelectItem value={"custom"}>Custom</SelectItem>
+														<SelectItem value="none">
+															{t("preview.settings.cert.none")}
+														</SelectItem>
+														<SelectItem value={"letsencrypt"}>
+															{t("preview.settings.cert.letsencrypt")}
+														</SelectItem>
+														<SelectItem value={"custom"}>
+															{t("preview.settings.cert.custom")}
+														</SelectItem>
 														</SelectContent>
 													</Select>
 													<FormMessage />
@@ -369,7 +374,9 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 											name="previewCustomCertResolver"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Certificate Provider</FormLabel>
+												<FormLabel>
+													{t("preview.settings.previewCustomCertResolver")}
+												</FormLabel>
 													<FormControl>
 														<Input
 															placeholder="my-custom-resolver"
@@ -386,11 +393,10 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 									<div className="flex flex-row items-center justify-between rounded-lg border p-4 col-span-2">
 										<div className="space-y-0.5">
 											<FormLabel className="text-base">
-												Enable preview deployments
+												{t("preview.settings.enableTitle")}
 											</FormLabel>
 											<FormDescription>
-												Enable or disable preview deployments for this
-												application.
+												{t("preview.settings.enableDesc")}
 											</FormDescription>
 										</div>
 										<Switch
@@ -424,16 +430,10 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 											<FormItem className="flex flex-row items-center justify-between p-3 mt-4 border rounded-lg shadow-sm col-span-2">
 												<div className="space-y-0.5">
 													<FormLabel>
-														Require Collaborator Permissions
+														{t("preview.settings.requirePermissions")}
 													</FormLabel>
 													<FormDescription>
-														Require collaborator permissions to preview
-														deployments, valid roles are:
-														<ul>
-															<li>Admin</li>
-															<li>Maintain</li>
-															<li>Write</li>
-														</ul>
+														{t("preview.settings.requirePermissionsDesc")}
 													</FormDescription>
 												</div>
 												<FormControl>
@@ -455,12 +455,9 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 											<FormControl>
 												<Secrets
 													name="env"
-													title="Environment Settings"
-													description="You can add environment variables to your resource."
-													placeholder={[
-														"NODE_ENV=production",
-														"PORT=3000",
-													].join("\n")}
+													title={t("preview.settings.env.title")}
+													description={t("preview.settings.env.description")}
+													placeholder={t("preview.settings.env.placeholder")}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -470,46 +467,45 @@ export const ShowPreviewSettings = ({ applicationId }: Props) => {
 								{data?.buildType === "dockerfile" && (
 									<Secrets
 										name="buildArgs"
-										title="Build-time Arguments"
+										title={t("preview.settings.buildArgs.title")}
 										description={
 											<span>
-												Arguments are available only at build-time. See
-												documentation&nbsp;
+												{t("preview.settings.buildArgs.description")}
+												&nbsp;
 												<a
 													className="text-primary"
 													href="https://docs.docker.com/build/building/variables/"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													here
+													{t("preview.settings.buildArgs.linkLabel")}
 												</a>
 												.
 											</span>
 										}
-										placeholder="NPM_TOKEN=xyz"
+										placeholder={t("preview.settings.buildArgs.placeholder")}
 									/>
 								)}
 								{data?.buildType === "dockerfile" && (
 									<Secrets
 										name="buildSecrets"
-										title="Build-time Secrets"
+										title={t("preview.settings.buildSecrets.title")}
 										description={
 											<span>
-												Secrets are specially designed for sensitive information
-												and are only available at build-time. See
-												documentation&nbsp;
+												{t("preview.settings.buildSecrets.description")}
+												&nbsp;
 												<a
 													className="text-primary"
 													href="https://docs.docker.com/build/building/secrets/"
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													here
+													{t("preview.settings.buildSecrets.linkLabel")}
 												</a>
 												.
 											</span>
 										}
-										placeholder="NPM_TOKEN=xyz"
+										placeholder={t("preview.settings.buildSecrets.placeholder")}
 									/>
 								)}
 							</form>

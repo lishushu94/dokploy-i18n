@@ -33,8 +33,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
 	Breadcrumb,
@@ -520,6 +520,11 @@ function SidebarLogo() {
 	const [_activeTeam, setActiveTeam] = useState<
 		typeof activeOrganization | null
 	>(null);
+	const displayOrgName =
+		activeOrganization?.name &&
+		activeOrganization.name.trim().toLowerCase() !== "my organization"
+			? activeOrganization.name
+			: t("organization.defaultName");
 
 	useEffect(() => {
 		if (activeOrganization) {
@@ -581,7 +586,7 @@ function SidebarLogo() {
 											)}
 										>
 											<p className="text-sm font-medium leading-none">
-												{activeOrganization?.name ?? t("organization.select.placeholder")}
+												{displayOrgName ?? t("organization.select.placeholder")}
 											</p>
 										</div>
 									</div>
@@ -651,11 +656,14 @@ function SidebarLogo() {
 														})
 															.then(() => {
 																refetch();
-																toast.success(t("organization.default.updated"));
+																toast.success(
+																	t("organization.default.updated"),
+																);
 															})
 															.catch((error) => {
 																toast.error(
-																	error?.message ?? t("organization.default.error"),
+																	error?.message ??
+																		t("organization.default.error"),
 																);
 															});
 													}}
@@ -698,7 +706,8 @@ function SidebarLogo() {
 																	})
 																	.catch((error) => {
 																		toast.error(
-																			error?.message ?? t("organization.delete.error"),
+																			error?.message ??
+																				t("organization.delete.error"),
 																		);
 																	});
 															}}
