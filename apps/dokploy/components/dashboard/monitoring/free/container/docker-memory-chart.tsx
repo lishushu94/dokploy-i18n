@@ -56,6 +56,7 @@ export const DockerMemoryChart = ({
 					<Area
 						type="monotone"
 						dataKey="usage"
+						name={t("monitoring.legend.memory")}
 						stroke="#27272A"
 						fillOpacity={1}
 						fill="url(#colorUv)"

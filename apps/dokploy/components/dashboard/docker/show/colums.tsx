@@ -48,6 +48,12 @@ export const createColumns = (
 		},
 		cell: ({ row }) => {
 			const value = row.getValue("state") as string;
+			const translated =
+				(value &&
+					t(`docker.containers.state.${value.toLowerCase()}`, {
+						defaultValue: value,
+					})) ||
+				value;
 			return (
 				<div className="capitalize">
 					<Badge
@@ -59,7 +65,7 @@ export const createColumns = (
 									: "secondary"
 						}
 					>
-						{value}
+						{translated}
 					</Badge>
 				</div>
 			);
@@ -79,7 +85,17 @@ export const createColumns = (
 			);
 		},
 		cell: ({ row }) => {
-			return <div className="capitalize">{row.getValue("status")}</div>;
+			const value = (row.getValue("status") as string) || "";
+			const match = value.match(
+				/^(Up|Exited|Paused|Restarting|Created|Removing|Dead)(.*)$/i,
+			);
+			const translated =
+				match?.[1]
+					? `${t(`docker.containers.status.${match[1].toLowerCase()}`, {
+							defaultValue: match[1],
+						})}${match[2] ?? ""}`
+					: value;
+			return <div className="capitalize">{translated}</div>;
 		},
 	},
 	{

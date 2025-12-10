@@ -66,6 +66,18 @@ const getNodeRoleLabel = (role: string, t: (key: string) => string) => {
 	return roleMap[role] || role;
 };
 
+const getAvailabilityLabel = (
+	availability: string,
+	t: (key: string) => string,
+) => {
+	const availabilityMap: Record<string, string> = {
+		active: t("common:swarm.nodes.availability.active"),
+		pause: t("common:swarm.nodes.availability.pause"),
+		drain: t("common:swarm.nodes.availability.drain"),
+	};
+	return availabilityMap[availability?.toLowerCase?.() ?? ""] || availability;
+};
+
 export const ShowNodes = ({ serverId }: Props) => {
 	const { t } = useTranslation("settings");
 	const { data, isLoading, refetch } = api.cluster.getNodes.useQuery({
@@ -152,7 +164,7 @@ export const ShowNodes = ({ serverId }: Props) => {
 														</Badge>
 													</TableCell>
 													<TableCell className="text-right">
-														{node.Spec.Availability}
+														{getAvailabilityLabel(node.Spec.Availability, t)}
 													</TableCell>
 
 													<TableCell className="text-right">
@@ -164,7 +176,7 @@ export const ShowNodes = ({ serverId }: Props) => {
 															date={node.CreatedAt}
 															className="text-sm"
 														>
-															{t("settings.cluster.nodes.table.created")} {" "}
+															{t("settings.cluster.nodes.table.created")}{" "}
 														</DateTooltip>
 													</TableCell>
 													<TableCell className="text-right flex justify-end">
@@ -184,8 +196,12 @@ export const ShowNodes = ({ serverId }: Props) => {
 																<ShowNodeData data={node} />
 																{!node?.ManagerStatus?.Leader && (
 																	<DialogAction
-																		title={t("settings.cluster.nodes.delete.title")}
-																		description={t("settings.cluster.nodes.delete.description")}
+																		title={t(
+																			"settings.cluster.nodes.delete.title",
+																		)}
+																		description={t(
+																			"settings.cluster.nodes.delete.description",
+																		)}
 																		type="destructive"
 																		onClick={async () => {
 																			await deleteNode({
@@ -195,12 +211,16 @@ export const ShowNodes = ({ serverId }: Props) => {
 																				.then(() => {
 																					refetch();
 																					toast.success(
-																						t("settings.cluster.nodes.delete.success"),
+																						t(
+																							"settings.cluster.nodes.delete.success",
+																						),
 																					);
 																				})
 																				.catch(() => {
 																					toast.error(
-																						t("settings.cluster.nodes.delete.error"),
+																						t(
+																							"settings.cluster.nodes.delete.error",
+																						),
 																					);
 																				});
 																		}}

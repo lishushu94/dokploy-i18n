@@ -56,7 +56,7 @@ export const KillBuild = ({ id, type }: Props) => {
 								});
 						}}
 					>
-						Confirm
+						{t("deployments.killBuild.button.confirm")}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

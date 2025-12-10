@@ -66,7 +66,6 @@ export const CancelQueues = ({ id, type }: Props) => {
 						}}
 					>
 						{t("deployments.cancelQueues.button.confirm")}
-						Confirm
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

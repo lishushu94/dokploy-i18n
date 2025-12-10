@@ -441,7 +441,7 @@ export async function getServerSideProps(
 					applicationId: params?.applicationId,
 					activeTab: (activeTab || "general") as TabState,
 					environmentId: params?.environmentId,
-					...(await serverSideTranslations(locale, ["settings"])),
+					...(await serverSideTranslations(locale, ["common", "settings"])),
 				},
 			};
 		} catch {

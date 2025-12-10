@@ -50,6 +50,7 @@ export const DockerCpuChart = ({ acummulativeData }: Props) => {
 					<Area
 						type="monotone"
 						dataKey="usage"
+						name={t("monitoring.legend.cpu")}
 						stroke="#27272A"
 						fillOpacity={1}
 						fill="url(#colorUv)"

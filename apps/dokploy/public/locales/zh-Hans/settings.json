@@ -1153,7 +1153,7 @@
 	"settings.cluster.nodes.toast.copied": "已复制到剪贴板",
 	"settings.cluster.service.cardTitle": "集群设置",
 	"settings.cluster.service.cardDescription": "为当前服务修改 Swarm 相关设置。",
-	"settings.cluster.service.alert.redeploy": "修改集群设置后，请重新部署（Redeploy）服务以使变更生效。",
+	"settings.cluster.service.alert.redeploy": "修改集群设置后，请重新部署服务以使变更生效。",
 	"settings.cluster.service.replicas.label": "副本数",
 	"settings.cluster.service.validation.replicasMin": "Replicas must be at least 1",
 	"settings.cluster.service.noRegistry.descriptionPrefix": "要使用集群功能，必须先至少配置一个注册表。请前往",

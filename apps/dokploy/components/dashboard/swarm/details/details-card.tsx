@@ -22,6 +22,46 @@ interface Props {
 	serverId?: string;
 }
 
+const getManagerStatusLabel = (status: string | undefined, t: any) => {
+	const normalized = status?.toLowerCase();
+	switch (normalized) {
+		case "leader":
+			return t("swarm.nodes.managerStatus.leader");
+		case "reachable":
+			return t("swarm.nodes.managerStatus.reachable");
+		case "unavailable":
+			return t("swarm.nodes.managerStatus.unavailable");
+		default:
+			return t("swarm.nodes.managerStatus.worker");
+	}
+};
+
+const getAvailabilityLabel = (availability: string | undefined, t: any) => {
+	const normalized = availability?.toLowerCase();
+	switch (normalized) {
+		case "active":
+			return t("swarm.nodes.availability.active");
+		case "pause":
+			return t("swarm.nodes.availability.pause");
+		case "drain":
+			return t("swarm.nodes.availability.drain");
+		default:
+			return availability || "-";
+	}
+};
+
+const getTlsStatusLabel = (status: string | undefined, t: any) => {
+	const normalized = status?.toLowerCase();
+	switch (normalized) {
+		case "ready":
+			return t("swarm.nodes.tlsStatus.ready");
+		case "unavailable":
+			return t("swarm.nodes.tlsStatus.unavailable");
+		default:
+			return status || "-";
+	}
+};
+
 export function NodeCard({ node, serverId }: Props) {
 	const { t } = useTranslation("common");
 	const { data, isLoading } = api.swarm.getNodeInfo.useQuery({
@@ -36,7 +76,7 @@ export function NodeCard({ node, serverId }: Props) {
 					<CardTitle className="flex items-center justify-between text-lg">
 						<span className="flex items-center gap-2">{node.Hostname}</span>
 						<Badge variant="green">
-							{node.ManagerStatus || t("swarm.nodes.role.worker")}
+							{getManagerStatusLabel(node.ManagerStatus, t)}
 						</Badge>
 					</CardTitle>
 				</CardHeader>
@@ -65,15 +105,17 @@ export function NodeCard({ node, serverId }: Props) {
 							/>
 							<div className="font-medium">{node.Hostname}</div>
 							<Badge variant="green">
-								{node.ManagerStatus || t("swarm.nodes.role.worker")}
+								{getManagerStatusLabel(node.ManagerStatus, t)}
 							</Badge>
 						</div>
 						<div className="flex flex-wrap items-center gap-4">
 							<Badge variant="green">
-								{t("swarm.nodes.tlsStatus")}: {node.TLSStatus}
+								{t("swarm.nodes.tlsStatus")}:{" "}
+								{getTlsStatusLabel(node.TLSStatus, t)}
 							</Badge>
 							<Badge variant="blue">
-								{t("swarm.nodes.availability")}: {node.Availability}
+								{t("swarm.nodes.availability")}:{" "}
+								{getAvailabilityLabel(node.Availability, t)}
 							</Badge>
 						</div>
 					</div>
