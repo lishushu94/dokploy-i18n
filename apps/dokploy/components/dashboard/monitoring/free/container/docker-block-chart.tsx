@@ -59,7 +59,7 @@ export const DockerBlockChart = ({ acummulativeData }: Props) => {
 						stroke="#27272A"
 						fillOpacity={1}
 						fill="url(#colorUv)"
-						name="Read Mb"
+						name={t("monitoring.block.readMb")}
 					/>
 					<Area
 						type="monotone"
@@ -67,7 +67,7 @@ export const DockerBlockChart = ({ acummulativeData }: Props) => {
 						stroke="#82ca9d"
 						fillOpacity={1}
 						fill="url(#colorWrite)"
-						name="Write Mb"
+						name={t("monitoring.block.writeMb")}
 					/>
 				</AreaChart>
 			</ResponsiveContainer>

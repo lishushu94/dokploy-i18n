@@ -54,7 +54,7 @@ export const DockerNetworkChart = ({ acummulativeData }: Props) => {
 						stroke="#8884d8"
 						fillOpacity={1}
 						fill="url(#colorUv)"
-						name="In MB"
+						name={t("monitoring.network.inMB")}
 					/>
 					<Area
 						type="monotone"
@@ -62,7 +62,7 @@ export const DockerNetworkChart = ({ acummulativeData }: Props) => {
 						stroke="#82ca9d"
 						fillOpacity={1}
 						fill="url(#colorUv)"
-						name="Out MB"
+						name={t("monitoring.network.outMB")}
 					/>
 				</AreaChart>
 			</ResponsiveContainer>

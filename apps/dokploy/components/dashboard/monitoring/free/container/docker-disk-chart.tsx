@@ -61,7 +61,7 @@ export const DockerDiskChart = ({ acummulativeData, diskTotal }: Props) => {
 						stroke="#6C28D9"
 						fillOpacity={1}
 						fill="url(#colorUsed)"
-						name="Used GB"
+						name={t("monitoring.disk.legend.usedGB")}
 					/>
 					<Area
 						type="monotone"
@@ -69,7 +69,7 @@ export const DockerDiskChart = ({ acummulativeData, diskTotal }: Props) => {
 						stroke="#8884d8"
 						fillOpacity={1}
 						fill="url(#colorFree)"
-						name="Free GB"
+						name={t("monitoring.disk.legend.freeGB")}
 					/>
 				</AreaChart>
 			</ResponsiveContainer>
