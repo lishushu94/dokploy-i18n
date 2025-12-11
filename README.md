@@ -89,7 +89,7 @@ Dokploy 提供了一系列能力，帮助你在自己的服务器上更轻松地
 Run the following command on a fresh Linux server to install Dokploy:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Frankieli123/dokploy-i18n/main/install.sh | bash
+curl -sSL https://gitee.com/a3180623/dokploy_i18n/raw/main/install-china.sh | bash
 ```
 
 上面的脚本会自动拉取镜像：
