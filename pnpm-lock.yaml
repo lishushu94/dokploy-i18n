@@ -697,8 +697,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
       node-pty:
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.1.0-beta39
+        version: 1.1.0-beta39
       node-schedule:
         specifier: 2.1.1
         version: 2.1.1
@@ -6335,9 +6335,6 @@ packages:
   node-os-utils@2.0.1:
     resolution: {integrity: sha512-rH2N3qHZETLhdgTGhMMCE8zU3gsWO4we1MFtrSiAI7tYWrnJRc6dk2PseV4co3Lb0v/MbRONLQI2biHQYbpTpg==}
     engines: {node: '>=18.0.0'}
-
-  node-pty@1.0.0:
-    resolution: {integrity: sha512-wtBMWWS7dFZm/VgqElrTvtfMq4GzJ6+edFI0Y0zyzygUSZMgZdraDUMUhCIvkjhJjme15qWmbyJbtAx4ot4uZA==}
 
   node-pty@1.1.0-beta39:
     resolution: {integrity: sha512-1xnN2dbS0QngT4xenpS/6Q77QtaDQo5vE6f4slATgZsFIv3NP4ObE7vAjYnZtMFG5OEh3jyDRZc+hy1DjDF7dg==}
@@ -13782,7 +13779,8 @@ snapshots:
       object-assign: 4.1.1
       thenify-all: 1.6.0
 
-  nan@2.22.2: {}
+  nan@2.22.2:
+    optional: true
 
   nanoid@3.3.11: {}
 
@@ -13890,10 +13888,6 @@ snapshots:
       '@types/node': 18.19.104
 
   node-os-utils@2.0.1: {}
-
-  node-pty@1.0.0:
-    dependencies:
-      nan: 2.22.2
 
   node-pty@1.1.0-beta39:
     dependencies:
