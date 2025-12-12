@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "Жоба сәтті жасалды",
+    "project.create.error": "Жобаны жасау кезінде қате пайда болды",
+    "project.update.success": "Жоба сәтті жаңартылды",
+    "project.update.error": "Жобаны жаңарту кезінде қате пайда болды",
+    "project.validation.nameRequired": "Жоба атауы міндетті",
+    "project.validation.nameFormat": "Жоба атауы форматы жарамсыз. Әріптер, сандар, бос орындар, астынғы сызықтар, нүктелер немесе дефисдерді пайдаланыңыз және әріп, сан, астынғы сызық немесе дефиспен басталуы және аяқталуы керек.",
+    "project.validation.nameCannotStartWithNumber": "Жоба атауы санмен бастала алмайды"
 }

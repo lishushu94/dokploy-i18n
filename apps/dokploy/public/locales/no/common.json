@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "Prosjekt opprettet",
+    "project.create.error": "Feil ved opprettelse av prosjekt",
+    "project.update.success": "Prosjekt oppdatert",
+    "project.update.error": "Feil ved oppdatering av prosjekt",
+    "project.validation.nameRequired": "Prosjektnavn er påkrevd",
+    "project.validation.nameFormat": "Prosjektnavnformatet er ugyldig. Bruk bokstaver, tall, mellomrom, understreker, punktum eller bindestreker og må starte og slutte med en bokstav, et tall, en understrek eller en bindestrek.",
+    "project.validation.nameCannotStartWithNumber": "Prosjektnavn kan ikke starte med et tall"
 }

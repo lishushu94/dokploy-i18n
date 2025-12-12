@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "പ്രോജക്റ്റ് വിജയകരമായി സൃഷ്ടിച്ചു",
+    "project.create.error": "പ്രോജക്റ്റ് സൃഷ്ടിക്കുന്നതിൽ പിശക്",
+    "project.update.success": "പ്രോജക്റ്റ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു",
+    "project.update.error": "പ്രോജക്റ്റ് അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പിശക്",
+    "project.validation.nameRequired": "പ്രോജക്റ്റ് പേര് ആവശ്യമാണ്",
+    "project.validation.nameFormat": "പ്രോജക്റ്റ് പേര് ഫോർമാറ്റ് അസാധുവാണ്. അക്ഷരങ്ങൾ, സംഖ്യകൾ, ഇടവേളകൾ, അണ്ടർസ്കോറുകൾ, ഡോട്ടുകൾ അല്ലെങ്കിൽ ഹൈഫനുകൾ ഉപയോഗിക്കുക, കൂടാതെ ഒരു അക്ഷരം, സംഖ്യ, അണ്ടർസ്കോർ അല്ലെങ്കിൽ ഹൈഫൻ ഉപയോഗിച്ച് ആരംഭിക്കുകയും അവസാനിക്കുകയും ചെയ്യണം.",
+    "project.validation.nameCannotStartWithNumber": "പ്രോജക്റ്റ് പേര് ഒരു സംഖ്യയിൽ നിന്ന് ആരംഭിക്കാൻ കഴിയില്ല"
 }

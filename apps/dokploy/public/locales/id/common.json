@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "Proyek berhasil dibuat",
+    "project.create.error": "Kesalahan saat membuat proyek",
+    "project.update.success": "Proyek berhasil diperbarui",
+    "project.update.error": "Kesalahan saat memperbarui proyek",
+    "project.validation.nameRequired": "Nama proyek wajib diisi",
+    "project.validation.nameFormat": "Format nama proyek tidak valid. Gunakan huruf, angka, spasi, garis bawah, titik, atau tanda hubung dan harus dimulai dan diakhiri dengan huruf, angka, garis bawah, atau tanda hubung.",
+    "project.validation.nameCannotStartWithNumber": "Nama proyek tidak boleh dimulai dengan angka"
 }

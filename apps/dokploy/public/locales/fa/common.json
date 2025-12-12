@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "پروژه با موفقیت ایجاد شد",
+    "project.create.error": "خطا در ایجاد پروژه",
+    "project.update.success": "پروژه با موفقیت به‌روزرسانی شد",
+    "project.update.error": "خطا در به‌روزرسانی پروژه",
+    "project.validation.nameRequired": "نام پروژه الزامی است",
+    "project.validation.nameFormat": "فرمت نام پروژه نامعتبر است. از حروف، اعداد، فاصله، زیرخط، نقطه یا خط تیره استفاده کنید و باید با حرف، عدد، زیرخط یا خط تیره شروع و پایان یابد.",
+    "project.validation.nameCannotStartWithNumber": "نام پروژه نمی‌تواند با عدد شروع شود"
 }

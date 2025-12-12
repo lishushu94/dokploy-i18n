@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "Project succesvol aangemaakt",
+    "project.create.error": "Fout bij het aanmaken van het project",
+    "project.update.success": "Project succesvol bijgewerkt",
+    "project.update.error": "Fout bij het bijwerken van het project",
+    "project.validation.nameRequired": "Projectnaam is verplicht",
+    "project.validation.nameFormat": "Projectnaamformaat is ongeldig. Gebruik letters, cijfers, spaties, underscores, punten of koppeltekens en moet beginnen en eindigen met een letter, cijfer, underscore of koppelteken.",
+    "project.validation.nameCannotStartWithNumber": "Projectnaam mag niet met een cijfer beginnen"
 }

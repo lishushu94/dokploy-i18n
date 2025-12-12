@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "프로젝트가 성공적으로 생성되었습니다",
+    "project.create.error": "프로젝트 생성 중 오류가 발생했습니다",
+    "project.update.success": "프로젝트가 성공적으로 업데이트되었습니다",
+    "project.update.error": "프로젝트 업데이트 중 오류가 발생했습니다",
+    "project.validation.nameRequired": "프로젝트 이름이 필요합니다",
+    "project.validation.nameFormat": "프로젝트 이름 형식이 유효하지 않습니다. 문자, 숫자, 공백, 밑줄, 점 또는 하이픈을 사용하고 문자, 숫자, 밑줄 또는 하이픈으로 시작하고 끝나야 합니다.",
+    "project.validation.nameCannotStartWithNumber": "프로젝트 이름은 숫자로 시작할 수 없습니다"
 }

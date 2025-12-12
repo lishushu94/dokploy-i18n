@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "Layihə uğurla yaradıldı",
+    "project.create.error": "Layihə yaradılarkən xəta baş verdi",
+    "project.update.success": "Layihə uğurla yeniləndi",
+    "project.update.error": "Layihə yenilənərkən xəta baş verdi",
+    "project.validation.nameRequired": "Layihə adı tələb olunur",
+    "project.validation.nameFormat": "Layihə adı formatı yanlışdır. Hərflər, rəqəmlər, boşluqlar, alt xəttlər, nöqtələr və ya defislər istifadə edin və hərf, rəqəm, alt xətt və ya defis ilə başlamalı və bitməlidir.",
+    "project.validation.nameCannotStartWithNumber": "Layihə adı rəqəmlə başlaya bilməz"
 }

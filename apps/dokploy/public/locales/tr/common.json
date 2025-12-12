@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "Proje başarıyla oluşturuldu",
+    "project.create.error": "Proje oluşturulurken hata oluştu",
+    "project.update.success": "Proje başarıyla güncellendi",
+    "project.update.error": "Proje güncellenirken hata oluştu",
+    "project.validation.nameRequired": "Proje adı gereklidir",
+    "project.validation.nameFormat": "Proje adı formatı geçersiz. Harf, rakam, boşluk, alt çizgi, nokta veya tire kullanın ve bir harf, rakam, alt çizgi veya tire ile başlayıp bitmelidir.",
+    "project.validation.nameCannotStartWithNumber": "Proje adı rakamla başlayamaz"
 }

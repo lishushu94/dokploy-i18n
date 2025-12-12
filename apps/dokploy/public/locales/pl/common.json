@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "Projekt utworzony pomyślnie",
+    "project.create.error": "Błąd podczas tworzenia projektu",
+    "project.update.success": "Projekt zaktualizowany pomyślnie",
+    "project.update.error": "Błąd podczas aktualizacji projektu",
+    "project.validation.nameRequired": "Nazwa projektu jest wymagana",
+    "project.validation.nameFormat": "Format nazwy projektu jest nieprawidłowy. Użyj liter, cyfr, spacji, podkreśleń, kropek lub myślników i musi zaczynać się i kończyć literą, cyfrą, podkreśleniem lub myślnikiem.",
+    "project.validation.nameCannotStartWithNumber": "Nazwa projektu nie może zaczynać się od cyfry"
 }

@@ -1950,5 +1950,12 @@
     "application.git.main.providerName.bitbucket": "Bitbucket",
     "application.git.main.providerName.gitea": "Gitea",
     "application.git.main.providerName.git": "Git",
-    "application.git.main.providerLabel": "Provider: {{provider}}"
+    "application.git.main.providerLabel": "Provider: {{provider}}",
+    "project.create.success": "プロジェクトが正常に作成されました",
+    "project.create.error": "プロジェクトの作成中にエラーが発生しました",
+    "project.update.success": "プロジェクトが正常に更新されました",
+    "project.update.error": "プロジェクトの更新中にエラーが発生しました",
+    "project.validation.nameRequired": "プロジェクト名は必須です",
+    "project.validation.nameFormat": "プロジェクト名の形式が無効です。文字、数字、スペース、アンダースコア、ドット、またはハイフンを使用し、文字、数字、アンダースコア、またはハイフンで始まり、終わる必要があります。",
+    "project.validation.nameCannotStartWithNumber": "プロジェクト名は数字で始めることはできません"
 }

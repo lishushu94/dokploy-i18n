@@ -1950,5 +1950,12 @@
 	"ai.stepTwo.title": "步骤 2: 选择变体",
 	"ai.stepTwo.suggestionsIntro": "根据您的输入，我们建议以下模板变体：",
 	"common.unknownError": "未知错误",
-	"onboarding.tagline": "Netlify、Vercel、Heroku 的开源替代方案。"
+	"onboarding.tagline": "Netlify、Vercel、Heroku 的开源替代方案。",
+	"project.create.success": "项目创建成功",
+	"project.create.error": "创建项目时发生错误",
+	"project.update.success": "项目更新成功",
+	"project.update.error": "更新项目时发生错误",
+	"project.validation.nameRequired": "项目名称不能为空",
+	"project.validation.nameFormat": "项目名称格式无效。只能使用字母、数字、空格、下划线、点或连字符，且必须以字母、数字、下划线或连字符开头和结尾。",
+	"project.validation.nameCannotStartWithNumber": "项目名称不能以数字开头"
 }
