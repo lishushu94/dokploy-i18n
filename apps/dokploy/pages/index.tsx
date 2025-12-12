@@ -40,16 +40,31 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { getLocale, serverSideTranslations } from "@/utils/i18n";
 
-const LoginSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(8),
-});
+const createLoginSchema = (t: (key: string) => string) =>
+	z.object({
+		email: z
+			.string()
+			.min(1, {
+				message: t("auth.validation.emailRequired"),
+			})
+			.email({
+				message: t("auth.validation.emailInvalid"),
+			}),
+		password: z
+			.string()
+			.min(1, {
+				message: t("auth.validation.passwordRequired"),
+			})
+			.min(8, {
+				message: t("auth.validation.passwordMinLength"),
+			}),
+	});
 
 const _TwoFactorSchema = z.object({
 	code: z.string().min(6),
 });
 
-type LoginForm = z.infer<typeof LoginSchema>;
+type LoginForm = z.infer<ReturnType<typeof createLoginSchema>>;
 
 interface Props {
 	IS_CLOUD: boolean;
@@ -68,7 +83,7 @@ export default function Home({ IS_CLOUD }: Props) {
 	const [isGithubLoading, setIsGithubLoading] = useState(false);
 	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 	const loginForm = useForm<LoginForm>({
-		resolver: zodResolver(LoginSchema),
+		resolver: zodResolver(createLoginSchema(t)),
 		defaultValues: {
 			email: "",
 			password: "",
@@ -84,8 +99,8 @@ export default function Home({ IS_CLOUD }: Props) {
 			});
 
 			if (error) {
-				toast.error(error.message);
-				setError(error.message || t("auth.toast.loginError"));
+				toast.error(t("auth.toast.loginError"));
+				setError(t("auth.toast.loginError"));
 				return;
 			}
 
@@ -120,8 +135,8 @@ export default function Home({ IS_CLOUD }: Props) {
 			});
 
 			if (error) {
-				toast.error(error.message);
-				setError(error.message || t("auth.toast.twoFactorError"));
+				toast.error(t("auth.toast.twoFactorError"));
+				setError(t("auth.toast.twoFactorError"));
 				return;
 			}
 
@@ -148,10 +163,8 @@ export default function Home({ IS_CLOUD }: Props) {
 			});
 
 			if (error) {
-				toast.error(error.message);
-				setError(
-					error.message || t("auth.toast.backupCodeError"),
-				);
+				toast.error(t("auth.toast.backupCodeError"));
+				setError(t("auth.toast.backupCodeError"));
 				return;
 			}
 
@@ -172,15 +185,12 @@ export default function Home({ IS_CLOUD }: Props) {
 			});
 
 			if (error) {
-				toast.error(error.message);
+				toast.error(t("auth.toast.githubError"));
 				return;
 			}
 		} catch (error) {
 			toast.error(t("auth.toast.githubError"), {
-				description:
-					error instanceof Error
-						? error.message
-						: t("auth.toast.githubUnknown"),
+				description: t("auth.toast.githubUnknown"),
 			});
 		} finally {
 			setIsGithubLoading(false);
@@ -195,15 +205,12 @@ export default function Home({ IS_CLOUD }: Props) {
 			});
 
 			if (error) {
-				toast.error(error.message);
+				toast.error(t("auth.toast.googleError"));
 				return;
 			}
 		} catch (error) {
 			toast.error(t("auth.toast.googleError"), {
-				description:
-					error instanceof Error
-						? error.message
-						: t("auth.toast.googleUnknown"),
+				description: t("auth.toast.googleUnknown"),
 			});
 		} finally {
 			setIsGoogleLoading(false);
