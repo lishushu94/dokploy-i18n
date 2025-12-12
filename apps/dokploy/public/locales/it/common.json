@@ -1658,7 +1658,7 @@
     "buildServer.form.registryCountLabel": "Registries ({{count}})",
     "buildServer.form.registryDescription": "Select a registry to store the built images from the build server.",
     "buildServer.validation.serverRequired": "Build server is required",
-    "buildServer.validation.registryRequired": "Build registry is required",
+    "buildServer.validation.registryRequired": "Il registry di build è obbligatorio",
     "buildServer.toast.updateSuccess": "Build server settings updated",
     "buildServer.toast.updateError": "Error updating build server settings",
     "application.git.button.addSshKey": "Add SSH Key",
