@@ -171,6 +171,9 @@ export const ShowDeployments = ({
 		if (trimmed.toLowerCase() === "manual deployment") {
 			return t("deployments.title.manual");
 		}
+		if (trimmed === "Web Server Backup") {
+			return t("deployments.title.webServerBackup");
+		}
 		return trimmed;
 	};
 
