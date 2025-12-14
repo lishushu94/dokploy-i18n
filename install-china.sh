@@ -77,22 +77,10 @@ install_dokploy() {
         cat > "$daemon_json" <<EOF
 {
   "registry-mirrors": [
-    "https://docker.amingg.com",
-    "https://hub.amingg.com",
-    "https://hub.lvli.de",
-    "https://docker.mirrors.sjtug.sjtu.edu.cn",
+    "https://docker.1ms.run",
+    "https://dockerproxy.net",
     "https://docker.m.daocloud.io",
-    "https://docker.itelyou.cf",
-    "https://noohub.ru",
-    "https://docker.fxxk.dedyn.io",
-    "https://huecker.io",
-    "https://dockerhub.timeweb.cloud",
-    "https://registry.cn-hangzhou.aliyuncs.com",
-    "https://dockerproxy.com",
-    "https://mirror.baidubce.com",
-    "https://docker.m.daocloud.io",
-    "https://docker.nju.edu.cn",
-    "https://docker.mirrors.sjtug.sjtu.edu.cn"
+    "https://docker.1panel.live"
   ]
 }
 EOF
@@ -101,44 +89,20 @@ EOF
           local tmp_file
           tmp_file=$(mktemp)
           jq '."registry-mirrors" = [
-            "https://docker.amingg.com",
-            "https://hub.amingg.com",
-            "https://hub.lvli.de",
-            "https://docker.mirrors.sjtug.sjtu.edu.cn",
+            "https://docker.1ms.run",
+            "https://dockerproxy.net",
             "https://docker.m.daocloud.io",
-            "https://docker.itelyou.cf",
-            "https://noohub.ru",
-            "https://docker.fxxk.dedyn.io",
-            "https://huecker.io",
-            "https://dockerhub.timeweb.cloud",
-            "https://registry.cn-hangzhou.aliyuncs.com",
-            "https://dockerproxy.com",
-            "https://mirror.baidubce.com",
-            "https://docker.m.daocloud.io",
-            "https://docker.nju.edu.cn",
-            "https://docker.mirrors.sjtug.sjtu.edu.cn"
+            "https://docker.1panel.live"
           ]' "$daemon_json" > "$tmp_file" && mv "$tmp_file" "$daemon_json"
         else
           cp "$daemon_json" "$daemon_json.bak" 2>/dev/null || true
           cat > "$daemon_json" <<EOF
 {
   "registry-mirrors": [
-    "https://docker.amingg.com",
-    "https://hub.amingg.com",
-    "https://hub.lvli.de",
-    "https://docker.mirrors.sjtug.sjtu.edu.cn",
+    "https://docker.1ms.run",
+    "https://dockerproxy.net",
     "https://docker.m.daocloud.io",
-    "https://docker.itelyou.cf",
-    "https://noohub.ru",
-    "https://docker.fxxk.dedyn.io",
-    "https://huecker.io",
-    "https://dockerhub.timeweb.cloud",
-    "https://registry.cn-hangzhou.aliyuncs.com",
-    "https://dockerproxy.com",
-    "https://mirror.baidubce.com",
-    "https://docker.m.daocloud.io",
-    "https://docker.nju.edu.cn",
-    "https://docker.mirrors.sjtug.sjtu.edu.cn"
+    "https://docker.1panel.live"
   ]
 }
 EOF
@@ -155,23 +119,7 @@ EOF
     if command_exists docker; then
       echo "Docker already installed"
     else
-      echo "Docker is not installed, attempting to install via system package manager..."
-      if command_exists apt-get; then
-        apt-get update
-        apt-get install -y docker.io
-      elif command_exists yum; then
-        yum install -y docker
-      elif command_exists dnf; then
-        dnf install -y docker
-      else
-        echo "Error: Unable to automatically install Docker (no supported package manager found). Please install Docker manually and re-run this script." >&2
-        exit 1
-      fi
-      if command_exists systemctl; then
-        systemctl enable --now docker || true
-      elif command_exists service; then
-        service docker start || true
-      fi
+      bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --designated-version 28.5.0 --ignore-backup-tips --pure-mode
     fi
 
     configure_tencent_mirror
