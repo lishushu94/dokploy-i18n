@@ -39,7 +39,7 @@ interface Props {
 
 export const EditTraefikEnv = ({ children, serverId }: Props) => {
 	const [canEdit, setCanEdit] = useState(true);
-	const { t } = useTranslation("common");
+	const { t } = useTranslation("settings");
 
 	const { data } = api.settings.readTraefikEnv.useQuery({
 		serverId,
@@ -70,7 +70,9 @@ export const EditTraefikEnv = ({ children, serverId }: Props) => {
 			serverId,
 		})
 			.then(async () => {
-				toast.success(t("settings.server.webServer.traefik.env.update.success"));
+				toast.success(
+					t("settings.server.webServer.traefik.env.update.success"),
+				);
 			})
 			.catch(() => {
 				toast.error(t("settings.server.webServer.traefik.env.update.error"));

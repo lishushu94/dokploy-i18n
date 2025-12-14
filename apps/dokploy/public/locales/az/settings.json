@@ -54,9 +54,9 @@
     "settings.server.webServer.update.checkingButton": "Yeniləmələr yoxlanılır",
     "settings.server.webServer.update.buttonAvailable": "Yeniləmə Mövcuddur",
     "settings.server.webServer.update.autoCheckLabel": "Yeni yeniləmələri avtomatik yoxla",
-    "settings.server.webServer.updateSource.button": "Yeniləmə mənbəsi",
-    "settings.server.webServer.updateSource.urlLabel": "Yeniləmə mənbəsi URL",
-    "settings.server.webServer.updateSource.description": "Docker Hub istifadə etmək üçün boş buraxın.",
+    "settings.server.webServer.updateSource.button": "Yeniləmə yoxlama ünvanı",
+    "settings.server.webServer.updateSource.urlLabel": "Yeniləmə yoxlama ünvanı",
+    "settings.server.webServer.updateSource.description": "Dokploy şəkilləri üçün yeniləmə teqlərini əldə etmək üçün istifadə olunur (Docker Hub tags API). Şəbəkə məhdudiyyətlərini sürətləndirmək və ya döngə etmək üçün tərs proxy ünvanı daxil edə bilərsiniz. Docker Hub istifadə etmək üçün boş buraxın.",
     "settings.server.webServer.updateSource.clear": "Təmizlə",
     "settings.server.webServer.updateSource.saved": "Yadda saxlanıldı",
     "settings.server.webServer.updateSource.cleared": "Təmizləndi",
@@ -1247,5 +1247,11 @@
     "settings.gitProviders.github.edit.testButton": "Bağlantını sına",
     "settings.gitProviders.github.edit.updateButton": "Yenilə",
     "settings.gitProviders.github.edit.toast.success": "GitHub təchizatçısı uğurla yeniləndi",
-    "settings.gitProviders.github.edit.toast.error": "GitHub təchizatçısı yenilənərkən xəta"
+    "settings.gitProviders.github.edit.toast.error": "GitHub təchizatçısı yenilənərkən xəta",
+    "settings.invitations.status.pending": "Gözləyir",
+    "settings.invitations.status.accepted": "Qəbul edildi",
+    "settings.invitations.status.canceled": "Ləğv edildi",
+    "settings.invitations.role.owner": "Sahib",
+    "settings.invitations.role.admin": "İdarəçi",
+    "settings.invitations.role.member": "Üzv"
 }

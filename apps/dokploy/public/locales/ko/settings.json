@@ -54,9 +54,9 @@
     "settings.server.webServer.update.checkingButton": "업데이트 확인 중",
     "settings.server.webServer.update.buttonAvailable": "업데이트 사용 가능",
     "settings.server.webServer.update.autoCheckLabel": "새 업데이트 자동 확인",
-    "settings.server.webServer.updateSource.button": "업데이트 소스",
-    "settings.server.webServer.updateSource.urlLabel": "업데이트 소스 URL",
-    "settings.server.webServer.updateSource.description": "비워두면 Docker Hub를 사용합니다.",
+    "settings.server.webServer.updateSource.button": "업데이트 확인 주소",
+    "settings.server.webServer.updateSource.urlLabel": "업데이트 확인 주소",
+    "settings.server.webServer.updateSource.description": "Dokploy 이미지의 업데이트 태그를 가져오는 데 사용됩니다 (Docker Hub tags API). 네트워크 제한을 가속화하거나 우회하기 위해 리버스 프록시 주소를 입력할 수 있습니다. 비워두면 Docker Hub를 사용합니다.",
     "settings.server.webServer.updateSource.clear": "지우기",
     "settings.server.webServer.updateSource.saved": "저장됨",
     "settings.server.webServer.updateSource.cleared": "지워짐",
@@ -1247,5 +1247,11 @@
     "settings.gitProviders.github.edit.testButton": "연결 테스트",
     "settings.gitProviders.github.edit.updateButton": "업데이트",
     "settings.gitProviders.github.edit.toast.success": "GitHub 제공자가 성공적으로 업데이트되었습니다.",
-    "settings.gitProviders.github.edit.toast.error": "GitHub 제공자 업데이트 중 오류가 발생했습니다."
+    "settings.gitProviders.github.edit.toast.error": "GitHub 제공자 업데이트 중 오류가 발생했습니다.",
+    "settings.invitations.status.pending": "대기 중",
+    "settings.invitations.status.accepted": "수락됨",
+    "settings.invitations.status.canceled": "취소됨",
+    "settings.invitations.role.owner": "소유자",
+    "settings.invitations.role.admin": "관리자",
+    "settings.invitations.role.member": "멤버"
 }

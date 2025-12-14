@@ -54,9 +54,9 @@
     "settings.server.webServer.update.checkingButton": "در حال بررسی به‌روزرسانی‌ها",
     "settings.server.webServer.update.buttonAvailable": "به‌روزرسانی در دسترس است",
     "settings.server.webServer.update.autoCheckLabel": "بررسی خودکار به‌روزرسانی‌های جدید",
-    "settings.server.webServer.updateSource.button": "منبع به‌روزرسانی",
-    "settings.server.webServer.updateSource.urlLabel": "URL منبع به‌روزرسانی",
-    "settings.server.webServer.updateSource.description": "برای استفاده از Docker Hub خالی بگذارید.",
+    "settings.server.webServer.updateSource.button": "آدرس بررسی به‌روزرسانی",
+    "settings.server.webServer.updateSource.urlLabel": "آدرس بررسی به‌روزرسانی",
+    "settings.server.webServer.updateSource.description": "برای دریافت تگ‌های به‌روزرسانی تصاویر Dokploy استفاده می‌شود (Docker Hub tags API). می‌توانید آدرس پروکسی معکوس را برای تسریع یا دور زدن محدودیت‌های شبکه وارد کنید. برای استفاده از Docker Hub خالی بگذارید.",
     "settings.server.webServer.updateSource.clear": "پاک کردن",
     "settings.server.webServer.updateSource.saved": "ذخیره شد",
     "settings.server.webServer.updateSource.cleared": "پاک شد",
@@ -1247,5 +1247,11 @@
     "settings.gitProviders.github.edit.testButton": "آزمایش اتصال",
     "settings.gitProviders.github.edit.updateButton": "به‌روزرسانی",
     "settings.gitProviders.github.edit.toast.success": "ارائه‌دهنده GitHub با موفقیت به‌روزرسانی شد",
-    "settings.gitProviders.github.edit.toast.error": "در هنگام به‌روزرسانی ارائه‌دهنده GitHub خطایی رخ داد"
+    "settings.gitProviders.github.edit.toast.error": "در هنگام به‌روزرسانی ارائه‌دهنده GitHub خطایی رخ داد",
+    "settings.invitations.status.pending": "در انتظار",
+    "settings.invitations.status.accepted": "پذیرفته شده",
+    "settings.invitations.status.canceled": "لغو شده",
+    "settings.invitations.role.owner": "مالک",
+    "settings.invitations.role.admin": "مدیر",
+    "settings.invitations.role.member": "عضو"
 }

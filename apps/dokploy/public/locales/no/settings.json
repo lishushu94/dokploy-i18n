@@ -54,9 +54,9 @@
     "settings.server.webServer.update.checkingButton": "Sjekker etter oppdateringer",
     "settings.server.webServer.update.buttonAvailable": "Oppdatering tilgjengelig",
     "settings.server.webServer.update.autoCheckLabel": "Søk automatisk etter nye oppdateringer",
-    "settings.server.webServer.updateSource.button": "Oppdateringskilde",
-    "settings.server.webServer.updateSource.urlLabel": "Oppdateringskilde URL",
-    "settings.server.webServer.updateSource.description": "La stå tomt for å bruke Docker Hub.",
+    "settings.server.webServer.updateSource.button": "Oppdateringssjekkadresse",
+    "settings.server.webServer.updateSource.urlLabel": "Oppdateringssjekkadresse",
+    "settings.server.webServer.updateSource.description": "Brukes til å hente oppdateringstagger for Dokploy-bilder (Docker Hub tags API). Du kan angi en omvendt proxy-adresse for å akselerere eller omgå nettverksbegrensninger. La stå tomt for å bruke Docker Hub.",
     "settings.server.webServer.updateSource.clear": "Tøm",
     "settings.server.webServer.updateSource.saved": "Lagret",
     "settings.server.webServer.updateSource.cleared": "Tømt",
@@ -1247,5 +1247,11 @@
     "settings.gitProviders.github.edit.testButton": "Test tilkobling",
     "settings.gitProviders.github.edit.updateButton": "Oppdater",
     "settings.gitProviders.github.edit.toast.success": "GitHub-leverandør oppdatert",
-    "settings.gitProviders.github.edit.toast.error": "Feil ved oppdatering av GitHub-leverandør"
+    "settings.gitProviders.github.edit.toast.error": "Feil ved oppdatering av GitHub-leverandør",
+    "settings.invitations.status.pending": "Venter",
+    "settings.invitations.status.accepted": "Akseptert",
+    "settings.invitations.status.canceled": "Avbrutt",
+    "settings.invitations.role.owner": "Eier",
+    "settings.invitations.role.admin": "Administrator",
+    "settings.invitations.role.member": "Medlem"
 }

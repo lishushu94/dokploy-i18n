@@ -54,9 +54,9 @@
     "settings.server.webServer.update.checkingButton": "アップデートを確認中",
     "settings.server.webServer.update.buttonAvailable": "アップデートが利用可能",
     "settings.server.webServer.update.autoCheckLabel": "新しいアップデートを自動的に確認",
-    "settings.server.webServer.updateSource.button": "更新ソース",
-    "settings.server.webServer.updateSource.urlLabel": "更新ソース URL",
-    "settings.server.webServer.updateSource.description": "空欄のままにすると Docker Hub を使用します。",
+    "settings.server.webServer.updateSource.button": "更新チェックアドレス",
+    "settings.server.webServer.updateSource.urlLabel": "更新チェックアドレス",
+    "settings.server.webServer.updateSource.description": "Dokploy イメージの更新タグを取得するために使用されます（Docker Hub tags API）。ネットワーク制限を加速または回避するためにリバースプロキシアドレスを入力できます。空欄のままにすると Docker Hub を使用します。",
     "settings.server.webServer.updateSource.clear": "クリア",
     "settings.server.webServer.updateSource.saved": "保存しました",
     "settings.server.webServer.updateSource.cleared": "クリアしました",
@@ -1247,5 +1247,11 @@
     "settings.gitProviders.github.edit.testButton": "接続をテスト",
     "settings.gitProviders.github.edit.updateButton": "更新",
     "settings.gitProviders.github.edit.toast.success": "GitHubプロバイダーが正常に更新されました。",
-    "settings.gitProviders.github.edit.toast.error": "GitHubプロバイダーの更新中にエラーが発生しました。"
+    "settings.gitProviders.github.edit.toast.error": "GitHubプロバイダーの更新中にエラーが発生しました。",
+    "settings.invitations.status.pending": "保留中",
+    "settings.invitations.status.accepted": "承認済み",
+    "settings.invitations.status.canceled": "キャンセル済み",
+    "settings.invitations.role.owner": "所有者",
+    "settings.invitations.role.admin": "管理者",
+    "settings.invitations.role.member": "メンバー"
 }

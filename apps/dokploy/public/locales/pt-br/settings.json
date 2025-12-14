@@ -54,9 +54,9 @@
     "settings.server.webServer.update.checkingButton": "Verificando atualizações",
     "settings.server.webServer.update.buttonAvailable": "Atualização disponível",
     "settings.server.webServer.update.autoCheckLabel": "Verificar automaticamente novas atualizações",
-    "settings.server.webServer.updateSource.button": "Fonte de atualização",
-    "settings.server.webServer.updateSource.urlLabel": "URL da fonte de atualização",
-    "settings.server.webServer.updateSource.description": "Deixe vazio para usar Docker Hub.",
+    "settings.server.webServer.updateSource.button": "Endereço de verificação de atualização",
+    "settings.server.webServer.updateSource.urlLabel": "Endereço de verificação de atualização",
+    "settings.server.webServer.updateSource.description": "Usado para buscar tags de atualização para imagens Dokploy (Docker Hub tags API). Você pode inserir um endereço de proxy reverso para acelerar ou contornar restrições de rede. Deixe vazio para usar Docker Hub.",
     "settings.server.webServer.updateSource.clear": "Limpar",
     "settings.server.webServer.updateSource.saved": "Salvo",
     "settings.server.webServer.updateSource.cleared": "Limpo",
@@ -1247,5 +1247,11 @@
     "settings.gitProviders.github.edit.testButton": "Testar conexão",
     "settings.gitProviders.github.edit.updateButton": "Atualizar",
     "settings.gitProviders.github.edit.toast.success": "Provedor GitHub atualizado com sucesso",
-    "settings.gitProviders.github.edit.toast.error": "Erro ao atualizar provedor GitHub"
+    "settings.gitProviders.github.edit.toast.error": "Erro ao atualizar provedor GitHub",
+    "settings.invitations.status.pending": "Pendente",
+    "settings.invitations.status.accepted": "Aceito",
+    "settings.invitations.status.canceled": "Cancelado",
+    "settings.invitations.role.owner": "Proprietário",
+    "settings.invitations.role.admin": "Administrador",
+    "settings.invitations.role.member": "Membro"
 }

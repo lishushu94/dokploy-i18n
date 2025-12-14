@@ -54,9 +54,9 @@
     "settings.server.webServer.update.checkingButton": "Жаңартуларды тексеру",
     "settings.server.webServer.update.buttonAvailable": "Жаңарту қолжетімді",
     "settings.server.webServer.update.autoCheckLabel": "Жаңа жаңартуларды автоматты түрде тексеру",
-    "settings.server.webServer.updateSource.button": "Жаңарту көзі",
-    "settings.server.webServer.updateSource.urlLabel": "Жаңарту көзі URL",
-    "settings.server.webServer.updateSource.description": "Docker Hub пайдалану үшін бос қалдырыңыз.",
+    "settings.server.webServer.updateSource.button": "Жаңарту тексеру мекенжайы",
+    "settings.server.webServer.updateSource.urlLabel": "Жаңарту тексеру мекенжайы",
+    "settings.server.webServer.updateSource.description": "Dokploy бейнелері үшін жаңарту тегтерін алу үшін пайдаланылады (Docker Hub tags API). Желі шектеулерін жеделдету немесе айналып өту үшін кері прокси мекенжайын енгізе аласыз. Docker Hub пайдалану үшін бос қалдырыңыз.",
     "settings.server.webServer.updateSource.clear": "Тазалау",
     "settings.server.webServer.updateSource.saved": "Сақталды",
     "settings.server.webServer.updateSource.cleared": "Тазаланды",
@@ -1247,5 +1247,11 @@
     "settings.gitProviders.github.edit.testButton": "Қосылуды тексеру",
     "settings.gitProviders.github.edit.updateButton": "Жаңарту",
     "settings.gitProviders.github.edit.toast.success": "GitHub провайдері сәтті жаңартылды",
-    "settings.gitProviders.github.edit.toast.error": "GitHub провайдерін жаңарту кезінде қате"
+    "settings.gitProviders.github.edit.toast.error": "GitHub провайдерін жаңарту кезінде қате",
+    "settings.invitations.status.pending": "Күтуде",
+    "settings.invitations.status.accepted": "Қабылданды",
+    "settings.invitations.status.canceled": "Бас тартылды",
+    "settings.invitations.role.owner": "Иесі",
+    "settings.invitations.role.admin": "Әкімші",
+    "settings.invitations.role.member": "Мүше"
 }
