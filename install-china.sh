@@ -119,7 +119,23 @@ EOF
     if command_exists docker; then
       echo "Docker already installed"
     else
-      bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --source docker.1ms.run/docker-ce --protocol https --use-intranet-source false --designated-version 28.5.0 --ignore-backup-tips --pure-mode
+      docker_ce_source="${DOCKER_CE_SOURCE:-mirrors.aliyun.com/docker-ce}"
+      docker_ce_codename="${DOCKER_CE_CODENAME:-}"
+      if [ -z "$docker_ce_codename" ] && [ -r /etc/os-release ]; then
+        . /etc/os-release
+        if [ "${ID:-}" = "debian" ] && [ "${VERSION_CODENAME:-}" = "trixie" ]; then
+          docker_ce_codename="bookworm"
+        fi
+      fi
+      if [ -n "$docker_ce_codename" ]; then
+        bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --source "$docker_ce_source" --protocol https --use-intranet-source false --codename "$docker_ce_codename" --designated-version 28.5.0 --ignore-backup-tips --pure-mode
+      else
+        bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --source "$docker_ce_source" --protocol https --use-intranet-source false --designated-version 28.5.0 --ignore-backup-tips --pure-mode
+      fi
+      if ! command_exists docker; then
+        echo "Error: Docker installation failed" >&2
+        exit 1
+      fi
     fi
 
     configure_tencent_mirror
