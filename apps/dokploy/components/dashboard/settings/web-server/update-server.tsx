@@ -148,7 +148,7 @@ export const UpdateServer = ({
 			<DialogContent className="max-w-lg">
 				<div className="flex items-center justify-between mb-8">
 					<DialogTitle className="text-2xl font-semibold">
-						{t("settings.server.webServer.update.dialogTitle")}
+						{t("server.webServer.update.dialogTitle", { ns: "settings" })}
 					</DialogTitle>
 					{dokployVersion && (
 						<div className="flex items-center gap-1.5 rounded-full px-3 py-1 mr-2 bg-muted">
