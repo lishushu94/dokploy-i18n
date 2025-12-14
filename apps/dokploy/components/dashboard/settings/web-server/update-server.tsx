@@ -46,7 +46,7 @@ export const UpdateServer = ({
 	isOpen: isOpenProp,
 	onOpenChange: onOpenChangeProp,
 }: Props) => {
-	const { t } = useTranslation(["settings", "common"]);
+	const { t } = useTranslation("settings");
 	const [hasCheckedUpdate, setHasCheckedUpdate] = useState(!!updateData);
 	const [isUpdateAvailable, setIsUpdateAvailable] = useState(
 		!!updateData?.updateAvailable,
@@ -71,22 +71,16 @@ export const UpdateServer = ({
 
 			if (updateData.updateAvailable) {
 				toast.success(versionToUpdate, {
-					description: t(
-						"settings.server.webServer.update.toast.newVersion",
-					),
+					description: t("settings.server.webServer.update.toast.newVersion"),
 				});
 			} else {
-				toast.info(
-					t("settings.server.webServer.update.toast.noUpdates"),
-				);
+				toast.info(t("settings.server.webServer.update.toast.noUpdates"));
 			}
 		} catch (error) {
 			console.error("Error checking for updates:", error);
 			setHasCheckedUpdate(true);
 			setIsUpdateAvailable(false);
-			toast.error(
-				 t("settings.server.webServer.update.toast.error"),
-			);
+			toast.error(t("settings.server.webServer.update.toast.error"));
 		}
 	};
 
@@ -113,15 +107,11 @@ export const UpdateServer = ({
 									<Download className="h-4 w-4 flex-shrink-0" />
 									{updateData ? (
 										<span className="font-medium truncate group-data-[collapsible=icon]:hidden">
-											{t(
-												"settings.server.webServer.update.buttonAvailable",
-											)}
+											{t("settings.server.webServer.update.buttonAvailable")}
 										</span>
 									) : (
 										<span className="font-medium truncate group-data-[collapsible=icon]:hidden">
-											{t(
-												"settings.server.webServer.update.checkButton",
-											)}
+											{t("settings.server.webServer.update.checkButton")}
 										</span>
 									)}
 									{updateData && (
@@ -134,11 +124,7 @@ export const UpdateServer = ({
 							</TooltipTrigger>
 							{updateData && (
 								<TooltipContent side="right" sideOffset={10}>
-									<p>
-										{t(
-											"settings.server.webServer.update.buttonAvailable",
-										)}
-									</p>
+									<p>{t("settings.server.webServer.update.buttonAvailable")}</p>
 								</TooltipContent>
 							)}
 						</Tooltip>
@@ -148,7 +134,7 @@ export const UpdateServer = ({
 			<DialogContent className="max-w-lg">
 				<div className="flex items-center justify-between mb-8">
 					<DialogTitle className="text-2xl font-semibold">
-						{t("server.webServer.update.dialogTitle", { ns: "settings" })}
+						{t("settings.server.webServer.update.dialogTitle")}
 					</DialogTitle>
 					{dokployVersion && (
 						<div className="flex items-center gap-1.5 rounded-full px-3 py-1 mr-2 bg-muted">
@@ -164,14 +150,10 @@ export const UpdateServer = ({
 				{!hasCheckedUpdate && (
 					<div className="mb-8">
 						<p className="text text-muted-foreground">
-							{t(
-								"settings.server.webServer.update.initialDescriptionLine1",
-							)}
+							{t("settings.server.webServer.update.initialDescriptionLine1")}
 							<br />
 							<br />
-							{t(
-								"settings.server.webServer.update.initialDescriptionLine2",
-							)}
+							{t("settings.server.webServer.update.initialDescriptionLine2")}
 						</p>
 					</div>
 				)}
@@ -183,9 +165,7 @@ export const UpdateServer = ({
 							<div className="flex items-center gap-1.5">
 								<Download className="h-4 w-4 text-emerald-400" />
 								<span className="text font-medium text-emerald-400 ">
-									{t(
-										"settings.server.webServer.update.newVersionLabel",
-									)}
+									{t("settings.server.webServer.update.newVersionLabel")}
 								</span>
 							</div>
 							<span className="text font-semibold text-emerald-300">
@@ -195,25 +175,19 @@ export const UpdateServer = ({
 
 						<div className="space-y-4 text-muted-foreground">
 							<p className="text">
-								{t(
-									"settings.server.webServer.update.newVersionDescription",
-								)}
+								{t("settings.server.webServer.update.newVersionDescription")}
 							</p>
 							<ul className="space-y-3">
 								<li className="flex items-start gap-2">
 									<Stars className="h-5 w-5 mt-0.5 text-[#5B9DFF]" />
 									<span className="text">
-										{t(
-											"settings.server.webServer.update.reason.features",
-										)}
+										{t("settings.server.webServer.update.reason.features")}
 									</span>
 								</li>
 								<li className="flex items-start gap-2">
 									<Bug className="h-5 w-5 mt-0.5 text-[#5B9DFF]" />
 									<span className="text">
-										{t(
-											"settings.server.webServer.update.reason.bugfixes",
-										)}
+										{t("settings.server.webServer.update.reason.bugfixes")}
 									</span>
 								</li>
 							</ul>
@@ -230,9 +204,7 @@ export const UpdateServer = ({
 							</div>
 							<div className="text-center space-y-2">
 								<h3 className="text-lg font-medium">
-									{t(
-										"settings.server.webServer.update.latestVersionTitle",
-									)}
+									{t("settings.server.webServer.update.latestVersionTitle")}
 								</h3>
 								<p className="text text-muted-foreground">
 									{t(
@@ -252,14 +224,10 @@ export const UpdateServer = ({
 							</div>
 							<div className="text-center space-y-2">
 								<h3 className="text-lg font-medium">
-									{t(
-										"settings.server.webServer.update.checkingTitle",
-									)}
+									{t("settings.server.webServer.update.checkingTitle")}
 								</h3>
 								<p className="text text-muted-foreground">
-									{t(
-										"settings.server.webServer.update.checkingDescription",
-									)}
+									{t("settings.server.webServer.update.checkingDescription")}
 								</p>
 							</div>
 						</div>
@@ -271,17 +239,13 @@ export const UpdateServer = ({
 						<div className="flex gap-2">
 							<Info className="h-5 w-5 flex-shrink-0 text-[#5B9DFF]" />
 							<div className="text-[#5B9DFF]">
-								{t(
-									"settings.server.webServer.update.releaseNotes",
-								)}
+								{t("settings.server.webServer.update.releaseNotes")}
 								<Link
 									href="https://github.com/Dokploy/dokploy/releases"
 									target="_blank"
 									className="text-white underline hover:text-zinc-200"
 								>
-									{t(
-										"settings.server.webServer.update.releaseNotesLink",
-									)}
+									{t("settings.server.webServer.update.releaseNotesLink")}
 								</Link>
 							</div>
 						</div>
@@ -309,16 +273,12 @@ export const UpdateServer = ({
 								{isLoading ? (
 									<>
 										<RefreshCcw className="h-4 w-4 animate-spin" />
-										{t(
-											"settings.server.webServer.update.checkingButton",
-										)}
+										{t("settings.server.webServer.update.checkingButton")}
 									</>
 								) : (
 									<>
 										<RefreshCcw className="h-4 w-4" />
-										{t(
-											"settings.server.webServer.update.checkButton",
-										)}
+										{t("settings.server.webServer.update.checkButton")}
 									</>
 								)}
 							</Button>
