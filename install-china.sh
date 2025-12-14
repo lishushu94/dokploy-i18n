@@ -119,7 +119,7 @@ EOF
     if command_exists docker; then
       echo "Docker already installed"
     else
-      bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --designated-version 28.5.0 --ignore-backup-tips --pure-mode
+      bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --source docker.1ms.run/docker-ce --protocol https --use-intranet-source false --designated-version 28.5.0 --ignore-backup-tips --pure-mode
     fi
 
     configure_tencent_mirror
