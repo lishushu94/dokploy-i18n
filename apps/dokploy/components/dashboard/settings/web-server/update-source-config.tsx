@@ -52,14 +52,14 @@ export const UpdateSourceConfig = ({
 
 	const handleSave = () => {
 		writeUpdateTagsUrlToStorage(value);
-		toast.success("Saved");
+		toast.success(t("settings.server.webServer.updateSource.saved"));
 		setOpen(false);
 	};
 
 	const handleClear = () => {
 		writeUpdateTagsUrlToStorage(null);
 		setValue("");
-		toast.success("Cleared");
+		toast.success(t("settings.server.webServer.updateSource.cleared"));
 	};
 
 	return (
@@ -67,13 +67,13 @@ export const UpdateSourceConfig = ({
 			<PopoverTrigger asChild>
 				<Button variant="outline" size="sm" disabled={disabled}>
 					<Settings2 className="h-4 w-4" />
-					<span>Update source</span>
+					<span>{t("settings.server.webServer.updateSource.button")}</span>
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent align="end" className="w-[420px]">
 				<div className="space-y-3">
 					<div className="space-y-1">
-						<Label htmlFor="updateTagsUrl">Update source URL</Label>
+						<Label htmlFor="updateTagsUrl">{t("settings.server.webServer.updateSource.urlLabel")}</Label>
 						<Input
 							id="updateTagsUrl"
 							value={value}
@@ -83,7 +83,7 @@ export const UpdateSourceConfig = ({
 							disabled={disabled}
 						/>
 						<div className="text-xs text-muted-foreground">
-							Leave empty to use Docker Hub.
+							{t("settings.server.webServer.updateSource.description")}
 						</div>
 					</div>
 					<div className="flex items-center justify-between gap-2">
@@ -95,7 +95,7 @@ export const UpdateSourceConfig = ({
 							disabled={disabled}
 						>
 							<Trash2 className="h-4 w-4" />
-							<span>Clear</span>
+							<span>{t("settings.server.webServer.updateSource.clear")}</span>
 						</Button>
 						<div className="flex items-center gap-2">
 							<Button
