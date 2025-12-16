@@ -132,6 +132,10 @@ EOF
       else
         bash <(curl -sSL https://linuxmirrors.cn/docker.sh) --source "$docker_ce_source" --protocol https --use-intranet-source false --designated-version 28.5.0 --ignore-backup-tips --pure-mode
       fi
+      
+      
+      
+      
       if ! command_exists docker; then
         echo "Error: Docker installation failed" >&2
         exit 1
