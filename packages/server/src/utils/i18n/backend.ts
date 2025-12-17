@@ -525,3 +525,11 @@ export const getDokployRestartEmailContent = (params: {
 	};
 };
 
+export const getDeploymentCommitDescription = (hash: string, locale?: BackendLocale): string => {
+	const currentLocale = locale ?? getBackendLocale();
+	if (currentLocale === "zh-Hans") {
+		return `提交：${hash}`;
+	}
+	return `Commit: ${hash}`;
+};
+

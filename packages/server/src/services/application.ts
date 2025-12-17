@@ -267,9 +267,12 @@ export const deployApplication = async ({
 			const commitInfo = await getGitCommitInfo(application);
 
 			if (commitInfo) {
+				const { getDeploymentCommitDescription } = await import(
+					"../utils/i18n/backend"
+				);
 				await updateDeployment(deployment.deploymentId, {
 					title: commitInfo.message,
-					description: `Commit: ${commitInfo.hash}`,
+					description: getDeploymentCommitDescription(commitInfo.hash),
 				});
 			}
 		}
