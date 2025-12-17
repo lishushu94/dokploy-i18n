@@ -1253,6 +1253,8 @@
 	"settings.gitProviders.github.edit.updateButton": "Жаңарту",
 	"settings.gitProviders.github.edit.toast.success": "GitHub провайдері сәтті жаңартылды",
 	"settings.gitProviders.github.edit.toast.error": "GitHub провайдерін жаңарту кезінде қате",
+	"settings.gitProviders.github.edit.toast.testSuccessMessage": "GitHub қосылу тесті сәтті: {{message}}",
+	"settings.gitProviders.github.edit.toast.testErrorMessage": "GitHub қосылу тесті сәтсіз: {{error}}",
 	"settings.invitations.status.pending": "Күтуде",
 	"settings.invitations.status.accepted": "Қабылданды",
 	"settings.invitations.status.canceled": "Бас тартылды",

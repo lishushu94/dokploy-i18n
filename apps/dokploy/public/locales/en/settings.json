@@ -74,6 +74,11 @@
 	"settings.server.webServer.redis.reload": "Reload Redis",
 	"settings.server.webServer.traefik.label": "Traefik",
 	"settings.server.webServer.traefik.modifyEnv": "Modify Environment",
+	"settings.server.webServer.traefik.env.title": "Modify Traefik Environment Variables",
+	"settings.server.webServer.traefik.env.description": "Modify the environment variable configuration for the Traefik container.",
+	"settings.server.webServer.traefik.env.label": "Environment Variables (Key-Value Pairs)",
+	"settings.server.webServer.traefik.env.update.success": "Traefik environment variables updated successfully",
+	"settings.server.webServer.traefik.env.update.error": "Error updating Traefik environment variables",
 	"settings.server.webServer.traefik.reloaded": "Traefik reloaded successfully",
 	"settings.server.webServer.traefik.dashboardDisabled": "Traefik dashboard disabled",
 	"settings.server.webServer.traefik.dashboardEnabled": "Traefik dashboard enabled",
@@ -1253,5 +1258,7 @@
 	"settings.gitProviders.github.edit.testButton": "Test Connection",
 	"settings.gitProviders.github.edit.updateButton": "Update",
 	"settings.gitProviders.github.edit.toast.success": "GitHub provider updated successfully.",
-	"settings.gitProviders.github.edit.toast.error": "An error occurred while updating the GitHub provider."
+	"settings.gitProviders.github.edit.toast.error": "An error occurred while updating the GitHub provider.",
+	"settings.gitProviders.github.edit.toast.testSuccessMessage": "GitHub connection test successful: {{message}}",
+	"settings.gitProviders.github.edit.toast.testErrorMessage": "GitHub connection test failed: {{error}}"
 }

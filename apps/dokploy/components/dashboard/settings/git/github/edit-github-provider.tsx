@@ -83,7 +83,9 @@ export const EditGithubProvider = ({ githubId }: Props) => {
 		})
 			.then(async () => {
 				await utils.gitProvider.getAll.invalidate();
-				toast.success(t("settings.gitProviders.github.edit.toast.updatedSuccess"));
+				toast.success(
+					t("settings.gitProviders.github.edit.toast.updatedSuccess"),
+				);
 				setIsOpen(false);
 			})
 			.catch(() => {
@@ -105,7 +107,8 @@ export const EditGithubProvider = ({ githubId }: Props) => {
 			<DialogContent className="sm:max-w-2xl ">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						{t("settings.gitProviders.github.edit.title")} <GithubIcon className="size-5" />
+						{t("settings.gitProviders.github.edit.title")}{" "}
+						<GithubIcon className="size-5" />
 					</DialogTitle>
 				</DialogHeader>
 
@@ -169,10 +172,20 @@ export const EditGithubProvider = ({ githubId }: Props) => {
 												githubId,
 											})
 												.then(async (message) => {
-													toast.info(t("settings.gitProviders.github.edit.testSuccessMessage", { message }));
+													toast.info(
+														t(
+															"settings.gitProviders.github.edit.toast.testSuccessMessage",
+															{ message },
+														),
+													);
 												})
 												.catch((error) => {
-													toast.error(t("settings.gitProviders.github.edit.testErrorMessage", { error: error.message }));
+													toast.error(
+														t(
+															"settings.gitProviders.github.edit.toast.testErrorMessage",
+															{ error: error.message },
+														),
+													);
 												});
 										}}
 									>

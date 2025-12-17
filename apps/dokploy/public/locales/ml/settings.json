@@ -1253,6 +1253,8 @@
 	"settings.gitProviders.github.edit.updateButton": "അപ്‌ഡേറ്റ് ചെയ്യുക",
 	"settings.gitProviders.github.edit.toast.success": "GitHub പ്രൊവൈഡർ വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു",
 	"settings.gitProviders.github.edit.toast.error": "GitHub പ്രൊവൈഡർ അപ്‌ഡേറ്റ് ചെയ്യുന്നതിൽ പിശക്",
+	"settings.gitProviders.github.edit.toast.testSuccessMessage": "GitHub കണക്ഷൻ പരിശോധന വിജയകരമാണ്: {{message}}",
+	"settings.gitProviders.github.edit.toast.testErrorMessage": "GitHub കണക്ഷൻ പരിശോധന പരാജയപ്പെട്ടു: {{error}}",
 	"settings.invitations.status.pending": "തീർച്ചപ്പെടുത്താത്തത്",
 	"settings.invitations.status.accepted": "സ്വീകരിച്ചു",
 	"settings.invitations.status.canceled": "റദ്ദാക്കി",

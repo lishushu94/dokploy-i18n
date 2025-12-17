@@ -1253,6 +1253,8 @@
 	"settings.gitProviders.github.edit.updateButton": "Perbarui",
 	"settings.gitProviders.github.edit.toast.success": "Penyedia GitHub berhasil diperbarui.",
 	"settings.gitProviders.github.edit.toast.error": "Terjadi kesalahan saat memperbarui penyedia GitHub.",
+	"settings.gitProviders.github.edit.toast.testSuccessMessage": "Uji koneksi GitHub berhasil: {{message}}",
+	"settings.gitProviders.github.edit.toast.testErrorMessage": "Uji koneksi GitHub gagal: {{error}}",
 	"settings.invitations.status.pending": "Menunggu",
 	"settings.invitations.status.accepted": "Diterima",
 	"settings.invitations.status.canceled": "Dibatalkan",

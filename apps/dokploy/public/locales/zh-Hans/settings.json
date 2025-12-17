@@ -1258,5 +1258,7 @@
 	"settings.gitProviders.github.edit.testButton": "测试连接",
 	"settings.gitProviders.github.edit.updateButton": "更新",
 	"settings.gitProviders.github.edit.toast.success": "GitHub 提供商更新成功",
-	"settings.gitProviders.github.edit.toast.error": "更新 GitHub 提供商时发生错误"
+	"settings.gitProviders.github.edit.toast.error": "更新 GitHub 提供商时发生错误",
+	"settings.gitProviders.github.edit.toast.testSuccessMessage": "GitHub 连接测试成功：{{message}}",
+	"settings.gitProviders.github.edit.toast.testErrorMessage": "GitHub 连接测试失败：{{error}}"
 }

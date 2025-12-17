@@ -1253,6 +1253,8 @@
 	"settings.gitProviders.github.edit.updateButton": "Обновить",
 	"settings.gitProviders.github.edit.toast.success": "Провайдер GitHub обновлён",
 	"settings.gitProviders.github.edit.toast.error": "Ошибка обновления провайдера GitHub",
+	"settings.gitProviders.github.edit.toast.testSuccessMessage": "Тест подключения к GitHub успешен: {{message}}",
+	"settings.gitProviders.github.edit.toast.testErrorMessage": "Тест подключения к GitHub неудачен: {{error}}",
 	"settings.invitations.status.pending": "Ожидает",
 	"settings.invitations.status.accepted": "Принято",
 	"settings.invitations.status.canceled": "Отменено",
