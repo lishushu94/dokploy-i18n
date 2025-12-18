@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Модель обязательна",
 	"settings.ai.models.loading": "Загрузка моделей...",
 	"settings.ai.models.empty": "Модели недоступны",
+	"settings.ai.models.fetchError": "Ошибка получения моделей: {{error}}",
 	"settings.ai.models.notFound": "Модели не найдены.",
 	"settings.cluster.page.title": "Кластер",
 	"settings.cluster.page.description": "Добавьте узлы в кластер",

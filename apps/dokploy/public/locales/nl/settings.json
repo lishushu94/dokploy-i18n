@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Model is vereist",
 	"settings.ai.models.loading": "Modellen laden...",
 	"settings.ai.models.empty": "Geen modellen beschikbaar",
+	"settings.ai.models.fetchError": "Fout bij ophalen van modellen: {{error}}",
 	"settings.ai.models.notFound": "Geen modellen gevonden.",
 	"settings.cluster.page.title": "Cluster",
 	"settings.cluster.page.description": "Voeg nodes toe aan je cluster",

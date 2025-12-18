@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "മോഡൽ ആവശ്യമാണ്",
 	"settings.ai.models.loading": "മോഡലുകൾ ലോഡ് ചെയ്യുന്നു...",
 	"settings.ai.models.empty": "മോഡലുകൾ ലഭ്യമല്ല",
+	"settings.ai.models.fetchError": "മോഡലുകൾ എടുക്കുന്നതിൽ പിശക്: {{error}}",
 	"settings.ai.models.notFound": "മോഡലുകൾ കണ്ടെത്തിയില്ല.",
 	"settings.cluster.page.title": "ക്ലസ്റ്റർ",
 	"settings.cluster.page.description": "നിങ്ങളുടെ ക്ലസ്റ്ററിലേക്ക് നോഡുകൾ ചേർക്കുക",

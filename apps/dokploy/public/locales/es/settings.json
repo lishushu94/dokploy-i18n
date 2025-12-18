@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "El modelo es obligatorio",
 	"settings.ai.models.loading": "Cargando modelos...",
 	"settings.ai.models.empty": "No hay modelos disponibles",
+	"settings.ai.models.fetchError": "Error al obtener modelos: {{error}}",
 	"settings.ai.models.notFound": "No se encontraron modelos.",
 	"settings.cluster.page.title": "Clúster",
 	"settings.cluster.page.description": "Añade nodos a tu clúster",

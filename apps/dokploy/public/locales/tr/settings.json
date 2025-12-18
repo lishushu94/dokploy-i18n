@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Model zorunludur",
 	"settings.ai.models.loading": "Modeller yükleniyor...",
 	"settings.ai.models.empty": "Model bulunamadı",
+	"settings.ai.models.fetchError": "Modeller alınırken hata: {{error}}",
 	"settings.ai.models.notFound": "Hiç model bulunamadı.",
 	"settings.cluster.page.title": "Küme",
 	"settings.cluster.page.description": "Kümenize düğümler ekleyin",

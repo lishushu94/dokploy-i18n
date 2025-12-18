@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Model diperlukan",
 	"settings.ai.models.loading": "Memuat model...",
 	"settings.ai.models.empty": "Tidak ada model tersedia",
+	"settings.ai.models.fetchError": "Gagal mengambil model: {{error}}",
 	"settings.ai.models.notFound": "Tidak ada model ditemukan.",
 	"settings.cluster.page.title": "Cluster",
 	"settings.cluster.page.description": "Tambahkan node ke cluster Anda",

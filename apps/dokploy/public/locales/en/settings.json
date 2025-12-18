@@ -1127,6 +1127,7 @@
 	"settings.ai.validation.modelRequired": "Model is required",
 	"settings.ai.models.loading": "Loading models...",
 	"settings.ai.models.empty": "No models available",
+	"settings.ai.models.fetchError": "Failed to fetch models: {{error}}",
 	"settings.ai.models.notFound": "No models found.",
 	"settings.cluster.page.title": "Cluster",
 	"settings.cluster.page.description": "Add nodes to your cluster",

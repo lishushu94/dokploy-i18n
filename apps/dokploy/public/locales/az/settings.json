@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Model tələb olunur",
 	"settings.ai.models.loading": "Modellər yüklənir...",
 	"settings.ai.models.empty": "Mövcud model yoxdur",
+	"settings.ai.models.fetchError": "Modelləri almaqda xəta: {{error}}",
 	"settings.ai.models.notFound": "Model tapılmadı.",
 	"settings.cluster.page.title": "Klaster",
 	"settings.cluster.page.description": "Klasterinizə qovşaqlar əlavə edin",

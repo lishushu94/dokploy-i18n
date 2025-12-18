@@ -1,11 +1,11 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronDown, PenBoxIcon, PlusIcon } from "lucide-react";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useTranslation } from "next-i18next";
 import { AlertBlock } from "@/components/shared/alert-block";
 import { Button } from "@/components/ui/button";
 import {
@@ -128,7 +128,9 @@ export const HandleAi = ({ aiId }: Props) => {
 			{
 				enabled: !!apiUrl && (isOllama || !!apiKey),
 				onError: (error) => {
-					setError(`Failed to fetch models: ${error.message}`);
+					setError(
+						t("settings.ai.models.fetchError", { error: error.message }),
+					);
 				},
 			},
 		);
@@ -148,8 +150,8 @@ export const HandleAi = ({ aiId }: Props) => {
 			toast.error(t("settings.ai.toast.saveError"), {
 				description:
 					error instanceof Error
-							? error.message
-							: t("settings.ai.toast.unknownError"),
+						? error.message
+						: t("settings.ai.toast.unknownError"),
 			});
 		}
 	};
@@ -184,7 +186,9 @@ export const HandleAi = ({ aiId }: Props) => {
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>
-						{aiId ? t("settings.ai.form.editTitle") : t("settings.ai.form.addTitle")} 
+						{aiId
+							? t("settings.ai.form.editTitle")
+							: t("settings.ai.form.addTitle")}
 					</DialogTitle>
 					<DialogDescription>
 						{t("settings.ai.form.description")}
@@ -198,9 +202,7 @@ export const HandleAi = ({ aiId }: Props) => {
 							name="name"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>
-										{t("settings.ai.form.name.label")}
-									</FormLabel>
+									<FormLabel>{t("settings.ai.form.name.label")}</FormLabel>
 									<FormControl>
 										<Input
 											placeholder={t("settings.ai.form.name.placeholder")}
@@ -220,9 +222,7 @@ export const HandleAi = ({ aiId }: Props) => {
 							name="apiUrl"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>
-										{t("settings.ai.form.apiUrl.label")}
-									</FormLabel>
+									<FormLabel>{t("settings.ai.form.apiUrl.label")}</FormLabel>
 									<FormControl>
 										<Input
 											placeholder={t("settings.ai.form.apiUrl.placeholder")}
@@ -250,9 +250,7 @@ export const HandleAi = ({ aiId }: Props) => {
 								name="apiKey"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.ai.form.apiKey.label")}
-										</FormLabel>
+										<FormLabel>{t("settings.ai.form.apiKey.label")}</FormLabel>
 										<FormControl>
 											<Input
 												type="password"
@@ -311,9 +309,7 @@ export const HandleAi = ({ aiId }: Props) => {
 
 									return (
 										<FormItem>
-											<FormLabel>
-												{t("settings.ai.form.model.label")}
-											</FormLabel>
+											<FormLabel>{t("settings.ai.form.model.label")}</FormLabel>
 											<Popover
 												open={modelPopoverOpen}
 												onOpenChange={setModelPopoverOpen}
@@ -337,7 +333,9 @@ export const HandleAi = ({ aiId }: Props) => {
 												<PopoverContent className="w-[400px] p-0" align="start">
 													<Command>
 														<CommandInput
-															placeholder={t("settings.ai.form.model.searchPlaceholder")}
+															placeholder={t(
+																"settings.ai.form.model.searchPlaceholder",
+															)}
 															value={modelSearch}
 															onValueChange={setModelSearch}
 														/>
@@ -408,7 +406,9 @@ export const HandleAi = ({ aiId }: Props) => {
 
 						<div className="flex justify-end  gap-2 pt-4">
 							<Button type="submit" isLoading={isLoading}>
-								{aiId ? t("settings.common.update") : t("settings.common.create")}
+								{aiId
+									? t("settings.common.update")
+									: t("settings.common.create")}
 							</Button>
 						</div>
 					</form>

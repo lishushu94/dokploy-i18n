@@ -1127,6 +1127,7 @@
 	"settings.ai.validation.modelRequired": "必須選擇模型",
 	"settings.ai.models.loading": "正在載入模型...",
 	"settings.ai.models.empty": "沒有可用的模型",
+	"settings.ai.models.fetchError": "獲取模型失敗：{{error}}",
 	"settings.ai.models.notFound": "找不到模型。",
 	"settings.cluster.page.title": "叢集",
 	"settings.cluster.page.description": "將節點新增到您的叢集",

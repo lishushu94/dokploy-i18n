@@ -66,12 +66,12 @@ export const ComposeActions = ({ composeId }: Props) => {
 							<TooltipTrigger asChild>
 								<div className="flex items-center">
 									<Rocket className="size-4 mr-1" />
-									Deploy
+									{t("compose.button.deploy")}
 								</div>
 							</TooltipTrigger>
 							<TooltipPrimitive.Portal>
 								<TooltipContent sideOffset={5} className="z-[60]">
-									<p>Downloads the source code and performs a complete build</p>
+									<p>{t("compose.tooltip.deploy")}</p>
 								</TooltipContent>
 							</TooltipPrimitive.Portal>
 						</Tooltip>
@@ -103,12 +103,12 @@ export const ComposeActions = ({ composeId }: Props) => {
 							<TooltipTrigger asChild>
 								<div className="flex items-center">
 									<RefreshCcw className="size-4 mr-1" />
-									Reload
+									{t("compose.button.reload")}
 								</div>
 							</TooltipTrigger>
 							<TooltipPrimitive.Portal>
 								<TooltipContent sideOffset={5} className="z-[60]">
-									<p>Reload the compose without rebuilding it</p>
+									<p>{t("compose.tooltip.reload")}</p>
 								</TooltipContent>
 							</TooltipPrimitive.Portal>
 						</Tooltip>
@@ -140,18 +140,18 @@ export const ComposeActions = ({ composeId }: Props) => {
 						>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<div className="flex items-center">
-										<CheckCircle2 className="size-4 mr-1" />
-										Start
-									</div>
-								</TooltipTrigger>
-								<TooltipPrimitive.Portal>
-									<TooltipContent sideOffset={5} className="z-[60]">
-										<p>
-											Start the compose (requires a previous successful build)
-										</p>
-									</TooltipContent>
-								</TooltipPrimitive.Portal>
+								<div className="flex items-center">
+									<CheckCircle2 className="size-4 mr-1" />
+									{t("compose.button.start")}
+								</div>
+							</TooltipTrigger>
+							<TooltipPrimitive.Portal>
+								<TooltipContent sideOffset={5} className="z-[60]">
+									<p>
+										{t("compose.tooltip.start")}
+									</p>
+								</TooltipContent>
+							</TooltipPrimitive.Portal>
 							</Tooltip>
 						</Button>
 					</DialogAction>
@@ -179,16 +179,16 @@ export const ComposeActions = ({ composeId }: Props) => {
 						>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<div className="flex items-center">
-										<Ban className="size-4 mr-1" />
-										Stop
-									</div>
-								</TooltipTrigger>
-								<TooltipPrimitive.Portal>
-									<TooltipContent sideOffset={5} className="z-[60]">
-										<p>Stop the currently running compose</p>
-									</TooltipContent>
-								</TooltipPrimitive.Portal>
+								<div className="flex items-center">
+									<Ban className="size-4 mr-1" />
+									{t("compose.button.stop")}
+								</div>
+							</TooltipTrigger>
+							<TooltipPrimitive.Portal>
+								<TooltipContent sideOffset={5} className="z-[60]">
+									<p>{t("compose.tooltip.stop")}</p>
+								</TooltipContent>
+							</TooltipPrimitive.Portal>
 							</Tooltip>
 						</Button>
 					</DialogAction>
@@ -204,11 +204,11 @@ export const ComposeActions = ({ composeId }: Props) => {
 					className="flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-offset-2"
 				>
 					<Terminal className="size-4 mr-1" />
-					Open Terminal
+					{t("compose.button.terminal")}
 				</Button>
 			</DockerTerminalModal>
 			<div className="flex flex-row items-center gap-2 rounded-md px-4 py-2 border">
-				<span className="text-sm font-medium">Auto Deploy</span>
+				<span className="text-sm font-medium">{t("compose.autoDeploy.label")}</span>
 				<Switch
 					aria-label="Toggle autodeploy"
 					checked={data?.autoDeploy || false}

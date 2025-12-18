@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Модель міндетті",
 	"settings.ai.models.loading": "Модельдер жүктелуде...",
 	"settings.ai.models.empty": "Модельдер қолжетімсіз",
+	"settings.ai.models.fetchError": "Модельдерді алу қатесі: {{error}}",
 	"settings.ai.models.notFound": "Модельдер табылмады.",
 	"settings.cluster.page.title": "Кластер",
 	"settings.cluster.page.description": "Кластеріңізге түйіндерді қосыңыз",

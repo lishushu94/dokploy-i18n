@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Le modèle est requis",
 	"settings.ai.models.loading": "Chargement des modèles...",
 	"settings.ai.models.empty": "Aucun modèle disponible",
+	"settings.ai.models.fetchError": "Échec de la récupération des modèles : {{error}}",
 	"settings.ai.models.notFound": "Aucun modèle trouvé.",
 	"settings.cluster.page.title": "Cluster",
 	"settings.cluster.page.description": "Ajoutez des nœuds à votre cluster",

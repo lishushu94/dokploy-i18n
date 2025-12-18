@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "모델이 필요합니다",
 	"settings.ai.models.loading": "모델 로딩 중...",
 	"settings.ai.models.empty": "사용 가능한 모델 없음",
+	"settings.ai.models.fetchError": "모델 가져오기 실패: {{error}}",
 	"settings.ai.models.notFound": "모델을 찾을 수 없습니다.",
 	"settings.cluster.page.title": "클러스터",
 	"settings.cluster.page.description": "클러스터에 노드 추가",

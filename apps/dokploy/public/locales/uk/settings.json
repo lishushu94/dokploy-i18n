@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Потрібна модель",
 	"settings.ai.models.loading": "Завантаження моделей...",
 	"settings.ai.models.empty": "Немає доступних моделей",
+	"settings.ai.models.fetchError": "Помилка отримання моделей: {{error}}",
 	"settings.ai.models.notFound": "Моделей не знайдено.",
 	"settings.cluster.page.title": "Кластер",
 	"settings.cluster.page.description": "Додайте ноди до кластера",

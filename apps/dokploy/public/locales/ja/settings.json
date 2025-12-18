@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "モデルは必須です",
 	"settings.ai.models.loading": "モデルを読み込み中...",
 	"settings.ai.models.empty": "利用可能なモデルがありません",
+	"settings.ai.models.fetchError": "モデルの取得に失敗しました：{{error}}",
 	"settings.ai.models.notFound": "モデルが見つかりません。",
 	"settings.cluster.page.title": "クラスタ",
 	"settings.cluster.page.description": "クラスタにノードを追加",

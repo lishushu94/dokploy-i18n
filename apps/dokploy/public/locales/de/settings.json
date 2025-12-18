@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Modell ist erforderlich",
 	"settings.ai.models.loading": "Modelle werden geladen...",
 	"settings.ai.models.empty": "Keine Modelle verfügbar",
+	"settings.ai.models.fetchError": "Fehler beim Abrufen der Modelle: {{error}}",
 	"settings.ai.models.notFound": "Keine Modelle gefunden.",
 	"settings.cluster.page.title": "Cluster",
 	"settings.cluster.page.description": "Knoten zu Ihrem Cluster hinzufügen",

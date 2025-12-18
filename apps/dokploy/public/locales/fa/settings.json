@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "مدل الزامی است",
 	"settings.ai.models.loading": "در حال بارگذاری مدل‌ها...",
 	"settings.ai.models.empty": "هیچ مدلی در دسترس نیست",
+	"settings.ai.models.fetchError": "خطا در دریافت مدل‌ها: {{error}}",
 	"settings.ai.models.notFound": "هیچ مدلی پیدا نشد.",
 	"settings.cluster.page.title": "خوشه",
 	"settings.cluster.page.description": "نودها را به خوشه خود اضافه کنید",

@@ -1127,6 +1127,7 @@
 	"settings.ai.validation.modelRequired": "模型为必选项",
 	"settings.ai.models.loading": "正在加载模型...",
 	"settings.ai.models.empty": "当前没有可用模型",
+	"settings.ai.models.fetchError": "获取模型失败：{{error}}",
 	"settings.ai.models.notFound": "未找到匹配的模型。",
 	"settings.cluster.page.title": "集群",
 	"settings.cluster.page.description": "向集群中添加节点。",

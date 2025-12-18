@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Modell er påkrevd",
 	"settings.ai.models.loading": "Laster modeller...",
 	"settings.ai.models.empty": "Ingen modeller tilgjengelig",
+	"settings.ai.models.fetchError": "Kunne ikke hente modeller: {{error}}",
 	"settings.ai.models.notFound": "Ingen modeller funnet.",
 	"settings.cluster.page.title": "Klynge",
 	"settings.cluster.page.description": "Legg til noder i klyngen din",

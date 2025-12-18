@@ -1121,6 +1121,7 @@
 	"settings.ai.validation.modelRequired": "Model jest wymagany",
 	"settings.ai.models.loading": "Ładowanie modeli...",
 	"settings.ai.models.empty": "Brak dostępnych modeli",
+	"settings.ai.models.fetchError": "Błąd pobierania modeli: {{error}}",
 	"settings.ai.models.notFound": "Nie znaleziono modeli.",
 	"settings.cluster.page.title": "Klaster",
 	"settings.cluster.page.description": "Dodaj węzły do klastra",
