@@ -1,0 +1,211 @@
+"use client";
+
+import {
+	AlertCircle,
+	AlertTriangle,
+	Bot,
+	Loader2,
+	RotateCcw,
+	User,
+} from "lucide-react";
+import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ToolCallBlock } from "./tool-call-block";
+import type { Message } from "./use-chat";
+
+interface MessageBubbleProps {
+	message: Message;
+	onApproveToolCall?: (toolCallId: string) => void;
+	onRejectToolCall?: (toolCallId: string) => void;
+	isLast?: boolean;
+	onRetry?: () => void;
+}
+
+export function MessageBubble({
+	message,
+	onApproveToolCall,
+	onRejectToolCall,
+	isLast,
+	onRetry,
+}: MessageBubbleProps) {
+	const { t } = useTranslation("common");
+	const [displayedContent, setDisplayedContent] = useState(() => {
+		const initialContent = message.content ?? "";
+		return message.role === "user" ||
+			!message.status ||
+			message.status === "sent" ||
+			message.status === "error"
+			? initialContent
+			: "";
+	});
+
+	const isUser = message.role === "user";
+	const isError = message.status === "error";
+	const isSending = message.status === "sending";
+	const hasToolCalls = message.toolCalls && message.toolCalls.length > 0;
+	const bubbleText = isUser ? (message.content ?? "") : displayedContent;
+	const shouldShowEmptyAssistantFallback =
+		!isUser &&
+		!isSending &&
+		!isError &&
+		!hasToolCalls &&
+		(!bubbleText || bubbleText.length === 0) &&
+		!!isLast;
+	const shouldRenderBubble =
+		(bubbleText && bubbleText.length > 0) ||
+		isSending ||
+		isError ||
+		shouldShowEmptyAssistantFallback;
+
+	useEffect(() => {
+		if (isUser) return;
+		const content = message.content ?? "";
+		if (content.length === 0) return;
+
+		if (!isSending && !isLast && displayedContent.length === 0) {
+			setDisplayedContent(content);
+			return;
+		}
+
+		if (!isSending && displayedContent === content) return;
+
+		// During streaming, update content directly without typewriter effect
+		if (isSending) {
+			setDisplayedContent(content);
+			return;
+		}
+
+		if (displayedContent.length < content.length) {
+			const timeout = setTimeout(() => {
+				setDisplayedContent((prev) => content.slice(0, prev.length + 3));
+			}, 10);
+			return () => clearTimeout(timeout);
+		}
+	}, [message.content, isSending, displayedContent, isUser, isLast]);
+
+	return (
+		<div className={cn("flex gap-3 p-4", isUser && "flex-row-reverse")}>
+			<div
+				className={cn(
+					"flex h-8 w-8 shrink-0 items-center justify-center rounded-full border shadow-sm",
+					isUser
+						? "bg-primary text-primary-foreground border-primary"
+						: "bg-background text-muted-foreground border-border",
+					isError && "bg-destructive/10 border-destructive/20 text-destructive",
+				)}
+			>
+				{isUser ? (
+					isError ? (
+						<AlertCircle className="h-4 w-4" />
+					) : (
+						<User className="h-4 w-4" />
+					)
+				) : (
+					<Bot className="h-4 w-4" />
+				)}
+			</div>
+			<div
+				className={cn(
+					"flex max-w-[85%] flex-col gap-1",
+					isUser && "items-end",
+				)}
+			>
+				{shouldRenderBubble && (
+					<div
+						className={cn(
+							"w-fit max-w-full rounded-2xl px-4 py-2.5 text-sm shadow-sm",
+							isUser
+								? "bg-primary text-primary-foreground rounded-tr-sm"
+								: "bg-muted/50 text-foreground border border-border/50 rounded-tl-sm",
+							isError &&
+								"bg-destructive/10 text-destructive border-destructive/20 shadow-none",
+							isSending && "animate-pulse",
+						)}
+					>
+						<p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] leading-relaxed">
+							{shouldShowEmptyAssistantFallback
+								? t("common.unknownError")
+								: bubbleText}
+							{!isUser && isSending && (
+								<span className="inline-block w-1.5 h-4 ml-1 bg-current align-middle animate-pulse rounded-full" />
+							)}
+						</p>
+						{isError && message.error && (
+							<div className="mt-2 flex items-start gap-2 rounded bg-destructive/10 p-2 text-xs">
+								<AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />
+								<span>{message.error}</span>
+							</div>
+						)}
+					</div>
+				)}
+
+				{hasToolCalls && (
+					<div className="w-full space-y-1">
+						{message.toolCalls!.map((toolCall) => {
+							const status =
+								toolCall.status ??
+								(toolCall.executionId ? "pending" : "completed");
+							const canApprove =
+								status === "pending" &&
+								!!toolCall.executionId &&
+								!!onApproveToolCall &&
+								!!onRejectToolCall;
+
+							return (
+								<ToolCallBlock
+									key={toolCall.id}
+									toolCall={toolCall}
+									status={status}
+									result={toolCall.result}
+									executionId={toolCall.executionId}
+									onApprove={
+										canApprove
+											? () => onApproveToolCall(toolCall.id)
+											: undefined
+									}
+									onReject={
+										canApprove ? () => onRejectToolCall(toolCall.id) : undefined
+									}
+								/>
+							);
+						})}
+					</div>
+				)}
+
+				<div className="flex items-center gap-2">
+					{isSending && (
+						<Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+					)}
+					<span
+						className={cn(
+							"text-xs text-muted-foreground",
+							isError && "text-destructive",
+						)}
+					>
+						{isError
+							? t("ai.chat.failedToSend")
+							: isSending && (isUser || displayedContent.length === 0)
+								? t("ai.chat.sending")
+								: new Date(message.createdAt).toLocaleTimeString([], {
+										hour: "2-digit",
+										minute: "2-digit",
+									})}
+					</span>
+					{isError && onRetry && (
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={onRetry}
+							className="h-6 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+						>
+							<RotateCcw className="mr-1.5 h-3 w-3" />
+							{t("ai.chat.retry")}
+						</Button>
+					)}
+				</div>
+			</div>
+		</div>
+	);
+}

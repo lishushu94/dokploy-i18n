@@ -1,0 +1,312 @@
+"use client";
+
+import {
+	AlertCircle,
+	AppWindow,
+	Archive,
+	CheckCircle2,
+	ChevronDown,
+	ChevronUp,
+	Database,
+	FileKey,
+	FolderKanban,
+	GitBranch,
+	Globe,
+	Layers,
+	Loader2,
+	Server,
+	ShieldAlert,
+	Wrench,
+} from "lucide-react";
+import { useTranslation } from "next-i18next";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import type { ToolCall } from "./use-chat";
+
+interface ToolCallBlockProps {
+	toolCall: ToolCall;
+	status?:
+		| "pending"
+		| "approved"
+		| "rejected"
+		| "executing"
+		| "completed"
+		| "failed";
+	result?: {
+		success: boolean;
+		message?: string;
+		data?: unknown;
+		error?: string;
+	};
+	executionId?: string;
+	onApprove?: () => void;
+	onReject?: () => void;
+}
+
+const toolIcons: Record<string, typeof Wrench> = {
+	postgres: Database,
+	mysql: Database,
+	mariadb: Database,
+	mongo: Database,
+	redis: Database,
+	application: AppWindow,
+	server: Server,
+	compose: Layers,
+	domain: Globe,
+	backup: Archive,
+	certificate: FileKey,
+	project: FolderKanban,
+	environment: GitBranch,
+};
+
+function getToolIcon(toolName: string) {
+	const category = toolName.split(".")[0] ?? toolName;
+	return toolIcons[category] ?? Wrench;
+}
+
+function getRiskColor(toolName: string) {
+	if (toolName.includes("delete") || toolName.includes("remove")) {
+		return "border-destructive bg-destructive/5";
+	}
+	if (
+		toolName.includes("deploy") ||
+		toolName.includes("create") ||
+		toolName.includes("restart")
+	) {
+		return "border-amber-500/50 bg-amber-500/5";
+	}
+	return "border-border bg-card";
+}
+
+export function ToolCallBlock({
+	toolCall,
+	status = "pending",
+	result,
+	onApprove,
+	onReject,
+}: ToolCallBlockProps) {
+	const { t } = useTranslation("common");
+	const [expanded, setExpanded] = useState(false);
+	const [showApprovalDialog, setShowApprovalDialog] = useState(false);
+
+	const Icon = getToolIcon(toolCall.function.name);
+	const riskColor = getRiskColor(toolCall.function.name);
+
+	const parsedArgs = (() => {
+		try {
+			return JSON.parse(toolCall.function.arguments);
+		} catch {
+			return toolCall.function.arguments;
+		}
+	})();
+
+	const statusConfig = {
+		pending: {
+			icon: ShieldAlert,
+			color: "text-amber-500",
+			label: t("ai.toolCall.pendingApproval"),
+		},
+		approved: {
+			icon: CheckCircle2,
+			color: "text-emerald-500",
+			label: t("ai.toolCall.approved"),
+		},
+		rejected: {
+			icon: AlertCircle,
+			color: "text-destructive",
+			label: t("ai.toolCall.rejected"),
+		},
+		executing: {
+			icon: Loader2,
+			color: "text-blue-500",
+			label: t("ai.toolCall.executing"),
+		},
+		completed: {
+			icon: CheckCircle2,
+			color: "text-emerald-500",
+			label: t("ai.toolCall.completed"),
+		},
+		failed: {
+			icon: AlertCircle,
+			color: "text-destructive",
+			label: t("ai.toolCall.failed"),
+		},
+	};
+
+	const StatusIcon = statusConfig[status].icon;
+	const isDestructive = toolCall.function.name.includes("delete");
+
+	return (
+		<>
+			<div className={cn("rounded-md border p-3 my-2 text-xs transition-colors", riskColor)}>
+				<div 
+					className="flex items-center justify-between cursor-pointer select-none"
+					onClick={() => setExpanded(!expanded)}
+				>
+					<div className="flex items-center gap-2.5">
+						<div className="p-1.5 rounded-md bg-background border shadow-sm">
+							<Icon className="h-3.5 w-3.5 text-foreground" />
+						</div>
+						<div className="flex flex-col gap-0.5">
+							<span className="font-semibold text-foreground">
+								{toolCall.function.name}
+							</span>
+							<span
+								className={cn(
+									"flex items-center gap-1.5 font-medium",
+									statusConfig[status].color,
+								)}
+							>
+								<StatusIcon
+									className={cn(
+										"h-3 w-3",
+										status === "executing" && "animate-spin",
+									)}
+								/>
+								{statusConfig[status].label}
+							</span>
+						</div>
+					</div>
+					<Button
+						variant="ghost"
+						size="sm"
+						className="h-6 w-6 p-0 hover:bg-transparent"
+					>
+						{expanded ? (
+							<ChevronUp className="h-4 w-4 text-muted-foreground" />
+						) : (
+							<ChevronDown className="h-4 w-4 text-muted-foreground" />
+						)}
+					</Button>
+				</div>
+
+				{expanded && (
+					<div className="mt-3 space-y-3 pt-3 border-t border-border/50">
+						<div className="space-y-1.5">
+							<span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+								Arguments
+							</span>
+							<div className="rounded-md bg-muted/50 p-2.5 font-mono text-[11px] overflow-x-auto border border-border/50">
+								<pre>{JSON.stringify(parsedArgs, null, 2)}</pre>
+							</div>
+						</div>
+						
+						{result && (
+							<div className="space-y-1.5">
+								<span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+									Result
+								</span>
+								<div
+									className={cn(
+										"rounded-md p-2.5 border text-xs",
+										result.success 
+											? "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-200" 
+											: "bg-destructive/5 border-destructive/20 text-destructive-foreground",
+									)}
+								>
+									{result.message && <p className="font-medium mb-1">{result.message}</p>}
+									{result.data != null && (
+										<pre className="font-mono text-[10px] overflow-x-auto opacity-90">
+											{JSON.stringify(result.data, null, 2)}
+										</pre>
+									)}
+									{result.error && (
+										<p className="font-medium text-destructive">{result.error}</p>
+									)}
+								</div>
+							</div>
+						)}
+					</div>
+				)}
+
+				{status === "pending" && onApprove && onReject && (
+					<div className="mt-3 pt-2 border-t border-border/50 flex gap-2">
+						<Button
+							size="sm"
+							className="h-7 px-3 text-xs flex-1"
+							variant={isDestructive ? "destructive" : "default"}
+							onClick={(e) => {
+								e.stopPropagation();
+								setShowApprovalDialog(true);
+							}}
+						>
+							{t("ai.toolCall.reviewApprove")}
+						</Button>
+						<Button 
+							size="sm" 
+							variant="outline" 
+							className="h-7 px-3 text-xs flex-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
+							onClick={(e) => {
+								e.stopPropagation();
+								onReject();
+							}}
+						>
+							{t("ai.toolCall.reject")}
+						</Button>
+					</div>
+				)}
+			</div>
+
+			<Dialog open={showApprovalDialog} onOpenChange={setShowApprovalDialog}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle className="flex items-center gap-2">
+							{isDestructive && (
+								<AlertCircle className="h-5 w-5 text-destructive" />
+							)}
+							{t("ai.toolCall.confirmAction")}
+						</DialogTitle>
+						<DialogDescription>
+							{t("ai.toolCall.aiRequestExecute")}{" "}
+							<strong>{toolCall.function.name}</strong>
+						</DialogDescription>
+					</DialogHeader>
+					<div className="space-y-4">
+						<div className="rounded-lg border p-3">
+							<h4 className="text-sm font-medium mb-2">
+								{t("ai.toolCall.parameters")}
+							</h4>
+							<pre className="text-xs font-mono bg-muted p-2 rounded overflow-x-auto">
+								{JSON.stringify(parsedArgs, null, 2)}
+							</pre>
+						</div>
+						{isDestructive && (
+							<div className="rounded-lg border border-destructive/50 bg-destructive/5 p-3 text-sm text-destructive">
+								{t("ai.toolCall.cannotUndo")}
+							</div>
+						)}
+					</div>
+					<DialogFooter>
+						<Button
+							variant="outline"
+							onClick={() => {
+								setShowApprovalDialog(false);
+								onReject?.();
+							}}
+						>
+							{t("common.cancel")}
+						</Button>
+						<Button
+							variant={isDestructive ? "destructive" : "default"}
+							onClick={() => {
+								setShowApprovalDialog(false);
+								onApprove?.();
+							}}
+						>
+							{t("common.confirm")}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+		</>
+	);
+}
