@@ -6,6 +6,7 @@ import {
 	Bot,
 	Loader2,
 	RotateCcw,
+	Sparkles,
 	User,
 } from "lucide-react";
 import { useTranslation } from "next-i18next";
@@ -175,8 +176,11 @@ export function MessageBubble({
 				)}
 
 				<div className="flex items-center gap-2">
-					{isSending && (
+					{isSending && isUser && (
 						<Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+					)}
+					{isSending && !isUser && (
+						<Sparkles className="h-3 w-3 animate-pulse text-primary/70" />
 					)}
 					<span
 						className={cn(
@@ -186,12 +190,10 @@ export function MessageBubble({
 					>
 						{isError
 							? t("ai.chat.failedToSend")
-							: isSending && (isUser || displayedContent.length === 0)
-								? t("ai.chat.sending")
-								: new Date(message.createdAt).toLocaleTimeString([], {
-										hour: "2-digit",
-										minute: "2-digit",
-									})}
+							: new Date(message.createdAt).toLocaleTimeString([], {
+									hour: "2-digit",
+									minute: "2-digit",
+								})}
 					</span>
 					{isError && onRetry && (
 						<Button
