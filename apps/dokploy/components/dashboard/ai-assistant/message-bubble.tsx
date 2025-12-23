@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ToolCallBlock } from "./tool-call-block";
+import { ToolCallCarousel } from "./tool-call-carousel";
 import type { Message } from "./use-chat";
 
 interface MessageBubbleProps {
@@ -120,9 +121,9 @@ export function MessageBubble({
 							isUser
 								? "bg-primary text-primary-foreground rounded-tr-sm"
 								: "bg-muted/50 text-foreground border border-border/50 rounded-tl-sm",
-							isError &&
-								"bg-destructive/10 text-destructive border-destructive/20 shadow-none",
-							isSending && "animate-pulse",
+								isError &&
+									"bg-destructive/10 text-destructive border-destructive/20 shadow-none",
+								isSending && "animate-pulse",
 						)}
 					>
 						<p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] leading-relaxed">
@@ -152,34 +153,44 @@ export function MessageBubble({
 
 				{hasToolCalls && (
 					<div className="w-full space-y-1">
-						{message.toolCalls!.map((toolCall) => {
-							const status =
-								toolCall.status ??
-								(toolCall.executionId ? "pending" : "completed");
-							const canApprove =
-								status === "pending" &&
-								!!toolCall.executionId &&
-								!!onApproveToolCall &&
-								!!onRejectToolCall;
+						{message.toolCalls!.length > 1 ? (
+							<ToolCallCarousel
+								toolCalls={message.toolCalls!}
+								onApproveToolCall={onApproveToolCall}
+								onRejectToolCall={onRejectToolCall}
+							/>
+						) : (
+							message.toolCalls!.map((toolCall) => {
+								const status =
+									toolCall.status ??
+									(toolCall.executionId ? "pending" : "completed");
+								const canApprove =
+									status === "pending" &&
+									!!toolCall.executionId &&
+									!!onApproveToolCall &&
+									!!onRejectToolCall;
 
-							return (
-								<ToolCallBlock
-									key={toolCall.id}
-									toolCall={toolCall}
-									status={status}
-									result={toolCall.result}
-									executionId={toolCall.executionId}
-									onApprove={
-										canApprove
-											? () => onApproveToolCall(toolCall.id)
-											: undefined
-									}
-									onReject={
-										canApprove ? () => onRejectToolCall(toolCall.id) : undefined
-									}
-								/>
-							);
-						})}
+								return (
+									<ToolCallBlock
+										key={toolCall.id}
+										toolCall={toolCall}
+										status={status}
+										result={toolCall.result}
+										executionId={toolCall.executionId}
+										onApprove={
+											canApprove
+												? () => onApproveToolCall?.(toolCall.id)
+												: undefined
+										}
+										onReject={
+											canApprove
+												? () => onRejectToolCall?.(toolCall.id)
+												: undefined
+										}
+									/>
+								);
+							})
+						)}
 					</div>
 				)}
 

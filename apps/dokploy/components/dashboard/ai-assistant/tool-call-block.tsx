@@ -50,6 +50,7 @@ interface ToolCallBlockProps {
 	executionId?: string;
 	onApprove?: () => void;
 	onReject?: () => void;
+	className?: string;
 }
 
 const toolIcons: Record<string, typeof Wrench> = {
@@ -93,6 +94,7 @@ export function ToolCallBlock({
 	result,
 	onApprove,
 	onReject,
+	className,
 }: ToolCallBlockProps) {
 	const { t } = useTranslation("common");
 	const [expanded, setExpanded] = useState(false);
@@ -147,7 +149,7 @@ export function ToolCallBlock({
 
 	return (
 		<>
-			<div className={cn("rounded border p-2 my-1 text-xs transition-colors shadow-sm", riskColor)}>
+			<div className={cn("rounded border p-2 my-1 text-xs transition-colors shadow-sm", riskColor, className)}>
 				<div 
 					className="flex items-center justify-between cursor-pointer select-none group"
 					onClick={() => setExpanded(!expanded)}
