@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ToolCallBlock } from "./tool-call-block";
-import { ToolCallCarousel } from "./tool-call-carousel";
+import { ToolGroup } from "./tool-call-group";
 import type { Message } from "./use-chat";
 
 interface MessageBubbleProps {
@@ -131,15 +131,7 @@ export function MessageBubble({
 								? t("common.unknownError")
 								: bubbleText}
 							{!isUser && isSending && (
-								bubbleText.length === 0 ? (
-									<span className="inline-flex items-center gap-1 h-4 ml-1 align-middle">
-										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.3s]" />
-										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.15s]" />
-										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" />
-									</span>
-								) : (
-									<span className="inline-block w-[2px] h-4 ml-1 bg-current align-middle animate-pulse" />
-								)
+								<span className="inline-block w-1.5 h-4 ml-1 bg-current align-middle animate-pulse rounded-full" />
 							)}
 						</p>
 						{isError && message.error && (
@@ -153,8 +145,8 @@ export function MessageBubble({
 
 				{hasToolCalls && (
 					<div className="w-full space-y-1">
-						{message.toolCalls!.length > 1 ? (
-							<ToolCallCarousel
+	\t				{message.toolCalls!.length > 1 ? (
+							<ToolGroup
 								toolCalls={message.toolCalls!}
 								onApproveToolCall={onApproveToolCall}
 								onRejectToolCall={onRejectToolCall}
@@ -193,8 +185,6 @@ export function MessageBubble({
 						)}
 					</div>
 				)}
-
-				<div className="flex items-center gap-2">
 					{isSending && isUser && (
 						<Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
 					)}
