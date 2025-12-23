@@ -130,7 +130,15 @@ export function MessageBubble({
 								? t("common.unknownError")
 								: bubbleText}
 							{!isUser && isSending && (
-								<span className="inline-block w-1.5 h-4 ml-1 bg-current align-middle animate-pulse rounded-full" />
+								bubbleText.length === 0 ? (
+									<span className="inline-flex items-center gap-1 h-4 ml-1 align-middle">
+										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.3s]" />
+										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.15s]" />
+										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" />
+									</span>
+								) : (
+									<span className="inline-block w-[2px] h-4 ml-1 bg-current align-middle animate-pulse" />
+								)
 							)}
 						</p>
 						{isError && message.error && (

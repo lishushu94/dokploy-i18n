@@ -147,28 +147,28 @@ export function ToolCallBlock({
 
 	return (
 		<>
-			<div className={cn("rounded-md border p-3 my-2 text-xs transition-colors", riskColor)}>
+			<div className={cn("rounded border p-2 my-1 text-xs transition-colors shadow-sm", riskColor)}>
 				<div 
-					className="flex items-center justify-between cursor-pointer select-none"
+					className="flex items-center justify-between cursor-pointer select-none group"
 					onClick={() => setExpanded(!expanded)}
 				>
-					<div className="flex items-center gap-2.5">
-						<div className="p-1.5 rounded-md bg-background border shadow-sm">
-							<Icon className="h-3.5 w-3.5 text-foreground" />
+					<div className="flex items-center gap-2">
+						<div className="p-1 rounded bg-background border shadow-sm">
+							<Icon className="h-3 w-3 text-foreground" />
 						</div>
-						<div className="flex flex-col gap-0.5">
-							<span className="font-semibold text-foreground">
+						<div className="flex items-center gap-2">
+							<span className="font-semibold text-foreground text-[11px]">
 								{toolCall.function.name}
 							</span>
 							<span
 								className={cn(
-									"flex items-center gap-1.5 font-medium",
+									"flex items-center gap-1 font-medium text-[10px]",
 									statusConfig[status].color,
 								)}
 							>
 								<StatusIcon
 									className={cn(
-										"h-3 w-3",
+										"h-2.5 w-2.5",
 										status === "executing" && "animate-spin",
 									)}
 								/>
@@ -179,35 +179,35 @@ export function ToolCallBlock({
 					<Button
 						variant="ghost"
 						size="sm"
-						className="h-6 w-6 p-0 hover:bg-transparent"
+						className="h-5 w-5 p-0 hover:bg-transparent opacity-50 group-hover:opacity-100 transition-opacity"
 					>
 						{expanded ? (
-							<ChevronUp className="h-4 w-4 text-muted-foreground" />
+							<ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
 						) : (
-							<ChevronDown className="h-4 w-4 text-muted-foreground" />
+							<ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
 						)}
 					</Button>
 				</div>
 
 				{expanded && (
-					<div className="mt-3 space-y-3 pt-3 border-t border-border/50">
-						<div className="space-y-1.5">
+					<div className="mt-2 space-y-2 pt-2 border-t border-border/50">
+						<div className="space-y-1">
 							<span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
 								Arguments
 							</span>
-							<div className="rounded-md bg-muted/50 p-2.5 font-mono text-[11px] overflow-x-auto border border-border/50">
+							<div className="rounded bg-muted/50 p-2 font-mono text-[10px] overflow-x-auto border border-border/50">
 								<pre>{JSON.stringify(parsedArgs, null, 2)}</pre>
 							</div>
 						</div>
 						
 						{result && (
-							<div className="space-y-1.5">
+							<div className="space-y-1">
 								<span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
 									Result
 								</span>
 								<div
 									className={cn(
-										"rounded-md p-2.5 border text-xs",
+										"rounded p-2 border text-[10px]",
 										result.success 
 											? "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-200" 
 											: "bg-destructive/5 border-destructive/20 text-destructive-foreground",
@@ -215,7 +215,7 @@ export function ToolCallBlock({
 								>
 									{result.message && <p className="font-medium mb-1">{result.message}</p>}
 									{result.data != null && (
-										<pre className="font-mono text-[10px] overflow-x-auto opacity-90">
+										<pre className="font-mono overflow-x-auto opacity-90">
 											{JSON.stringify(result.data, null, 2)}
 										</pre>
 									)}
@@ -229,10 +229,10 @@ export function ToolCallBlock({
 				)}
 
 				{status === "pending" && onApprove && onReject && (
-					<div className="mt-3 pt-2 border-t border-border/50 flex gap-2">
+					<div className="mt-2 pt-2 border-t border-border/50 flex gap-2">
 						<Button
 							size="sm"
-							className="h-7 px-3 text-xs flex-1"
+							className="h-6 px-2 text-[10px] flex-1"
 							variant={isDestructive ? "destructive" : "default"}
 							onClick={(e) => {
 								e.stopPropagation();
@@ -244,7 +244,7 @@ export function ToolCallBlock({
 						<Button 
 							size="sm" 
 							variant="outline" 
-							className="h-7 px-3 text-xs flex-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
+							className="h-6 px-2 text-[10px] flex-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
 							onClick={(e) => {
 								e.stopPropagation();
 								onReject();
