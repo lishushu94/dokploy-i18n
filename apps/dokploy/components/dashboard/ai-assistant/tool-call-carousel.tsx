@@ -1,9 +1,15 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Layers } from "lucide-react";
+import { Layers } from "lucide-react";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { ToolCallBlock } from "./tool-call-block";
 import type { ToolCall } from "./use-chat";
 
@@ -24,16 +30,6 @@ export function ToolCallCarousel({
 	if (!toolCalls || toolCalls.length === 0) return null;
 
 	const currentToolCall = toolCalls[currentIndex];
-	const hasNext = currentIndex < toolCalls.length - 1;
-	const hasPrev = currentIndex > 0;
-
-	const handleNext = () => {
-		if (hasNext) setCurrentIndex((prev) => prev + 1);
-	};
-
-	const handlePrev = () => {
-		if (hasPrev) setCurrentIndex((prev) => prev - 1);
-	};
 
 	// Determine status for the current tool call to pass to the block
 	const status =
@@ -48,40 +44,31 @@ export function ToolCallCarousel({
 
 	return (
 		<div className="rounded-md border bg-card my-1 overflow-hidden shadow-sm w-full">
-			{/* Header / Navigation Bar */}
-			<div className="flex items-center justify-between bg-muted/30 px-2 py-1.5 border-b">
-				<div className="flex items-center gap-2">
-					<Layers className="h-3.5 w-3.5 text-muted-foreground" />
-					<span className="text-xs font-medium text-muted-foreground">
-						{t("ai.toolCall.calls")} ({currentIndex + 1}/{toolCalls.length})
-					</span>
-				</div>
-				<div className="flex items-center gap-1">
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-6 w-6"
-						onClick={handlePrev}
-						disabled={!hasPrev}
-						title={t("common.previous")}
-					>
-						<ChevronLeft className="h-3.5 w-3.5" />
-					</Button>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-6 w-6"
-						onClick={handleNext}
-						disabled={!hasNext}
-						title={t("common.next")}
-					>
-						<ChevronRight className="h-3.5 w-3.5" />
-					</Button>
-				</div>
+			<div className="border-b px-2 py-1 bg-muted/30">
+				<Select
+					value={currentIndex.toString()}
+					onValueChange={(val) => setCurrentIndex(Number.parseInt(val))}
+				>
+					<SelectTrigger className="h-7 text-xs border-none shadow-none bg-transparent px-0 hover:bg-muted/50 w-full justify-between focus:ring-0">
+						<div className="flex items-center gap-2 truncate">
+							<Layers className="h-3 w-3 text-muted-foreground shrink-0" />
+							<SelectValue />
+						</div>
+					</SelectTrigger>
+					<SelectContent position="popper" className="w-[300px] max-w-[90vw]">
+						{toolCalls.map((tc, index) => (
+							<SelectItem key={tc.id} value={index.toString()} className="text-xs">
+								<span className="font-medium text-muted-foreground mr-2">
+									{index + 1}.
+								</span>
+								{tc.function.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 			</div>
 
-			{/* Content Area - Reusing ToolCallBlock but removing its outer margins/border if needed, 
-                but since ToolCallBlock has its own style, we will wrap it lightly */}
+			{/* Content Area */}
 			<div className="px-1">
 				<ToolCallBlock
 					key={currentToolCall.id}

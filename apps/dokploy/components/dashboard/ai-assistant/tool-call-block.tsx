@@ -197,8 +197,10 @@ export function ToolCallBlock({
 							<span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
 								Arguments
 							</span>
-							<div className="rounded bg-muted/50 p-2 font-mono text-[10px] overflow-x-auto border border-border/50">
-								<pre>{JSON.stringify(parsedArgs, null, 2)}</pre>
+							<div className="rounded bg-muted/50 p-2 font-mono text-[10px] border border-border/50 max-h-[300px] overflow-y-auto">
+								<pre className="whitespace-pre-wrap break-words">
+									{JSON.stringify(parsedArgs, null, 2)}
+								</pre>
 							</div>
 						</div>
 						
@@ -209,20 +211,20 @@ export function ToolCallBlock({
 								</span>
 								<div
 									className={cn(
-										"rounded p-2 border text-[10px]",
+										"rounded p-2 border text-[10px] max-h-[300px] overflow-y-auto",
 										result.success 
 											? "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-200" 
 											: "bg-destructive/5 border-destructive/20 text-destructive-foreground",
 									)}
 								>
-									{result.message && <p className="font-medium mb-1">{result.message}</p>}
+									{result.message && <p className="font-medium mb-1 break-words">{result.message}</p>}
 									{result.data != null && (
-										<pre className="font-mono overflow-x-auto opacity-90">
+										<pre className="font-mono opacity-90 whitespace-pre-wrap break-words">
 											{JSON.stringify(result.data, null, 2)}
 										</pre>
 									)}
 									{result.error && (
-										<p className="font-medium text-destructive">{result.error}</p>
+										<p className="font-medium text-destructive break-words">{result.error}</p>
 									)}
 								</div>
 							</div>
