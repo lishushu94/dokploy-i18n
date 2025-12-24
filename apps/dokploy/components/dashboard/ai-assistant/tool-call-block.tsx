@@ -13,6 +13,7 @@ import {
 	GitBranch,
 	Globe,
 	Layers,
+	ListChecks,
 	Loader2,
 	Server,
 	ShieldAlert,
@@ -64,18 +65,33 @@ const toolIcons: Record<string, typeof Wrench> = {
 	compose: Layers,
 	domain: Globe,
 	backup: Archive,
+	deployment: ListChecks,
+	github: GitBranch,
+	traefik: Globe,
+	destination: Archive,
+	mount: Server,
 	certificate: FileKey,
 	project: FolderKanban,
 	environment: GitBranch,
 };
 
 function getToolIcon(toolName: string) {
-	const category = toolName.split(".")[0] ?? toolName;
+	const normalized = String(toolName ?? "")
+		.trim()
+		.toLowerCase();
+	if (normalized.startsWith("volume_backup_")) {
+		return toolIcons.backup ?? Wrench;
+	}
+	const category = normalized.split(/[._]/)[0] ?? normalized;
 	return toolIcons[category] ?? Wrench;
 }
 
 function getRiskColor(toolName: string) {
-	if (toolName.includes("delete") || toolName.includes("remove")) {
+	if (
+		toolName.includes("delete") ||
+		toolName.includes("remove") ||
+		toolName.includes("restore")
+	) {
 		return "border-destructive bg-destructive/5";
 	}
 	if (
@@ -145,12 +161,21 @@ export function ToolCallBlock({
 	};
 
 	const StatusIcon = statusConfig[status].icon;
-	const isDestructive = toolCall.function.name.includes("delete");
+	const isDestructive =
+		toolCall.function.name.includes("delete") ||
+		toolCall.function.name.includes("remove") ||
+		toolCall.function.name.includes("restore");
 
 	return (
 		<>
-			<div className={cn("rounded border p-2 my-1 text-xs transition-colors shadow-sm", riskColor, className)}>
-				<div 
+			<div
+				className={cn(
+					"rounded border p-2 my-1 text-xs transition-colors shadow-sm",
+					riskColor,
+					className,
+				)}
+			>
+				<div
 					className="flex items-center justify-between cursor-pointer select-none group"
 					onClick={() => setExpanded(!expanded)}
 				>
@@ -203,7 +228,7 @@ export function ToolCallBlock({
 								</pre>
 							</div>
 						</div>
-						
+
 						{result && (
 							<div className="space-y-1">
 								<span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
@@ -212,19 +237,25 @@ export function ToolCallBlock({
 								<div
 									className={cn(
 										"rounded p-2 border text-[10px] max-h-[300px] overflow-y-auto",
-										result.success 
-											? "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-200" 
+										result.success
+											? "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-200"
 											: "bg-destructive/5 border-destructive/20 text-destructive-foreground",
 									)}
 								>
-									{result.message && <p className="font-medium mb-1 break-words">{result.message}</p>}
+									{result.message && (
+										<p className="font-medium mb-1 break-words">
+											{result.message}
+										</p>
+									)}
 									{result.data != null && (
 										<pre className="font-mono opacity-90 whitespace-pre-wrap break-words">
 											{JSON.stringify(result.data, null, 2)}
 										</pre>
 									)}
 									{result.error && (
-										<p className="font-medium text-destructive break-words">{result.error}</p>
+										<p className="font-medium text-destructive break-words">
+											{result.error}
+										</p>
 									)}
 								</div>
 							</div>
@@ -245,9 +276,9 @@ export function ToolCallBlock({
 						>
 							{t("ai.toolCall.reviewApprove")}
 						</Button>
-						<Button 
-							size="sm" 
-							variant="outline" 
+						<Button
+							size="sm"
+							variant="outline"
 							className="h-6 px-2 text-[10px] flex-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
 							onClick={(e) => {
 								e.stopPropagation();

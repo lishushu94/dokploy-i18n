@@ -22,6 +22,7 @@ import { registerProjectTools } from "./tools/project";
 import { registerRedisTools } from "./tools/redis";
 import { registerServerTools } from "./tools/server";
 import { registerTraefikTools } from "./tools/traefik";
+import { registerVolumeBackupTools } from "./tools/volume-backups";
 
 let toolsInitialized = false;
 
@@ -46,6 +47,7 @@ export function initializeTools() {
 	registerGithubTools();
 	registerDomainTools();
 	registerBackupTools();
+	registerVolumeBackupTools();
 	registerCertificateTools();
 	registerTraefikTools();
 

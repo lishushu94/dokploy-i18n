@@ -131,9 +131,9 @@ function buildMetaToolPromptInfo(): ToolPromptInfo[] {
 		{
 			name: "tool_call",
 			description:
-				"Execute a specific tool by name with parameters. This will enforce validation and approval requirements.",
-			riskLevel: "medium",
-			requiresApproval: true,
+				"Execute a specific tool by name with parameters. The target tool may require approval; tool_call itself does not.",
+			riskLevel: "low",
+			requiresApproval: false,
 		},
 	];
 }
@@ -162,6 +162,25 @@ function tokenizeToolSearchQuery(query: string): string[] {
 	if (/(域名|domain|dns)/i.test(q)) add(["domain", "dns"]);
 	if (/(证书|certificate|ssl|https|tls)/i.test(q))
 		add(["certificate", "ssl", "https", "tls"]);
+	if (/(traefik|特雷菲克|反向代理|网关|代理|转发|路由|ingress)/i.test(q))
+		add(["traefik", "proxy", "router", "ingress"]);
+	if (/(acme|let'?s\s*encrypt|续签|自动续期|证书续期|challenge)/i.test(q))
+		add(["acme", "letsencrypt", "challenge"]);
+	if (/(挂载|mount|bind\s*mount|绑定挂载|卷|volume)/i.test(q))
+		add(["mount", "bind", "volume"]);
+	if (/(对象存储|s3|r2|minio|bucket|存储桶|destination|备份目的地)/i.test(q))
+		add(["destination", "s3", "bucket", "backup"]);
+	if (/(卷备份|volume\s*backup)/i.test(q))
+		add(["volume_backup", "volume", "backup"]);
+	if (/(执行命令|命令行|终端|terminal|shell|exec)/i.test(q))
+		add(["exec", "command", "server_exec"]);
+	if (/(镜像仓库|registry|镜像|image|docker\s*hub|ghcr)/i.test(q))
+		add(["registry", "image", "docker", "ghcr"]);
+	if (/(ssh|ssh\s*key|密钥|密钥对|私钥|公钥)/i.test(q)) add(["ssh", "key"]);
+	if (/(集群|cluster|swarm|节点|node)/i.test(q))
+		add(["cluster", "swarm", "node"]);
+	if (/(回滚|rollback|revert|恢复到上一版)/i.test(q))
+		add(["rollback", "revert"]);
 	if (/(github|GitHub|git hub)/i.test(q)) add(["github", "git"]);
 	if (/(仓库|repo|repository)/i.test(q)) add(["repo", "repository"]);
 	if (/(分支|branch)/i.test(q)) add(["branch"]);
