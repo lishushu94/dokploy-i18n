@@ -1,0 +1,1 @@
+ALTER TABLE "ai" ADD COLUMN IF NOT EXISTS "providerType" text DEFAULT 'auto' NOT NULL;

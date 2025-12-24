@@ -158,9 +158,7 @@ export const HandleSSHKeys = ({ sshKeyId }: Props) => {
 				<DialogHeader>
 					<DialogTitle>{t("settings.sshKeys.handle.title")}</DialogTitle>
 					<DialogDescription className="space-y-4">
-						<div>
-							{t("settings.sshKeys.handle.description")}
-						</div>
+						<div>{t("settings.sshKeys.handle.description")}</div>
 						{!sshKeyId && (
 							<div className="flex gap-4">
 								<Button

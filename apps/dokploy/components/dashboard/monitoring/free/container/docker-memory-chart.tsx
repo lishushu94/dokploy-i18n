@@ -93,9 +93,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 					</p>
 				)}
 
-				<p>
-					{t("monitoring.chart.memoryUsage", { usage: usageWithUnit })}
-				</p>
+				<p>{t("monitoring.chart.memoryUsage", { usage: usageWithUnit })}</p>
 			</div>
 		);
 	}

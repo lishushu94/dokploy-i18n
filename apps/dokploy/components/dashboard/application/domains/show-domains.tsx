@@ -244,7 +244,9 @@ export const ShowDomains = ({ id, type }: Props) => {
 														</AddDomain>
 														<DialogAction
 															title={t("application.domains.delete.title")}
-															description={t("application.domains.delete.description")}
+															description={t(
+																"application.domains.delete.description",
+															)}
 															type="destructive"
 															onClick={async () => {
 																await deleteDomain({
@@ -337,8 +339,12 @@ export const ShowDomains = ({ id, type }: Props) => {
 															<TooltipContent>
 																<p>
 																	{item.https
-																		? t("application.domains.badge.https.tooltip")
-																		: t("application.domains.badge.http.tooltip")}
+																		? t(
+																				"application.domains.badge.https.tooltip",
+																			)
+																		: t(
+																				"application.domains.badge.http.tooltip",
+																			)}
 																</p>
 															</TooltipContent>
 														</Tooltip>
@@ -356,7 +362,9 @@ export const ShowDomains = ({ id, type }: Props) => {
 																</TooltipTrigger>
 																<TooltipContent>
 																	<p>
-																		{t("application.domains.badge.cert.tooltip")}
+																		{t(
+																			"application.domains.badge.cert.tooltip",
+																		)}
 																	</p>
 																</TooltipContent>
 															</Tooltip>
@@ -382,17 +390,25 @@ export const ShowDomains = ({ id, type }: Props) => {
 																	{validationState?.isLoading ? (
 																		<>
 																			<Loader2 className="size-3 mr-1 animate-spin" />
-																			{t("application.domains.dns.status.checking")}
+																			{t(
+																				"application.domains.dns.status.checking",
+																			)}
 																		</>
 																	) : validationState?.isValid ? (
 																		<>
 																			<CheckCircle2 className="size-3 mr-1" />
 																			{validationState.message &&
 																			validationState.cdnProvider
-																				? t("application.domains.dns.status.behindCdn", {
-																					provider: validationState.cdnProvider,
-																				})
-																				: t("application.domains.dns.status.valid")}
+																				? t(
+																						"application.domains.dns.status.behindCdn",
+																						{
+																							provider:
+																								validationState.cdnProvider,
+																						},
+																					)
+																				: t(
+																						"application.domains.dns.status.valid",
+																					)}
 																		</>
 																	) : validationState?.error ? (
 																		<>
@@ -402,7 +418,9 @@ export const ShowDomains = ({ id, type }: Props) => {
 																	) : (
 																		<>
 																			<RefreshCw className="size-3 mr-1" />
-																			{t("application.domains.dns.status.validate")}
+																			{t(
+																				"application.domains.dns.status.validate",
+																			)}
 																		</>
 																	)}
 																</Badge>
@@ -411,13 +429,17 @@ export const ShowDomains = ({ id, type }: Props) => {
 																{validationState?.error ? (
 																	<div className="flex flex-col gap-1">
 																		<p className="font-medium text-red-500">
-																			{t("application.domains.dns.tooltip.errorTitle")}
+																			{t(
+																				"application.domains.dns.tooltip.errorTitle",
+																			)}
 																		</p>
 																		<p>{validationState.error}</p>
 																	</div>
 																) : (
 																	<p>
-																		{t("application.domains.dns.tooltip.validate")}
+																		{t(
+																			"application.domains.dns.tooltip.validate",
+																		)}
 																	</p>
 																)}
 															</TooltipContent>

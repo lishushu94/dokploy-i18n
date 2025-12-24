@@ -41,13 +41,9 @@ export const StepOne = ({ setTemplateInfo, templateInfo }: any) => {
 		<div className="flex flex-col h-full gap-4">
 			<div className="">
 				<div className="space-y-4 ">
-					<h2 className="text-lg font-semibold">
-						{t("ai.stepOne.title")}
-					</h2>
+					<h2 className="text-lg font-semibold">{t("ai.stepOne.title")}</h2>
 					<div className="space-y-2">
-						<Label htmlFor="user-needs">
-							{t("ai.stepOne.describeLabel")}
-						</Label>
+						<Label htmlFor="user-needs">{t("ai.stepOne.describeLabel")}</Label>
 						<Textarea
 							id="user-needs"
 							placeholder={t("ai.stepOne.textareaPlaceholder")}
@@ -89,7 +85,9 @@ export const StepOne = ({ setTemplateInfo, templateInfo }: any) => {
 								<SelectTrigger className="w-full">
 									<SelectValue
 										placeholder={
-											!isCloud ? "Dokploy" : t("ai.stepOne.serverDropdown.placeholderCloud")
+											!isCloud
+												? "Dokploy"
+												: t("ai.stepOne.serverDropdown.placeholderCloud")
 										}
 									/>
 								</SelectTrigger>

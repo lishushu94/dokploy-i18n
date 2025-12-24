@@ -197,9 +197,7 @@ export const AddCompose = ({ environmentId, projectName }: Props) => {
 													align="start"
 													side="top"
 												>
-													<span>
-														{t("service.serverDropdown.description")}
-													</span>
+													<span>{t("service.serverDropdown.description")}</span>
 												</TooltipContent>
 											</Tooltip>
 										</TooltipProvider>
@@ -224,7 +222,9 @@ export const AddCompose = ({ environmentId, projectName }: Props) => {
 													{!isCloud && (
 														<SelectItem value="dokploy">
 															<span className="flex items-center gap-2 justify-between w-full">
-																<span>{t("services.filter.server.dokploy")}</span>
+																<span>
+																	{t("services.filter.server.dokploy")}
+																</span>
 																<span className="text-muted-foreground text-xs self-center">
 																	{t("service.form.defaultServerSuffix")}
 																</span>
@@ -286,9 +286,7 @@ export const AddCompose = ({ environmentId, projectName }: Props) => {
 										<FormControl>
 											<SelectTrigger>
 												<SelectValue
-													placeholder={t(
-														"compose.form.composeTypePlaceholder",
-													)}
+													placeholder={t("compose.form.composeTypePlaceholder")}
 												/>
 											</SelectTrigger>
 										</FormControl>

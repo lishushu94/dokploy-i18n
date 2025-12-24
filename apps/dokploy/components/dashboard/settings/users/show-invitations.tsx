@@ -2,8 +2,8 @@ import copy from "copy-to-clipboard";
 import { format, isPast } from "date-fns";
 import { enUS, zhCN, zhTW } from "date-fns/locale";
 import { Loader2, Mail, MoreHorizontal, Users } from "lucide-react";
-import { toast } from "sonner";
 import { useTranslation } from "next-i18next";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -132,8 +132,10 @@ export const ShowInvitations = () => {
 																			: "secondary"
 																	}
 																>
-																	{roleLabels[invitation.role] ||
-																		invitation.role}
+																	{invitation.role
+																		? (roleLabels[invitation.role] ??
+																			invitation.role)
+																		: "-"}
 																</Badge>
 															</TableCell>
 															<TableCell className="text-center">
@@ -146,14 +148,20 @@ export const ShowInvitations = () => {
 																				: "default"
 																	}
 																>
-																	{statusLabels[invitation.status] ||
-																		invitation.status}
+																	{invitation.status
+																		? (statusLabels[invitation.status] ??
+																			invitation.status)
+																		: "-"}
 																</Badge>
 															</TableCell>
 															<TableCell className="text-center">
-																{format(new Date(invitation.expiresAt), "PPpp", {
-																	locale,
-																})}{" "}
+																{format(
+																	new Date(invitation.expiresAt),
+																	"PPpp",
+																	{
+																		locale,
+																	},
+																)}{" "}
 																{isExpired ? (
 																	<span className="text-muted-foreground">
 																		{t("settings.invitations.status.expired")}
@@ -188,11 +196,15 @@ export const ShowInvitations = () => {
 																								`${origin}/invitation?token=${invitation.id}`,
 																							);
 																							toast.success(
-																								t("settings.invitations.actions.copy.toast"),
+																								t(
+																									"settings.invitations.actions.copy.toast",
+																								),
 																							);
 																						}}
 																					>
-																						{t("settings.invitations.actions.copy.label")}
+																						{t(
+																							"settings.invitations.actions.copy.label",
+																						)}
 																					</DropdownMenuItem>
 																				)}
 
@@ -208,16 +220,22 @@ export const ShowInvitations = () => {
 																								);
 
 																							if (result.error) {
-																								toast.error(result.error.message);
+																								toast.error(
+																									result.error.message,
+																								);
 																							} else {
 																								toast.success(
-																									t("settings.invitations.actions.cancel.success"),
+																									t(
+																										"settings.invitations.actions.cancel.success",
+																									),
 																								);
 																								refetch();
 																							}
 																						}}
 																					>
-																						{t("settings.invitations.actions.cancel.label")}
+																						{t(
+																							"settings.invitations.actions.cancel.label",
+																						)}
 																					</DropdownMenuItem>
 																				)}
 																			</>
@@ -230,12 +248,16 @@ export const ShowInvitations = () => {
 																				}).then(() => {
 																					refetch();
 																					toast.success(
-																						t("settings.invitations.actions.remove.success"),
+																						t(
+																							"settings.invitations.actions.remove.success",
+																						),
 																					);
 																				});
 																			}}
 																		>
-																			{t("settings.invitations.actions.remove.label")}
+																			{t(
+																				"settings.invitations.actions.remove.label",
+																			)}
 																		</DropdownMenuItem>
 																	</DropdownMenuContent>
 																</DropdownMenu>

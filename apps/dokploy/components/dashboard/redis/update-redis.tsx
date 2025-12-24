@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PenBoxIcon } from "lucide-react";
-import { useEffect } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -103,7 +103,9 @@ export const UpdateRedis = ({ redisId }: Props) => {
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>{t("database.redis.update.dialogTitle")}</DialogTitle>
-					<DialogDescription>{t("database.redis.update.dialogDescription")}</DialogDescription>
+					<DialogDescription>
+						{t("database.redis.update.dialogDescription")}
+					</DialogDescription>
 				</DialogHeader>
 				{isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
 

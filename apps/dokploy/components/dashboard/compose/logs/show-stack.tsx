@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { badgeStateColor } from "@/components/dashboard/application/logs/show";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +116,9 @@ export const ShowDockerLogsStack = ({ appName, serverId }: Props) => {
 								<Loader2 className="animate-spin size-4" />
 							</div>
 						) : (
-							<SelectValue placeholder={t("monitoring.compose.selectPlaceholder")} />
+							<SelectValue
+								placeholder={t("monitoring.compose.selectPlaceholder")}
+							/>
 						)}
 					</SelectTrigger>
 					<SelectContent>

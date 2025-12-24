@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react";
 import { api } from "@/utils/api";
 
 export function TimeBadge() {

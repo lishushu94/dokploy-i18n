@@ -77,9 +77,7 @@ const createBackupSchema = (t: (key: string) => string) =>
 			schedule: z
 				.string()
 				.min(1, t("backups.handle.validation.scheduleRequired")),
-			prefix: z
-				.string()
-				.min(1, t("backups.handle.validation.prefixRequired")),
+			prefix: z.string().min(1, t("backups.handle.validation.prefixRequired")),
 			enabled: z.boolean(),
 			database: z
 				.string()
@@ -143,9 +141,7 @@ const createBackupSchema = (t: (key: string) => string) =>
 					if (!data.metadata?.postgres?.databaseUser) {
 						ctx.addIssue({
 							code: z.ZodIssueCode.custom,
-							message: t(
-								"backups.restore.validation.postgresUserRequired",
-							),
+							message: t("backups.restore.validation.postgresUserRequired"),
 							path: ["metadata", "postgres", "databaseUser"],
 						});
 					}
@@ -153,18 +149,14 @@ const createBackupSchema = (t: (key: string) => string) =>
 					if (!data.metadata?.mariadb?.databaseUser) {
 						ctx.addIssue({
 							code: z.ZodIssueCode.custom,
-							message: t(
-								"backups.restore.validation.mariadbUserRequired",
-							),
+							message: t("backups.restore.validation.mariadbUserRequired"),
 							path: ["metadata", "mariadb", "databaseUser"],
 						});
 					}
 					if (!data.metadata?.mariadb?.databasePassword) {
 						ctx.addIssue({
 							code: z.ZodIssueCode.custom,
-							message: t(
-								"backups.restore.validation.mariadbPasswordRequired",
-							),
+							message: t("backups.restore.validation.mariadbPasswordRequired"),
 							path: ["metadata", "mariadb", "databasePassword"],
 						});
 					}
@@ -172,18 +164,14 @@ const createBackupSchema = (t: (key: string) => string) =>
 					if (!data.metadata?.mongo?.databaseUser) {
 						ctx.addIssue({
 							code: z.ZodIssueCode.custom,
-							message: t(
-								"backups.restore.validation.mongoUserRequired",
-							),
+							message: t("backups.restore.validation.mongoUserRequired"),
 							path: ["metadata", "mongo", "databaseUser"],
 						});
 					}
 					if (!data.metadata?.mongo?.databasePassword) {
 						ctx.addIssue({
 							code: z.ZodIssueCode.custom,
-							message: t(
-								"backups.restore.validation.mongoPasswordRequired",
-							),
+							message: t("backups.restore.validation.mongoPasswordRequired"),
 							path: ["metadata", "mongo", "databasePassword"],
 						});
 					}
@@ -582,9 +570,7 @@ export const HandleBackup = ({
 																sideOffset={5}
 																className="max-w-[10rem]"
 															>
-																<p>
-																	{t("backups.restore.tooltip.fetch")}
-																</p>
+																<p>{t("backups.restore.tooltip.fetch")}</p>
 															</TooltipContent>
 														</Tooltip>
 													</TooltipProvider>
@@ -611,9 +597,7 @@ export const HandleBackup = ({
 																sideOffset={5}
 																className="max-w-[10rem]"
 															>
-																<p>
-																	{t("backups.restore.tooltip.cache")}
-																</p>
+																<p>{t("backups.restore.tooltip.cache")}</p>
 															</TooltipContent>
 														</Tooltip>
 													</TooltipProvider>
@@ -631,9 +615,7 @@ export const HandleBackup = ({
 								render={({ field }) => {
 									return (
 										<FormItem>
-											<FormLabel>
-												{t("backups.field.database")}
-											</FormLabel>
+											<FormLabel>{t("backups.field.database")}</FormLabel>
 											<FormControl>
 												<Input
 													disabled={databaseType === "web-server"}
@@ -655,12 +637,12 @@ export const HandleBackup = ({
 								render={({ field }) => {
 									return (
 										<FormItem>
-											<FormLabel>
-												{t("backups.field.prefixStorage")}
-											</FormLabel>
+											<FormLabel>{t("backups.field.prefixStorage")}</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("backups.field.prefixStoragePlaceholder")}
+													placeholder={t(
+														"backups.field.prefixStoragePlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -679,9 +661,7 @@ export const HandleBackup = ({
 								render={({ field }) => {
 									return (
 										<FormItem>
-											<FormLabel>
-												{t("backups.field.keepLatest")}
-											</FormLabel>
+											<FormLabel>{t("backups.field.keepLatest")}</FormLabel>
 											<FormControl>
 												<Input
 													type="number"
@@ -734,9 +714,12 @@ export const HandleBackup = ({
 													</FormLabel>
 													<FormControl>
 														<Input
-															placeholder={t("database.form.databaseUserPlaceholder", {
-																defaultUser: "postgres",
-															})}
+															placeholder={t(
+																"database.form.databaseUserPlaceholder",
+																{
+																	defaultUser: "postgres",
+																},
+															)}
 															{...field}
 														/>
 													</FormControl>

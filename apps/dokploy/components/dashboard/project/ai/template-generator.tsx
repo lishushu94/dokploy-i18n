@@ -1,7 +1,7 @@
 import { defineStepper } from "@stepperize/react";
 import { Bot } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { AlertBlock } from "@/components/shared/alert-block";
@@ -170,9 +170,7 @@ export const TemplateGenerator = ({ environmentId }: Props) => {
 				</DialogHeader>
 				<div className="grid gap-4">
 					<div className="flex justify-between">
-						<h2 className="text-lg font-semibold">
-							{t("ai.steps.title")}
-						</h2>
+						<h2 className="text-lg font-semibold">{t("ai.steps.title")}</h2>
 						<div className="flex items-center gap-2">
 							<span className="text-sm text-muted-foreground">
 								{t("ai.steps.progress", {
@@ -233,7 +231,7 @@ export const TemplateGenerator = ({ environmentId }: Props) => {
 											<div className="flex flex-col w-full">
 												<span>{t("ai.settings.notEnabled")}</span>
 												<span>
-													{t("ai.settings.enablePrefix")} {" "}
+													{t("ai.settings.enablePrefix")}{" "}
 													<Link
 														href="/dashboard/settings/ai"
 														className="font-medium underline underline-offset-4"

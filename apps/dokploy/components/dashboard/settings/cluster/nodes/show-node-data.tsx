@@ -1,5 +1,5 @@
-import { CodeEditor } from "@/components/shared/code-editor";
 import { useTranslation } from "next-i18next";
+import { CodeEditor } from "@/components/shared/code-editor";
 import {
 	Dialog,
 	DialogContent,
@@ -28,9 +28,7 @@ export const ShowNodeData = ({ data }: Props) => {
 			</DialogTrigger>
 			<DialogContent className={"sm:max-w-5xl"}>
 				<DialogHeader>
-					<DialogTitle>
-						{t("settings.cluster.nodes.config.title")}
-					</DialogTitle>
+					<DialogTitle>{t("settings.cluster.nodes.config.title")}</DialogTitle>
 					<DialogDescription>
 						{t("settings.cluster.nodes.config.description")}
 					</DialogDescription>

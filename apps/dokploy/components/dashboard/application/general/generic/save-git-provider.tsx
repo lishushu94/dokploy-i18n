@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRoundIcon, LockIcon, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -46,9 +46,7 @@ const createSchema = (t: (key: string) => string) =>
 		repositoryURL: z.string().min(1, {
 			message: t("application.git.validation.repositoryUrlRequired"),
 		}),
-		branch: z
-			.string()
-			.min(1, t("application.git.validation.branchRequired")),
+		branch: z.string().min(1, t("application.git.validation.branchRequired")),
 		sshKey: z.string().optional(),
 		watchPaths: z.array(z.string()).optional(),
 		enableSubmodules: z.boolean().default(false),
@@ -148,7 +146,9 @@ export const SaveGitProvider = ({ applicationId }: Props) => {
 										</div>
 										<FormControl>
 											<Input
-												placeholder={t("application.git.repositoryUrlPlaceholder")}
+												placeholder={t(
+													"application.git.repositoryUrlPlaceholder",
+												)}
 												{...field}
 											/>
 										</FormControl>

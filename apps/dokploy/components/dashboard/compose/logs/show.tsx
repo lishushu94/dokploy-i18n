@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { badgeStateColor } from "@/components/dashboard/application/logs/show";
 import { Badge } from "@/components/ui/badge";

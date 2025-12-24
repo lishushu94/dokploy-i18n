@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
-import { useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -80,9 +80,7 @@ export const DockerTerminalModal = ({
 				<Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
 					<DialogContent onEscapeKeyDown={(event) => event.preventDefault()}>
 						<DialogHeader>
-							<DialogTitle>
-								{t("terminal.close.confirmTitle")}
-							</DialogTitle>
+							<DialogTitle>{t("terminal.close.confirmTitle")}</DialogTitle>
 							<DialogDescription>
 								{t("terminal.close.confirmDescription")}
 							</DialogDescription>

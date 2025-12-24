@@ -147,7 +147,9 @@ export const SaveGitProviderCompose = ({ composeId }: Props) => {
 										</div>
 										<FormControl>
 											<Input
-												placeholder={t("application.git.repositoryUrlPlaceholder")}
+												placeholder={t(
+													"application.git.repositoryUrlPlaceholder",
+												)}
 												{...field}
 											/>
 										</FormControl>
@@ -209,7 +211,8 @@ export const SaveGitProviderCompose = ({ composeId }: Props) => {
 								onClick={() => router.push("/dashboard/settings/ssh-keys")}
 								type="button"
 							>
-								<KeyRoundIcon className="size-4" /> {t("application.git.button.addSshKey")}
+								<KeyRoundIcon className="size-4" />{" "}
+								{t("application.git.button.addSshKey")}
 							</Button>
 						)}
 					</div>
@@ -237,9 +240,7 @@ export const SaveGitProviderCompose = ({ composeId }: Props) => {
 						name="composePath"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>
-									{t("compose.git.form.composePathLabel")}
-								</FormLabel>
+								<FormLabel>{t("compose.git.form.composePathLabel")}</FormLabel>
 								<FormControl>
 									<Input
 										placeholder={t("compose.git.form.composePathPlaceholder")}
@@ -257,9 +258,7 @@ export const SaveGitProviderCompose = ({ composeId }: Props) => {
 						render={({ field }) => (
 							<FormItem className="md:col-span-2">
 								<div className="flex items-center gap-2">
-									<FormLabel>
-										{t("application.git.watchPathsLabel")}
-									</FormLabel>
+									<FormLabel>{t("application.git.watchPathsLabel")}</FormLabel>
 									<TooltipProvider>
 										<Tooltip>
 											<TooltipTrigger>

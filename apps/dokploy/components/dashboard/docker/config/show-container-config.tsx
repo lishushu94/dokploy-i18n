@@ -1,5 +1,5 @@
-import { CodeEditor } from "@/components/shared/code-editor";
 import { useTranslation } from "next-i18next";
+import { CodeEditor } from "@/components/shared/code-editor";
 import {
 	Dialog,
 	DialogContent,

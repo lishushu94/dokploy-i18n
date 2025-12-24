@@ -29,9 +29,13 @@ export const ShowGeneralCompose = ({ composeId }: Props) => {
 			<Card className="bg-background">
 				<CardHeader>
 					<div className="flex flex-row gap-2 justify-between flex-wrap">
-						<CardTitle className="text-xl">{t("compose.deploySettings.title")}</CardTitle>
+						<CardTitle className="text-xl">
+							{t("compose.deploySettings.title")}
+						</CardTitle>
 						<Badge>
-							{data?.composeType === "docker-compose" ? t("compose.deploySettings.composeType.compose") : t("compose.deploySettings.composeType.stack")}
+							{data?.composeType === "docker-compose"
+								? t("compose.deploySettings.composeType.compose")
+								: t("compose.deploySettings.composeType.stack")}
 						</Badge>
 					</div>
 

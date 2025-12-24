@@ -194,9 +194,7 @@ export const ScheduleFormField = ({
 						<div className="relative">
 							<FormControl>
 								<Input
-									placeholder={t(
-										"schedules.form.scheduleCustomPlaceholder",
-									)}
+									placeholder={t("schedules.form.scheduleCustomPlaceholder")}
 									{...field}
 									onChange={(e) => {
 										const value = e.target.value;
@@ -320,9 +318,7 @@ export const HandleSchedules = ({ id, scheduleId, scheduleType }: Props) => {
 			})
 			.catch((error) => {
 				toast.error(
-					error instanceof Error
-						? error.message
-						: t("common.unknownError"),
+					error instanceof Error ? error.message : t("common.unknownError"),
 				);
 			});
 	};
@@ -355,8 +351,8 @@ export const HandleSchedules = ({ id, scheduleId, scheduleType }: Props) => {
 				<DialogHeader>
 					<DialogTitle>
 						{scheduleId
-							?t("schedules.dialog.updateTitle")
-							:t("schedules.dialog.createTitle")}
+							? t("schedules.dialog.updateTitle")
+							: t("schedules.dialog.createTitle")}
 					</DialogTitle>
 					<DialogDescription>
 						{t("schedules.dialog.description")}
@@ -434,9 +430,7 @@ export const HandleSchedules = ({ id, scheduleId, scheduleType }: Props) => {
 															sideOffset={5}
 															className="max-w-[10rem]"
 														>
-															<p>
-																{t("schedules.form.fetchTooltip")}
-															</p>
+															<p>{t("schedules.form.fetchTooltip")}</p>
 														</TooltipContent>
 													</Tooltip>
 												</TooltipProvider>
@@ -463,9 +457,7 @@ export const HandleSchedules = ({ id, scheduleId, scheduleType }: Props) => {
 															sideOffset={5}
 															className="max-w-[10rem]"
 														>
-															<p>
-																{t("schedules.form.cacheTooltip")}
-															</p>
+															<p>{t("schedules.form.cacheTooltip")}</p>
 														</TooltipContent>
 													</Tooltip>
 												</TooltipProvider>
@@ -576,9 +568,7 @@ export const HandleSchedules = ({ id, scheduleId, scheduleType }: Props) => {
 								name="script"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("schedules.form.scriptLabel")}
-										</FormLabel>
+										<FormLabel>{t("schedules.form.scriptLabel")}</FormLabel>
 										<FormControl>
 											<FormControl>
 												<CodeEditor

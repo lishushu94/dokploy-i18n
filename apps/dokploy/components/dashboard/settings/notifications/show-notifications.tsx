@@ -111,7 +111,9 @@ export const ShowNotifications = () => {
 
 															<DialogAction
 																title={t("settings.notifications.delete.title")}
-																description={t("settings.notifications.delete.description")}
+																description={t(
+																	"settings.notifications.delete.description",
+																)}
 																type="destructive"
 																onClick={async () => {
 																	await mutateAsync({
@@ -119,13 +121,17 @@ export const ShowNotifications = () => {
 																	})
 																		.then(() => {
 																			toast.success(
-																				t("settings.notifications.delete.success"),
+																				t(
+																					"settings.notifications.delete.success",
+																				),
 																			);
 																			refetch();
 																		})
 																		.catch(() => {
 																			toast.error(
-																				t("settings.notifications.delete.error"),
+																				t(
+																					"settings.notifications.delete.error",
+																				),
 																			);
 																		});
 																}}

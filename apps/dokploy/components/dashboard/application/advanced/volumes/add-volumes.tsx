@@ -48,9 +48,7 @@ interface Props {
 
 const mountSchema = (t: (key: string) => string) =>
 	z.object({
-		mountPath: z
-			.string()
-			.min(1, t("volumes.validation.mountPathRequired")),
+		mountPath: z.string().min(1, t("volumes.validation.mountPathRequired")),
 	});
 
 const createSchema = (t: (key: string) => string) =>
@@ -58,9 +56,7 @@ const createSchema = (t: (key: string) => string) =>
 		z
 			.object({
 				type: z.literal("bind"),
-				hostPath: z
-					.string()
-					.min(1, t("volumes.validation.hostPathRequired")),
+				hostPath: z.string().min(1, t("volumes.validation.hostPathRequired")),
 			})
 			.merge(mountSchema(t)),
 		z
@@ -78,9 +74,7 @@ const createSchema = (t: (key: string) => string) =>
 		z
 			.object({
 				type: z.literal("file"),
-				filePath: z
-					.string()
-					.min(1, t("volumes.validation.filePathRequired")),
+				filePath: z.string().min(1, t("volumes.validation.filePathRequired")),
 				content: z.string().optional(),
 			})
 			.merge(mountSchema(t)),
@@ -191,9 +185,7 @@ export const AddVolumes = ({
 						{type === "bind" && (
 							<AlertBlock>
 								<div className="space-y-2">
-									<p>
-										{t("volumes.alert.bindHostPath")}
-									</p>
+									<p>{t("volumes.alert.bindHostPath")}</p>
 									<p className="text-sm text-muted-foreground">
 										<strong>{t("volumes.alert.clusterWarningTitle")}</strong>
 										{t("volumes.alert.clusterWarningBody")}
@@ -314,10 +306,14 @@ export const AddVolumes = ({
 										name="volumeName"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>{t("volumes.form.volumeNameLabel")}</FormLabel>
+												<FormLabel>
+													{t("volumes.form.volumeNameLabel")}
+												</FormLabel>
 												<FormControl>
 													<Input
-														placeholder={t("volumes.form.volumeNamePlaceholder")}
+														placeholder={t(
+															"volumes.form.volumeNamePlaceholder",
+														)}
 														{...field}
 														value={field.value || ""}
 													/>
@@ -335,12 +331,16 @@ export const AddVolumes = ({
 											name="content"
 											render={({ field }) => (
 												<FormItem className="max-w-full max-w-[45rem]">
-													<FormLabel>{t("volumes.form.contentLabel")}</FormLabel>
+													<FormLabel>
+														{t("volumes.form.contentLabel")}
+													</FormLabel>
 													<FormControl>
 														<FormControl>
 															<CodeEditor
 																language="properties"
-																placeholder={t("volumes.form.contentPlaceholder")}
+																placeholder={t(
+																	"volumes.form.contentPlaceholder",
+																)}
 																className="h-96 font-mono "
 																{...field}
 															/>
@@ -355,11 +355,15 @@ export const AddVolumes = ({
 											name="filePath"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>{t("volumes.form.filePathLabel")}</FormLabel>
+													<FormLabel>
+														{t("volumes.form.filePathLabel")}
+													</FormLabel>
 													<FormControl>
 														<FormControl>
 															<Input
-																placeholder={t("volumes.form.filePathPlaceholder")}
+																placeholder={t(
+																	"volumes.form.filePathPlaceholder",
+																)}
 																{...field}
 															/>
 														</FormControl>
@@ -376,7 +380,9 @@ export const AddVolumes = ({
 										name="mountPath"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>{t("volumes.form.mountPathLabel")}</FormLabel>
+												<FormLabel>
+													{t("volumes.form.mountPathLabel")}
+												</FormLabel>
 												<FormControl>
 													<Input
 														placeholder={t("volumes.form.mountPathPlaceholder")}

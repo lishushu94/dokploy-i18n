@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import {
 	Tooltip,
 	TooltipContent,
@@ -5,11 +6,11 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useTranslation } from "next-i18next";
 
 interface Props {
 	status:
 		| "running"
+		| "queued"
 		| "error"
 		| "done"
 		| "idle"
@@ -26,6 +27,14 @@ export const StatusTooltip = ({ status, className }: Props) => {
 		<TooltipProvider delayDuration={0}>
 			<Tooltip>
 				<TooltipTrigger>
+					{status === "queued" && (
+						<div
+							className={cn(
+								"size-3.5 rounded-full bg-muted-foreground dark:bg-card",
+								className,
+							)}
+						/>
+					)}
 					{status === "idle" && (
 						<div
 							className={cn(
@@ -60,6 +69,7 @@ export const StatusTooltip = ({ status, className }: Props) => {
 				</TooltipTrigger>
 				<TooltipContent align="center">
 					<span>
+						{status === "queued" && t("status.pending")}
 						{status === "idle" && t("status.idle")}
 						{status === "error" && t("status.error")}
 						{status === "done" && t("status.done")}

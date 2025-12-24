@@ -164,7 +164,9 @@ export const ShowGitProviders = () => {
 																gitProvider.bitbucket?.appPassword &&
 																!gitProvider.bitbucket?.apiToken ? (
 																	<Badge variant="yellow">
-																		{t("settings.gitProviders.bitbucket.deprecatedBadge")}
+																		{t(
+																			"settings.gitProviders.bitbucket.deprecatedBadge",
+																		)}
 																	</Badge>
 																) : null}
 
@@ -254,7 +256,9 @@ export const ShowGitProviders = () => {
 
 																<DialogAction
 																	title={t("settings.git.delete.title")}
-																	description={t("settings.git.delete.description")}
+																	description={t(
+																		"settings.git.delete.description",
+																	)}
 																	type="destructive"
 																	onClick={async () => {
 																		await mutateAsync({

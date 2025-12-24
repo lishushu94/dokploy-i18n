@@ -14,9 +14,7 @@ import { ShowDockerModalLogs } from "../logs/show-docker-modal-logs";
 import { DockerTerminalModal } from "../terminal/docker-terminal-modal";
 import type { Container } from "./show-containers";
 
-export const createColumns = (
-	t: TFunction,
-): ColumnDef<Container>[] => [
+export const createColumns = (t: TFunction): ColumnDef<Container>[] => [
 	{
 		accessorKey: "name",
 		header: ({ column }) => {
@@ -90,7 +88,7 @@ export const createColumns = (
 			const match = value.match(
 				/^(Up|Exited|Paused|Restarting|Created|Removing|Dead)(.*)$/i,
 			);
-			
+
 			if (!match?.[1]) {
 				return <div className="capitalize">{value}</div>;
 			}

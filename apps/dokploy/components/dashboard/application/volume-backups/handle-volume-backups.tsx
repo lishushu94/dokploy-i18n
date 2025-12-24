@@ -44,22 +44,25 @@ import { api } from "@/utils/api";
 import type { CacheType } from "../domains/handle-domain";
 import { ScheduleFormField } from "../schedules/handle-schedules";
 
-const formSchema = z
+const createFormSchema = (t: (key: string) => string) =>
+	z
 	.object({
-		name: z.string().min(1, "Name is required"),
-		cronExpression: z.string().min(1, "Cron expression is required"),
+			name: z.string().min(1, t("volumeBackups.validation.nameRequired")),
+			cronExpression: z
+				.string()
+				.min(1, t("volumeBackups.validation.cronRequired")),
 		volumeName: z
 			.string()
-			.min(1, "Volume name is required")
+				.min(1, t("volumeBackups.validation.volumeNameRequired"))
 			.regex(
 				/^[a-zA-Z0-9][a-zA-Z0-9_.-]*$/,
-				"Invalid volume name. Use letters, numbers, '._-' and start with a letter/number.",
+					t("volumeBackups.validation.volumeNameInvalid"),
 			),
 		prefix: z.string(),
 		keepLatestCount: z.coerce
 			.number()
 			.int()
-			.gte(1, "Must be at least 1")
+				.gte(1, t("volumeBackups.validation.keepLatestMin"))
 			.optional()
 			.nullable(),
 		turnOff: z.boolean().default(false),
@@ -74,21 +77,15 @@ const formSchema = z
 			"redis",
 		]),
 		serviceName: z.string(),
-		destinationId: z.string().min(1, "Destination required"),
+			destinationId: z
+				.string()
+				.min(1, t("volumeBackups.validation.destinationRequired")),
 	})
 	.superRefine((data, ctx) => {
 		if (data.serviceType === "compose" && !data.serviceName) {
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
-				message: "Service name is required",
-				path: ["serviceName"],
-			});
-		}
-
-		if (data.serviceType === "compose" && !data.serviceName) {
-			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: "Service name is required",
+					message: t("volumeBackups.validation.serviceNameRequired"),
 				path: ["serviceName"],
 			});
 		}
@@ -118,6 +115,7 @@ export const HandleVolumeBackups = ({
 	const [keepLatestCountInput, setKeepLatestCountInput] = useState("");
 
 	const utils = api.useUtils();
+	const formSchema = createFormSchema(t);
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {

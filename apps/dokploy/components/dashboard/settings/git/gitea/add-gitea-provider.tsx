@@ -104,9 +104,7 @@ export const AddGiteaProvider = () => {
 
 			// Check if we have a giteaId from the response
 			if (!result || !result.giteaId) {
-				toast.error(
-					t("settings.gitProviders.gitea.add.toast.noId"),
-				);
+				toast.error(t("settings.gitProviders.gitea.add.toast.noId"));
 				return;
 			}
 
@@ -132,9 +130,7 @@ export const AddGiteaProvider = () => {
 				);
 			}
 
-			toast.success(
-					t("settings.gitProviders.gitea.add.toast.success"),
-				);
+			toast.success(t("settings.gitProviders.gitea.add.toast.success"));
 			setIsOpen(false);
 		} catch (error: unknown) {
 			if (error instanceof Error) {
@@ -144,9 +140,7 @@ export const AddGiteaProvider = () => {
 					}),
 				);
 			} else {
-				toast.error(
-					t("settings.gitProviders.gitea.add.toast.unknownError"),
-				);
+				toast.error(t("settings.gitProviders.gitea.add.toast.unknownError"));
 			}
 		}
 	};
@@ -165,7 +159,8 @@ export const AddGiteaProvider = () => {
 			<DialogContent className="sm:max-w-2xl">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						{t("settings.gitProviders.gitea.add.title")} <GiteaIcon className="size-5" />
+						{t("settings.gitProviders.gitea.add.title")}{" "}
+						<GiteaIcon className="size-5" />
 					</DialogTitle>
 				</DialogHeader>
 
@@ -183,13 +178,13 @@ export const AddGiteaProvider = () => {
 								</p>
 								<ol className="list-decimal list-inside text-sm text-muted-foreground">
 									<li className="flex flex-row gap-2 items-center">
-										{t("settings.gitProviders.gitea.add.steps.goToSettings")} {" "}
+										{t("settings.gitProviders.gitea.add.steps.goToSettings")}{" "}
 										<Link
-												href={`${giteaUrl}/user/settings/applications`}
-												target="_blank"
-											>
-												<ExternalLink className="w-fit text-primary size-4" />
-											</Link>
+											href={`${giteaUrl}/user/settings/applications`}
+											target="_blank"
+										>
+											<ExternalLink className="w-fit text-primary size-4" />
+										</Link>
 									</li>
 									<li>
 										{t(

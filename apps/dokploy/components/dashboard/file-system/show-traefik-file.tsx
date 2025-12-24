@@ -73,8 +73,7 @@ export const ShowTraefikFile = ({ path, serverId }: Props) => {
 		if (!valid) {
 			form.setError("traefikConfig", {
 				type: "manual",
-				message:
-					error || t("traefik.config.error.invalidYaml"),
+				message: error || t("traefik.config.error.invalidYaml"),
 			});
 			return;
 		}
@@ -85,9 +84,7 @@ export const ShowTraefikFile = ({ path, serverId }: Props) => {
 			serverId,
 		})
 			.then(async () => {
-				toast.success(
-															t("traefik.config.toast.updateSuccess"),
-														);
+				toast.success(t("traefik.config.toast.updateSuccess"));
 				refetch();
 			})
 			.catch(() => {
@@ -117,9 +114,7 @@ export const ShowTraefikFile = ({ path, serverId }: Props) => {
 								name="traefikConfig"
 								render={({ field }) => (
 									<FormItem className="relative">
-										<FormLabel>
-											{t("traefik.config.label")}
-										</FormLabel>
+										<FormLabel>{t("traefik.config.label")}</FormLabel>
 										<FormDescription className="break-all">
 											{path}
 										</FormDescription>

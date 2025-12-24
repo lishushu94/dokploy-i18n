@@ -38,14 +38,10 @@ const createSchema = (t: (key: string) => string) =>
 			message: t("settings.gitProviders.validation.gitlabUrlRequired"),
 		}),
 		applicationId: z.string().min(1, {
-			message: t(
-				"settings.gitProviders.validation.applicationIdRequired",
-			),
+			message: t("settings.gitProviders.validation.applicationIdRequired"),
 		}),
 		applicationSecret: z.string().min(1, {
-			message: t(
-				"settings.gitProviders.validation.applicationSecretRequired",
-			),
+			message: t("settings.gitProviders.validation.applicationSecretRequired"),
 		}),
 
 		redirectUri: z.string().min(1, {
@@ -103,15 +99,11 @@ export const AddGitlabProvider = () => {
 		})
 			.then(async () => {
 				await utils.gitProvider.getAll.invalidate();
-				toast.success(
-										t("settings.gitProviders.gitlab.add.toast.success"),
-									);
+				toast.success(t("settings.gitProviders.gitlab.add.toast.success"));
 				setIsOpen(false);
 			})
 			.catch(() => {
-				toast.error(
-								t("settings.gitProviders.gitlab.add.toast.error"),
-						);
+				toast.error(t("settings.gitProviders.gitlab.add.toast.error"));
 			});
 	};
 
@@ -129,7 +121,8 @@ export const AddGitlabProvider = () => {
 			<DialogContent className="sm:max-w-2xl  ">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						{t("settings.gitProviders.gitlab.add.title")} <GitlabIcon className="size-5" />
+						{t("settings.gitProviders.gitlab.add.title")}{" "}
+						<GitlabIcon className="size-5" />
 					</DialogTitle>
 				</DialogHeader>
 
@@ -147,7 +140,7 @@ export const AddGitlabProvider = () => {
 								</p>
 								<ol className="list-decimal list-inside text-sm text-muted-foreground">
 									<li className="flex flex-row gap-2 items-center">
-										{t("settings.gitProviders.gitlab.add.steps.goToSettings")} {" "}
+										{t("settings.gitProviders.gitlab.add.steps.goToSettings")}{" "}
 										<Link
 											href={`${gitlabUrl}/-/profile/applications`}
 											target="_blank"
@@ -156,16 +149,24 @@ export const AddGitlabProvider = () => {
 										</Link>
 									</li>
 									<li>
-										{t("settings.gitProviders.gitlab.add.steps.navigateApplications")}
+										{t(
+											"settings.gitProviders.gitlab.add.steps.navigateApplications",
+										)}
 									</li>
 									<li>
-										{t("settings.gitProviders.gitlab.add.steps.createApplicationIntro")}
+										{t(
+											"settings.gitProviders.gitlab.add.steps.createApplicationIntro",
+										)}
 										<ul className="list-disc list-inside ml-4">
 											<li>
-												{t("settings.gitProviders.gitlab.add.steps.appNameDokploy")}
+												{t(
+													"settings.gitProviders.gitlab.add.steps.appNameDokploy",
+												)}
 											</li>
 											<li>
-												{t("settings.gitProviders.gitlab.add.steps.redirectUriLabel")} {" "}
+												{t(
+													"settings.gitProviders.gitlab.add.steps.redirectUriLabel",
+												)}{" "}
 												<span className="text-primary">{webhookUrl}</span>{" "}
 											</li>
 											<li>
@@ -187,7 +188,9 @@ export const AddGitlabProvider = () => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("settings.gitProviders.gitlab.add.namePlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.add.namePlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -206,7 +209,9 @@ export const AddGitlabProvider = () => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("settings.gitProviders.gitlab.add.gitlabUrlPlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.add.gitlabUrlPlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -226,7 +231,9 @@ export const AddGitlabProvider = () => {
 											<FormControl>
 												<Input
 													disabled
-													placeholder={t("settings.gitProviders.gitlab.add.redirectUriPlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.add.redirectUriPlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -241,11 +248,15 @@ export const AddGitlabProvider = () => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>
-												{t("settings.gitProviders.gitlab.add.applicationIdLabel")}
+												{t(
+													"settings.gitProviders.gitlab.add.applicationIdLabel",
+												)}
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("settings.gitProviders.gitlab.add.applicationIdPlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.add.applicationIdPlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -260,12 +271,16 @@ export const AddGitlabProvider = () => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>
-												{t("settings.gitProviders.gitlab.add.applicationSecretLabel")}
+												{t(
+													"settings.gitProviders.gitlab.add.applicationSecretLabel",
+												)}
 											</FormLabel>
 											<FormControl>
 												<Input
 													type="password"
-													placeholder={t("settings.gitProviders.gitlab.add.applicationSecretPlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.add.applicationSecretPlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -284,7 +299,9 @@ export const AddGitlabProvider = () => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("settings.gitProviders.gitlab.add.groupNamePlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.add.groupNamePlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>

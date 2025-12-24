@@ -106,14 +106,14 @@ export const EditBitbucketProvider = ({ bitbucketId }: Props) => {
 			.then(async () => {
 				await utils.gitProvider.getAll.invalidate();
 				toast.success(
-						t("settings.gitProviders.bitbucket.edit.toast.updatedSuccess"),
-					);
+					t("settings.gitProviders.bitbucket.edit.toast.updatedSuccess"),
+				);
 				setIsOpen(false);
 			})
 			.catch(() => {
 				toast.error(
-						t("settings.gitProviders.bitbucket.edit.toast.updatedError"),
-					);
+					t("settings.gitProviders.bitbucket.edit.toast.updatedError"),
+				);
 			});
 	};
 
@@ -131,7 +131,8 @@ export const EditBitbucketProvider = ({ bitbucketId }: Props) => {
 			<DialogContent className="sm:max-w-2xl ">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						{t("settings.gitProviders.bitbucket.edit.title")} <BitbucketIcon className="size-5" />
+						{t("settings.gitProviders.bitbucket.edit.title")}{" "}
+						<BitbucketIcon className="size-5" />
 					</DialogTitle>
 				</DialogHeader>
 
@@ -247,7 +248,9 @@ export const EditBitbucketProvider = ({ bitbucketId }: Props) => {
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>
-													{t("settings.gitProviders.bitbucket.edit.apiTokenLabel")}
+													{t(
+														"settings.gitProviders.bitbucket.edit.apiTokenLabel",
+													)}
 												</FormLabel>
 												<FormControl>
 													<Input
@@ -269,7 +272,9 @@ export const EditBitbucketProvider = ({ bitbucketId }: Props) => {
 										render={({ field }) => (
 											<FormItem>
 												<FormLabel>
-													{t("settings.gitProviders.bitbucket.edit.appPasswordLabel")}
+													{t(
+														"settings.gitProviders.bitbucket.edit.appPasswordLabel",
+													)}
 												</FormLabel>
 												<FormControl>
 													<Input

@@ -44,11 +44,7 @@ export const sendDokployRestartNotifications = async () => {
 					DokployRestartEmail({ date: date.toLocaleString() }),
 				).catch();
 
-				await sendEmailNotification(
-					email,
-					emailContent.subject,
-					template,
-				);
+				await sendEmailNotification(email, emailContent.subject, template);
 			}
 
 			if (discord) {

@@ -69,7 +69,7 @@ const Redis = (
 			<UseKeyboardNav forPage="redis" />
 			<BreadcrumbSidebar
 				list={[
-					{ name: "Projects", href: "/dashboard/projects" },
+					{ name: t("dashboard.projects"), href: "/dashboard/projects" },
 					{
 						name: data?.environment?.project?.name || "",
 					},
@@ -84,7 +84,10 @@ const Redis = (
 			/>
 			<Head>
 				<title>
-					Database: {data?.name} - {data?.environment?.project?.name} | Dokploy
+					{t("database.pageTitle", {
+						dbName: data?.name || "",
+						projectName: data?.environment?.project?.name || "",
+					})}
 				</title>
 			</Head>
 			<div className="w-full">
@@ -162,7 +165,7 @@ const Redis = (
 											})}
 										</span>
 										<span className="text-center text-base text-muted-foreground">
-											{t("common.goTo")} {" "}
+											{t("common.goTo")}{" "}
 											<Link
 												href="/dashboard/settings/billing"
 												className="text-primary"
@@ -201,9 +204,7 @@ const Redis = (
 											<TabsTrigger value="environment">
 												{t("tabs.environment")}
 											</TabsTrigger>
-											<TabsTrigger value="logs">
-												{t("tabs.logs")}
-											</TabsTrigger>
+											<TabsTrigger value="logs">{t("tabs.logs")}</TabsTrigger>
 											{((data?.serverId && isCloud) || !data?.server) && (
 												<TabsTrigger value="monitoring">
 													{t("tabs.monitoring")}

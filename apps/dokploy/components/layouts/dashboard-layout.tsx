@@ -1,4 +1,5 @@
 import { api } from "@/utils/api";
+import { AIChatDrawer } from "../dashboard/ai-assistant";
 import { ImpersonationBar } from "../dashboard/impersonation/impersonation-bar";
 import { ChatwootWidget } from "../shared/ChatwootWidget";
 import Page from "./side";
@@ -29,6 +30,7 @@ export const DashboardLayout = ({ children }: Props) => {
 			)}
 
 			{haveRootAccess === true && <ImpersonationBar />}
+			<AIChatDrawer />
 		</>
 	);
 };

@@ -29,12 +29,8 @@ import { api } from "@/utils/api";
 
 const createSecuritySchema = (t: (key: string) => string) =>
 	z.object({
-		username: z
-			.string()
-			.min(1, t("security.validation.usernameRequired")),
-		password: z
-			.string()
-			.min(1, t("security.validation.passwordRequired")),
+		username: z.string().min(1, t("security.validation.usernameRequired")),
+		password: z.string().min(1, t("security.validation.passwordRequired")),
 	});
 
 type AddSecurity = z.infer<ReturnType<typeof createSecuritySchema>>;
@@ -149,9 +145,7 @@ export const HandleSecurity = ({
 								name="username"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("security.form.usernameLabel")}
-										</FormLabel>
+										<FormLabel>{t("security.form.usernameLabel")}</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t("security.form.usernamePlaceholder")}
@@ -168,9 +162,7 @@ export const HandleSecurity = ({
 								name="password"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("security.form.passwordLabel")}
-										</FormLabel>
+										<FormLabel>{t("security.form.passwordLabel")}</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t("security.form.passwordPlaceholder")}

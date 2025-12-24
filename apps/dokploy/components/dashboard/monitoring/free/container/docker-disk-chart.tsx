@@ -102,15 +102,9 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 						date: format(new Date(time), "PPpp"),
 					})}
 				</p>
-				<p>
-					{t("monitoring.disk.tooltip.usage", { value: usedGb })}
-				</p>
-				<p>
-					{t("monitoring.disk.tooltip.free", { value: freeGb })}
-				</p>
-				<p>
-					{t("monitoring.disk.tooltip.total", { value: totalGb })}
-				</p>
+				<p>{t("monitoring.disk.tooltip.usage", { value: usedGb })}</p>
+				<p>{t("monitoring.disk.tooltip.free", { value: freeGb })}</p>
+				<p>{t("monitoring.disk.tooltip.total", { value: totalGb })}</p>
 			</div>
 		);
 	}

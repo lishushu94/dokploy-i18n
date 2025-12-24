@@ -20,7 +20,6 @@ export type TemplateProps = {
 	name: string;
 };
 
-
 interface InvitationEmailProps {
 	inviteLink: string;
 	toEmail: string;

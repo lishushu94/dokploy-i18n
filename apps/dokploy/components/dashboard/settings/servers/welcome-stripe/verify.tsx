@@ -1,6 +1,6 @@
 import { Loader2, PcCase, RefreshCw } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useState } from "react";
 import { AlertBlock } from "@/components/shared/alert-block";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,9 +45,7 @@ export const Verify = () => {
 					<CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2">
 						<div className="flex flex-col gap-2 w-full">
 							<Label>
-								{t(
-									"settings.servers.onboarding.common.selectServerLabel",
-								)}
+								{t("settings.servers.onboarding.common.selectServerLabel")}
 							</Label>
 							<Select onValueChange={setServerId} defaultValue={serverId}>
 								<SelectTrigger>
@@ -65,12 +63,9 @@ export const Verify = () => {
 											</SelectItem>
 										))}
 										<SelectLabel>
-											{t(
-												"settings.servers.onboarding.common.serversLabel",
-												{
-													count: servers?.length ?? 0,
-												},
-											)}
+											{t("settings.servers.onboarding.common.serversLabel", {
+												count: servers?.length ?? 0,
+											})}
 										</SelectLabel>
 									</SelectGroup>
 								</SelectContent>
@@ -113,9 +108,7 @@ export const Verify = () => {
 						{isLoading ? (
 							<div className="flex items-center justify-center text-muted-foreground py-4">
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								<span>
-									{t("settings.servers.onboarding.verify.loading")}
-								</span>
+								<span>{t("settings.servers.onboarding.verify.loading")}</span>
 							</div>
 						) : (
 							<div className="grid w-full gap-4">
@@ -124,7 +117,9 @@ export const Verify = () => {
 										{t("settings.servers.onboarding.verify.statusCard.title")}
 									</h3>
 									<p className="text-sm text-muted-foreground mb-4">
-										{t("settings.servers.onboarding.verify.statusCard.description")}
+										{t(
+											"settings.servers.onboarding.verify.statusCard.description",
+										)}
 									</p>
 									<div className="grid gap-2.5">
 										<StatusRow
@@ -135,11 +130,11 @@ export const Verify = () => {
 											description={
 												data?.docker?.enabled
 													? t(
-														"settings.servers.onboarding.verify.status.dockerInstalled.description",
-														{
-															version: data?.docker?.version,
-														},
-													)
+															"settings.servers.onboarding.verify.status.dockerInstalled.description",
+															{
+																version: data?.docker?.version,
+															},
+														)
 													: undefined
 											}
 										/>
@@ -151,11 +146,11 @@ export const Verify = () => {
 											description={
 												data?.rclone?.enabled
 													? t(
-														"settings.servers.onboarding.verify.status.rcloneInstalled.description",
-														{
-															version: data?.rclone?.version,
-														},
-													)
+															"settings.servers.onboarding.verify.status.rcloneInstalled.description",
+															{
+																version: data?.rclone?.version,
+															},
+														)
 													: undefined
 											}
 										/>
@@ -167,11 +162,11 @@ export const Verify = () => {
 											description={
 												data?.nixpacks?.enabled
 													? t(
-														"settings.servers.onboarding.verify.status.nixpacksInstalled.description",
-														{
-															version: data?.nixpacks?.version,
-														},
-													)
+															"settings.servers.onboarding.verify.status.nixpacksInstalled.description",
+															{
+																version: data?.nixpacks?.version,
+															},
+														)
 													: undefined
 											}
 										/>
@@ -183,11 +178,11 @@ export const Verify = () => {
 											description={
 												data?.buildpacks?.enabled
 													? t(
-														"settings.servers.onboarding.verify.status.buildpacksInstalled.description",
-														{
-															version: data?.buildpacks?.version,
-														},
-													)
+															"settings.servers.onboarding.verify.status.buildpacksInstalled.description",
+															{
+																version: data?.buildpacks?.version,
+															},
+														)
 													: undefined
 											}
 										/>
@@ -199,11 +194,11 @@ export const Verify = () => {
 											description={
 												data?.isSwarmInstalled
 													? t(
-														"settings.servers.onboarding.verify.status.swarm.initialized",
-													)
+															"settings.servers.onboarding.verify.status.swarm.initialized",
+														)
 													: t(
-														"settings.servers.onboarding.verify.status.swarm.notInitialized",
-													)
+															"settings.servers.onboarding.verify.status.swarm.notInitialized",
+														)
 											}
 										/>
 										<StatusRow
@@ -214,11 +209,11 @@ export const Verify = () => {
 											description={
 												data?.isDokployNetworkInstalled
 													? t(
-														"settings.servers.onboarding.verify.status.network.created",
-													)
+															"settings.servers.onboarding.verify.status.network.created",
+														)
 													: t(
-														"settings.servers.onboarding.verify.status.network.notCreated",
-													)
+															"settings.servers.onboarding.verify.status.network.notCreated",
+														)
 											}
 										/>
 										<StatusRow
@@ -229,11 +224,11 @@ export const Verify = () => {
 											description={
 												data?.isMainDirectoryInstalled
 													? t(
-														"settings.servers.onboarding.verify.status.mainDirectory.created",
-													)
+															"settings.servers.onboarding.verify.status.mainDirectory.created",
+														)
 													: t(
-														"settings.servers.onboarding.verify.status.mainDirectory.notCreated",
-													)
+															"settings.servers.onboarding.verify.status.mainDirectory.notCreated",
+														)
 											}
 										/>
 									</div>

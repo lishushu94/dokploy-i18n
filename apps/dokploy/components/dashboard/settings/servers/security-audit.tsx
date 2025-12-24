@@ -73,9 +73,7 @@ export const SecurityAudit = ({ serverId }: Props) => {
 						{isLoading ? (
 							<div className="flex items-center justify-center text-muted-foreground py-4">
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								<span>
-									{t("settings.servers.onboarding.verify.loading")}
-								</span>
+								<span>{t("settings.servers.onboarding.verify.loading")}</span>
 							</div>
 						) : (
 							<div className="grid w-full gap-4">
@@ -88,18 +86,16 @@ export const SecurityAudit = ({ serverId }: Props) => {
 									</p>
 									<div className="grid gap-2.5">
 										<StatusRow
-											label={t(
-												"settings.servers.security.ufw.installed.label",
-											)}
+											label={t("settings.servers.security.ufw.installed.label")}
 											isEnabled={data?.ufw?.installed}
 											description={
 												data?.ufw?.installed
 													? t(
-														"settings.servers.security.ufw.installed.installed",
-													)
+															"settings.servers.security.ufw.installed.installed",
+														)
 													: t(
-														"settings.servers.security.ufw.installed.notInstalled",
-													)
+															"settings.servers.security.ufw.installed.notInstalled",
+														)
 											}
 										/>
 										<StatusRow
@@ -118,13 +114,15 @@ export const SecurityAudit = ({ serverId }: Props) => {
 											isEnabled={data?.ufw?.defaultIncoming === "deny"}
 											description={
 												data?.ufw?.defaultIncoming === "deny"
-													? t("settings.servers.security.ufw.defaultIncoming.deny")
+													? t(
+															"settings.servers.security.ufw.defaultIncoming.deny",
+														)
 													: t(
-														"settings.servers.security.ufw.defaultIncoming.other",
-														{
-															policy: data?.ufw?.defaultIncoming,
-														},
-													)
+															"settings.servers.security.ufw.defaultIncoming.other",
+															{
+																policy: data?.ufw?.defaultIncoming,
+															},
+														)
 											}
 										/>
 									</div>
@@ -157,16 +155,18 @@ export const SecurityAudit = ({ serverId }: Props) => {
 											}
 										/>
 										<StatusRow
-											label={t("settings.servers.security.ssh.passwordAuth.label")}
+											label={t(
+												"settings.servers.security.ssh.passwordAuth.label",
+											)}
 											isEnabled={data?.ssh?.passwordAuth === "no"}
 											description={
 												data?.ssh?.passwordAuth === "no"
 													? t(
-														"settings.servers.security.ssh.passwordAuth.disabled",
-													)
+															"settings.servers.security.ssh.passwordAuth.disabled",
+														)
 													: t(
-														"settings.servers.security.ssh.passwordAuth.enabled",
-													)
+															"settings.servers.security.ssh.passwordAuth.enabled",
+														)
 											}
 										/>
 										<StatusRow
@@ -174,12 +174,8 @@ export const SecurityAudit = ({ serverId }: Props) => {
 											isEnabled={data?.ssh?.usePam === "no"}
 											description={
 												data?.ssh?.usePam === "no"
-													? t(
-														"settings.servers.security.ssh.usePam.disabled",
-													)
-													: t(
-														"settings.servers.security.ssh.usePam.enabled",
-													)
+													? t("settings.servers.security.ssh.usePam.disabled")
+													: t("settings.servers.security.ssh.usePam.enabled")
 											}
 										/>
 									</div>
@@ -201,34 +197,42 @@ export const SecurityAudit = ({ serverId }: Props) => {
 											description={
 												data?.fail2ban?.installed
 													? t(
-														"settings.servers.security.fail2ban.installed.installed",
-													)
+															"settings.servers.security.fail2ban.installed.installed",
+														)
 													: t(
-														"settings.servers.security.fail2ban.installed.notInstalled",
-													)
+															"settings.servers.security.fail2ban.installed.notInstalled",
+														)
 											}
 										/>
 
 										<StatusRow
-											label={t("settings.servers.security.fail2ban.enabled.label")}
+											label={t(
+												"settings.servers.security.fail2ban.enabled.label",
+											)}
 											isEnabled={data?.fail2ban?.enabled}
 											description={
 												data?.fail2ban?.enabled
-													? t("settings.servers.security.fail2ban.enabled.enabled")
+													? t(
+															"settings.servers.security.fail2ban.enabled.enabled",
+														)
 													: t(
-														"settings.servers.security.fail2ban.enabled.disabled",
-													)
+															"settings.servers.security.fail2ban.enabled.disabled",
+														)
 											}
 										/>
 										<StatusRow
-											label={t("settings.servers.security.fail2ban.active.label")}
+											label={t(
+												"settings.servers.security.fail2ban.active.label",
+											)}
 											isEnabled={data?.fail2ban?.active}
 											description={
 												data?.fail2ban?.active
-													? t("settings.servers.security.fail2ban.active.active")
+													? t(
+															"settings.servers.security.fail2ban.active.active",
+														)
 													: t(
-														"settings.servers.security.fail2ban.active.inactive",
-													)
+															"settings.servers.security.fail2ban.active.inactive",
+														)
 											}
 										/>
 
@@ -240,26 +244,30 @@ export const SecurityAudit = ({ serverId }: Props) => {
 											description={
 												data?.fail2ban?.sshEnabled === "true"
 													? t(
-														"settings.servers.security.fail2ban.sshProtection.enabled",
-													)
+															"settings.servers.security.fail2ban.sshProtection.enabled",
+														)
 													: t(
-														"settings.servers.security.fail2ban.sshProtection.disabled",
-													)
+															"settings.servers.security.fail2ban.sshProtection.disabled",
+														)
 											}
 										/>
 
 										<StatusRow
-											label={t("settings.servers.security.fail2ban.sshMode.label")}
+											label={t(
+												"settings.servers.security.fail2ban.sshMode.label",
+											)}
 											isEnabled={data?.fail2ban?.sshMode === "aggressive"}
 											description={
 												data?.fail2ban?.sshMode === "aggressive"
-													? t("settings.servers.security.fail2ban.sshMode.aggressive")
+													? t(
+															"settings.servers.security.fail2ban.sshMode.aggressive",
+														)
 													: t(
-														"settings.servers.security.fail2ban.sshMode.other",
-														{
-															mode: data?.fail2ban?.sshMode || "Not Set",
-														},
-													)
+															"settings.servers.security.fail2ban.sshMode.other",
+															{
+																mode: data?.fail2ban?.sshMode || "Not Set",
+															},
+														)
 											}
 										/>
 									</div>

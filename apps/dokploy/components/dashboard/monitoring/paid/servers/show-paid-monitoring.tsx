@@ -144,8 +144,8 @@ export const ShowPaidMonitoring = ({
 					</p>
 					<p className="whitespace-pre-line text-sm text-destructive">
 						{queryError instanceof Error
-								? queryError.message
-								: t("monitoring.error.fetchMetricsDescription")}
+							? queryError.message
+							: t("monitoring.error.fetchMetricsDescription")}
 					</p>
 					<p className="text-sm text-muted-foreground">
 						{t("monitoring.error.urlLabel")} {BASE_URL}
@@ -174,9 +174,7 @@ export const ShowPaidMonitoring = ({
 						>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue
-									placeholder={t(
-										"monitoring.container.dataPoints.placeholder",
-									)}
+									placeholder={t("monitoring.container.dataPoints.placeholder")}
 								/>
 							</SelectTrigger>
 							<SelectContent>
@@ -203,19 +201,15 @@ export const ShowPaidMonitoring = ({
 						>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue
-									placeholder={t(
-										"monitoring.container.refresh.placeholder",
-									)}
+									placeholder={t("monitoring.container.refresh.placeholder")}
 								/>
 							</SelectTrigger>
 							<SelectContent>
-								{Object.entries(REFRESH_INTERVALS).map(
-									([value, labelKey]) => (
-										<SelectItem key={value} value={value}>
-											{t(labelKey as string)}
-										</SelectItem>
-									),
-								)}
+								{Object.entries(REFRESH_INTERVALS).map(([value, labelKey]) => (
+									<SelectItem key={value} value={value}>
+										{t(labelKey as string)}
+									</SelectItem>
+								))}
 							</SelectContent>
 						</Select>
 					</div>
@@ -239,9 +233,7 @@ export const ShowPaidMonitoring = ({
 				<div className="rounded-lg border text-card-foreground shadow-sm p-6">
 					<div className="flex items-center gap-2">
 						<Cpu className="h-4 w-4 text-muted-foreground" />
-						<h3 className="text-sm font-medium">
-							{t("monitoring.card.cpu")}
-						</h3>
+						<h3 className="text-sm font-medium">{t("monitoring.card.cpu")}</h3>
 					</div>
 					<p className="mt-2 text-2xl font-bold">{metrics.cpu}%</p>
 				</div>
@@ -261,9 +253,7 @@ export const ShowPaidMonitoring = ({
 				<div className="rounded-lg border text-card-foreground shadow-sm p-6">
 					<div className="flex items-center gap-2">
 						<HardDrive className="h-4 w-4 text-muted-foreground" />
-						<h3 className="text-sm font-medium">
-							{t("monitoring.card.disk")}
-						</h3>
+						<h3 className="text-sm font-medium">{t("monitoring.card.disk")}</h3>
 					</div>
 					<p className="mt-2 text-2xl font-bold">{metrics.diskUsed}%</p>
 				</div>

@@ -104,9 +104,7 @@ export const UpdatePostgres = ({ postgresId }: Props) => {
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader>
-					<DialogTitle>
-						{t("database.postgres.update.dialogTitle")}
-					</DialogTitle>
+					<DialogTitle>{t("database.postgres.update.dialogTitle")}</DialogTitle>
 					<DialogDescription>
 						{t("database.postgres.update.dialogDescription")}
 					</DialogDescription>

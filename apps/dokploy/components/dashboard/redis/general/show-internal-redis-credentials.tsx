@@ -39,18 +39,14 @@ export const ShowInternalRedisCredentials = ({ redisId }: Props) => {
 							</div>
 							<div className="flex flex-col gap-2">
 								<Label>
-									{t(
-										"database.redis.internalCredentials.internalPortLabel",
-									)}
+									{t("database.redis.internalCredentials.internalPortLabel")}
 								</Label>
 								<Input disabled value="6379" />
 							</div>
 
 							<div className="flex flex-col gap-2">
 								<Label>
-									{t(
-										"database.redis.internalCredentials.internalHostLabel",
-									)}
+									{t("database.redis.internalCredentials.internalHostLabel")}
 								</Label>
 								<Input disabled value={data?.appName} />
 							</div>

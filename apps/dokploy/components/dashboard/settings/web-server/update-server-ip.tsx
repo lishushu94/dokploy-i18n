@@ -81,16 +81,12 @@ export const UpdateServerIp = ({ children }: Props) => {
 			serverIp: data.serverIp,
 		})
 			.then(async () => {
-				toast.success(
-					t("settings.server.webServer.updateIp.success"),
-				);
+				toast.success(t("settings.server.webServer.updateIp.success"));
 				await utils.user.get.invalidate();
 				setIsOpen(false);
 			})
 			.catch(() => {
-				toast.error(
-					t("settings.server.webServer.updateIp.error"),
-				);
+				toast.error(t("settings.server.webServer.updateIp.error"));
 			});
 	};
 
@@ -142,7 +138,9 @@ export const UpdateServerIp = ({ children }: Props) => {
 														className="max-w-[11rem]"
 													>
 														<p>
-															{t("settings.server.webServer.updateIp.setCurrent")}
+															{t(
+																"settings.server.webServer.updateIp.setCurrent",
+															)}
 														</p>
 													</TooltipContent>
 												</Tooltip>

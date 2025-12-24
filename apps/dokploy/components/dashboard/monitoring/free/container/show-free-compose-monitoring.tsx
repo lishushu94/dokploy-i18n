@@ -69,9 +69,7 @@ export const ComposeFreeMonitoring = ({
 				<CardTitle className="text-xl">
 					{t("monitoring.compose.title")}
 				</CardTitle>
-				<CardDescription>
-					{t("monitoring.compose.subtitle")}
-				</CardDescription>
+				<CardDescription>{t("monitoring.compose.subtitle")}</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">
 				<Label>{t("monitoring.compose.selectLabel")}</Label>
@@ -124,7 +122,9 @@ export const ComposeFreeMonitoring = ({
 						onClick={async () => {
 							if (!containerId) return;
 							toast.success(
-									 t("monitoring.compose.toast.restarting", { name: containerAppName }),
+								t("monitoring.compose.toast.restarting", {
+									name: containerAppName,
+								}),
 							);
 							await restart({ containerId }).then(() => {
 								toast.success(t("monitoring.compose.toast.restarted"));

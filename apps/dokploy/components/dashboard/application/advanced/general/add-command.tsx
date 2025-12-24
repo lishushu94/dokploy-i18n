@@ -125,7 +125,9 @@ export const AddCommand = ({ applicationId }: Props) => {
 										</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={t("application.command.commandPlaceholder")}
+												placeholder={t(
+													"application.command.commandPlaceholder",
+												)}
 												{...field}
 											/>
 										</FormControl>
@@ -137,9 +139,7 @@ export const AddCommand = ({ applicationId }: Props) => {
 
 							<div className="space-y-2">
 								<div className="flex items-center justify-between">
-									<FormLabel>
-										{t("application.command.argsLabel")}
-									</FormLabel>
+									<FormLabel>{t("application.command.argsLabel")}</FormLabel>
 									<Button
 										type="button"
 										variant="outline"

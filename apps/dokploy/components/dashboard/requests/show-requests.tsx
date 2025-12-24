@@ -5,8 +5,8 @@ import {
 	Calendar as CalendarIcon,
 	InfoIcon,
 } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AlertBlock } from "@/components/shared/alert-block";
@@ -89,7 +89,7 @@ export const ShowRequests = () => {
 							</CardDescription>
 
 							<AlertBlock type="warning">
-								{t("requests.alert.reloadPrefix")} {" "}
+								{t("requests.alert.reloadPrefix")}{" "}
 								<Link
 									href="/dashboard/settings/server"
 									className="text-primary"
@@ -138,7 +138,9 @@ export const ShowRequests = () => {
 													await updateLogCleanup({
 														cronExpression: cronExpression,
 													});
-													toast.success(t("requests.logCleanup.update.success"));
+													toast.success(
+														t("requests.logCleanup.update.success"),
+													);
 												} catch (error) {
 													const message =
 														error instanceof Error
@@ -214,9 +216,7 @@ export const ShowRequests = () => {
 															format(dateRange.from, "LLL dd, y")
 														)
 													) : (
-														<span>
-															{t("requests.dateRange.placeholder")}
-														</span>
+														<span>{t("requests.dateRange.placeholder")}</span>
 													)}
 												</Button>
 											</PopoverTrigger>

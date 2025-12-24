@@ -186,9 +186,7 @@ export const ProfileForm = () => {
 												name="name"
 												render={({ field }) => (
 													<FormItem>
-														<FormLabel>
-															{t("settings.profile.name")}
-														</FormLabel>
+														<FormLabel>{t("settings.profile.name")}</FormLabel>
 														<FormControl>
 															<Input
 																placeholder={t("settings.profile.name")}
@@ -349,7 +347,9 @@ export const ProfileForm = () => {
 																					// max file size 2mb
 																					if (file.size > 2 * 1024 * 1024) {
 																						toast.error(
-																							t("settings.profile.avatar.maxSizeError"),
+																							t(
+																								"settings.profile.avatar.maxSizeError",
+																							),
 																						);
 																						return;
 																					}

@@ -40,9 +40,7 @@ import { api } from "@/utils/api";
 
 const createSchema = (t: (key: string) => string) =>
 	z.object({
-		regex: z
-			.string()
-			.min(1, t("redirects.validation.regexRequired")),
+		regex: z.string().min(1, t("redirects.validation.regexRequired")),
 		permanent: z.boolean().default(false),
 		replacement: z
 			.string()
@@ -233,14 +231,10 @@ export const HandleRedirect = ({
 								name="regex"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("redirects.form.regexLabel")}
-										</FormLabel>
+										<FormLabel>{t("redirects.form.regexLabel")}</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={t(
-													"redirects.form.regexPlaceholder",
-												)}
+												placeholder={t("redirects.form.regexPlaceholder")}
 												{...field}
 											/>
 										</FormControl>
@@ -259,9 +253,7 @@ export const HandleRedirect = ({
 										</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={t(
-													"redirects.form.replacementPlaceholder",
-												)}
+												placeholder={t("redirects.form.replacementPlaceholder")}
 												{...field}
 											/>
 										</FormControl>

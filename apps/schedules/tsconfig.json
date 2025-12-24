@@ -4,11 +4,22 @@
 		"module": "ESNext",
 		"moduleResolution": "Node",
 		"strict": true,
+		"noUncheckedIndexedAccess": true,
 		"skipLibCheck": true,
+		"types": ["node", "react"],
+		"baseUrl": ".",
+		"paths": {
+			"@dokploy/server/dist/*": ["../../packages/server/dist/*"],
+			"@dokploy/server": ["../../packages/server/src/index.ts"],
+			"@dokploy/server/*": ["../../packages/server/src/*"]
+		},
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
 		"outDir": "dist",
 		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx",
+		"jsxImportSource": "react",
 		"declaration": false
 	},
+	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist"]
 }

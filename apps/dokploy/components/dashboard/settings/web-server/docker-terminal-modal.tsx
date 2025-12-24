@@ -143,9 +143,7 @@ export const DockerTerminalModal = ({
 				<Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
 					<DialogContent onEscapeKeyDown={(event) => event.preventDefault()}>
 						<DialogHeader>
-							<DialogTitle>
-								{t("terminal.close.confirmTitle")}
-							</DialogTitle>
+							<DialogTitle>{t("terminal.close.confirmTitle")}</DialogTitle>
 							<DialogDescription>
 								{t("terminal.close.confirmDescription")}
 							</DialogDescription>

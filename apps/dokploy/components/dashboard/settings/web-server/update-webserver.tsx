@@ -30,9 +30,7 @@ export const UpdateWebServer = () => {
 				throw new Error("Health check failed");
 			}
 
-			toast.success(
-				 t("settings.server.webServer.update.success"),
-			);
+			toast.success(t("settings.server.webServer.update.success"));
 
 			setTimeout(() => {
 				// Allow seeing the toast before reloading
@@ -58,9 +56,7 @@ export const UpdateWebServer = () => {
 		} catch (error) {
 			setUpdating(false);
 			console.error("Error updating server:", error);
-			toast.error(
-				 t("settings.server.webServer.update.error"),
-			);
+			toast.error(t("settings.server.webServer.update.error"));
 		}
 	};
 
@@ -94,9 +90,7 @@ export const UpdateWebServer = () => {
 								{t("settings.server.webServer.update.inProgress")}
 							</span>
 						) : (
-							<>
-								{t("settings.server.webServer.update.description")}
-							</>
+							<>{t("settings.server.webServer.update.description")}</>
 						)}
 					</AlertDialogDescription>
 				</AlertDialogHeader>

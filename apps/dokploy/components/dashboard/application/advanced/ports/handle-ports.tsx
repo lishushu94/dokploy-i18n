@@ -126,9 +126,7 @@ export const HandlePorts = ({
 			})
 			.catch(() => {
 				toast.error(
-					portId
-						? t("ports.toast.updateError")
-						: t("ports.toast.createError"),
+					portId ? t("ports.toast.updateError") : t("ports.toast.createError"),
 				);
 			});
 	};
@@ -151,9 +149,7 @@ export const HandlePorts = ({
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>{t("ports.dialog.title")}</DialogTitle>
-					<DialogDescription>
-						{t("ports.dialog.description")}
-					</DialogDescription>
+					<DialogDescription>{t("ports.dialog.description")}</DialogDescription>
 				</DialogHeader>
 				{isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
 
@@ -199,16 +195,18 @@ export const HandlePorts = ({
 								render={({ field }) => {
 									return (
 										<FormItem className="md:col-span-2">
-											<FormLabel>
-												{t("ports.form.publishModeLabel")}
-											</FormLabel>
+											<FormLabel>{t("ports.form.publishModeLabel")}</FormLabel>
 											<Select
 												onValueChange={field.onChange}
 												value={field.value}
 											>
 												<FormControl>
 													<SelectTrigger>
-														<SelectValue placeholder={t("ports.form.publishModePlaceholder")} />
+														<SelectValue
+															placeholder={t(
+																"ports.form.publishModePlaceholder",
+															)}
+														/>
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
@@ -268,9 +266,7 @@ export const HandlePorts = ({
 												<FormControl>
 													<SelectTrigger>
 														<SelectValue
-															placeholder={t(
-																"ports.form.protocolPlaceholder",
-															)}
+															placeholder={t("ports.form.protocolPlaceholder")}
 														/>
 													</SelectTrigger>
 												</FormControl>

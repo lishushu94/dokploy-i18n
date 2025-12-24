@@ -212,7 +212,9 @@ const Register = ({ isCloud }: Props) => {
 											name="confirmPassword"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>{t("auth.confirmPasswordLabel")}</FormLabel>
+													<FormLabel>
+														{t("auth.confirmPasswordLabel")}
+													</FormLabel>
 													<FormControl>
 														<Input
 															type="password"

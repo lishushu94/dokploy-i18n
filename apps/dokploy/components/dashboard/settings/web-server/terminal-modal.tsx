@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
+import { useTranslation } from "next-i18next";
 import type React from "react";
 import { useState } from "react";
-import { useTranslation } from "next-i18next";
 import {
 	Dialog,
 	DialogContent,

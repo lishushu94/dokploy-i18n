@@ -77,9 +77,7 @@ export const ValidateServer = ({ serverId }: Props) => {
 						{isLoading ? (
 							<div className="flex items-center justify-center text-muted-foreground py-4">
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								<span>
-									{t("settings.servers.onboarding.verify.loading")}
-								</span>
+								<span>{t("settings.servers.onboarding.verify.loading")}</span>
 							</div>
 						) : (
 							<div className="grid w-full gap-4">

@@ -43,9 +43,9 @@ interface Props {
 
 const createSchema = (t: (key: string) => string) =>
 	z.object({
-		replicas: z
-			.number()
-			.min(1, { message: t("settings.cluster.service.validation.replicasMin") }),
+		replicas: z.number().min(1, {
+			message: t("settings.cluster.service.validation.replicasMin"),
+		}),
 		registryId: z.string().optional(),
 	});
 
@@ -127,15 +127,11 @@ export const ShowClusterSettings = ({ id, type }: Props) => {
 			replicas: data?.replicas,
 		})
 			.then(async () => {
-				toast.success(
-						 t("settings.cluster.service.toast.updateSuccess"),
-				);
+				toast.success(t("settings.cluster.service.toast.updateSuccess"));
 				await refetch();
 			})
 			.catch(() => {
-				toast.error(
-						 t("settings.cluster.service.toast.updateError"),
-				);
+				toast.error(t("settings.cluster.service.toast.updateError"));
 			});
 	};
 
@@ -250,7 +246,8 @@ export const ShowClusterSettings = ({ id, type }: Props) => {
 																<SelectLabel>
 																	{t(
 																		"settings.cluster.service.registry.groupLabel",
-																	)} ({registries?.length})
+																	)}{" "}
+																	({registries?.length})
 																</SelectLabel>
 															</SelectGroup>
 														</SelectContent>

@@ -68,12 +68,8 @@ export const ShowPreviewDeployments = ({ applicationId }: Props) => {
 		<Card className="bg-background">
 			<CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2">
 				<div className="flex flex-col gap-2">
-					<CardTitle className="text-xl">
-						{t("preview.card.title")}
-					</CardTitle>
-					<CardDescription>
-						{t("preview.card.description")}
-					</CardDescription>
+					<CardTitle className="text-xl">{t("preview.card.title")}</CardTitle>
+					<CardDescription>{t("preview.card.description")}</CardDescription>
 				</div>
 				{data?.isPreviewDeploymentsActive && (
 					<ShowPreviewSettings applicationId={applicationId} />

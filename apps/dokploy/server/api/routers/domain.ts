@@ -9,6 +9,7 @@ import {
 	findPreviewDeploymentById,
 	findServerById,
 	generateTraefikMeDomain,
+	IS_CLOUD,
 	manageDomain,
 	removeDomain,
 	removeDomainById,
@@ -25,6 +26,8 @@ import {
 	apiFindOneApplication,
 	apiUpdateDomain,
 } from "@/server/db/schema";
+import type { DeploymentJob } from "@/server/queues/queue-types";
+import { myQueue } from "@/server/queues/queueSetup";
 
 export const domainRouter = createTRPCRouter({
 	create: protectedProcedure
@@ -208,6 +211,11 @@ export const domainRouter = createTRPCRouter({
 		.input(apiFindDomain)
 		.mutation(async ({ input, ctx }) => {
 			const domain = await findDomainById(input.domainId);
+			let composeForReload: Awaited<ReturnType<typeof findComposeById>> | null =
+				null;
+			let previewDeploymentForReload: Awaited<
+				ReturnType<typeof findPreviewDeploymentById>
+			> | null = null;
 			if (domain.applicationId) {
 				const application = await findApplicationById(domain.applicationId);
 				if (
@@ -230,12 +238,58 @@ export const domainRouter = createTRPCRouter({
 						message: "You are not authorized to access this compose",
 					});
 				}
+				composeForReload = compose;
+			} else if (domain.previewDeploymentId) {
+				const previewDeployment = await findPreviewDeploymentById(
+					domain.previewDeploymentId,
+				);
+				if (
+					previewDeployment.application.environment.project.organizationId !==
+					ctx.session.activeOrganizationId
+				) {
+					throw new TRPCError({
+						code: "UNAUTHORIZED",
+						message: "You are not authorized to access this preview deployment",
+					});
+				}
+				previewDeploymentForReload = previewDeployment;
 			}
 			const result = await removeDomainById(input.domainId);
 
 			if (domain.applicationId) {
 				const application = await findApplicationById(domain.applicationId);
 				await removeDomain(application, domain.uniqueConfigKey);
+			} else if (domain.previewDeploymentId && previewDeploymentForReload) {
+				const application = await findApplicationById(
+					previewDeploymentForReload.applicationId,
+				);
+				application.appName = previewDeploymentForReload.appName;
+				await removeDomain(application, domain.uniqueConfigKey);
+			} else if (domain.composeId && composeForReload) {
+				const jobData: DeploymentJob = {
+					composeId: composeForReload.composeId,
+					titleLog: "Reload after domain delete",
+					type: "redeploy",
+					applicationType: "compose",
+					descriptionLog: "Triggered after deleting a domain",
+					server: !!composeForReload.serverId,
+					...(composeForReload.serverId
+						? { serverId: composeForReload.serverId }
+						: {}),
+				};
+				if (IS_CLOUD && composeForReload.serverId) {
+					const { deploy } = await import("@/server/utils/deploy");
+					await deploy(jobData);
+				} else {
+					await myQueue.add(
+						"deployments",
+						{ ...jobData },
+						{
+							removeOnComplete: true,
+							removeOnFail: true,
+						},
+					);
+				}
 			}
 
 			return result;

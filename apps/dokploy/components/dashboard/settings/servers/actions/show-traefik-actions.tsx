@@ -96,12 +96,8 @@ export const ShowTraefikActions = ({ serverId }: Props) => {
 								.then(async () => {
 									toast.success(
 										haveTraefikDashboardPortEnabled
-											? t(
-													"settings.server.webServer.traefik.dashboardDisabled",
-											  )
-											: t(
-													"settings.server.webServer.traefik.dashboardEnabled",
-											  ),
+											? t("settings.server.webServer.traefik.dashboardDisabled")
+											: t("settings.server.webServer.traefik.dashboardEnabled"),
 									);
 									refetchDashboard();
 								})

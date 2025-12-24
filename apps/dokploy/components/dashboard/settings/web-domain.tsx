@@ -47,9 +47,7 @@ const createServerDomainSchema = (t: (key: string) => string) =>
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
 				path: ["certificateType"],
-				message: t(
-					"settings.server.domain.validation.certificateRequired",
-				),
+				message: t("settings.server.domain.validation.certificateRequired"),
 			});
 		}
 		if (data.certificateType === "letsencrypt" && !data.letsEncryptEmail) {
@@ -135,9 +133,7 @@ export const WebDomain = () => {
 									<p className="font-medium">
 										{t("settings.server.domain.githubWarning.title")}
 									</p>
-									<p>
-										{t("settings.server.domain.githubWarning.description")}
-									</p>
+									<p>{t("settings.server.domain.githubWarning.description")}</p>
 								</div>
 							</AlertBlock>
 						)}

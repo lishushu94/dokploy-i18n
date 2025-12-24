@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import copy from "copy-to-clipboard";
 import _ from "lodash";
-import { useTranslation } from "next-i18next";
 import {
 	CheckIcon,
 	ChevronsUpDown,
@@ -10,6 +9,7 @@ import {
 	RefreshCw,
 	RotateCcw,
 } from "lucide-react";
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -77,154 +77,137 @@ interface Props {
 	backupType?: "database" | "compose";
 }
 
-
 const createRestoreBackupSchema = (
 	t: (key: string, options?: Record<string, unknown>) => string,
 ) =>
 	z
-			.object({
-				destinationId: z
-					.string({
-						required_error: t(
-							"backups.restore.validation.destinationRequired",
-						),
-					})
-					.min(1, {
-						message: t("backups.restore.validation.destinationRequired"),
-					}),
-				backupFile: z
-					.string({
-						required_error: t(
-							"backups.restore.validation.backupFileRequired",
-						),
-					})
-					.min(1, {
-						message: t("backups.restore.validation.backupFileRequired"),
-					}),
-				databaseName: z
-					.string({
-						required_error: t(
-							"backups.restore.validation.databaseNameRequired",
-						),
-					})
-					.min(1, {
-						message: t("backups.restore.validation.databaseNameRequired"),
-					}),
-				databaseType: z
-					.enum(["postgres", "mariadb", "mysql", "mongo", "web-server"])
-					.optional(),
-				backupType: z.enum(["database", "compose"]).default("database"),
-				metadata: z
-					.object({
-						postgres: z
-							.object({
-								databaseUser: z.string(),
-							})
-							.optional(),
-						mariadb: z
-							.object({
-								databaseUser: z.string(),
-								databasePassword: z.string(),
-							})
-							.optional(),
-						mongo: z
-							.object({
-								databaseUser: z.string(),
-								databasePassword: z.string(),
-							})
-							.optional(),
-						mysql: z
-							.object({
-								databaseRootPassword: z.string(),
-							})
-							.optional(),
-						serviceName: z.string().optional(),
-					})
-					.optional(),
-			})
-			.superRefine((data, ctx) => {
-				if (data.backupType === "compose" && !data.databaseType) {
-					ctx.addIssue({
-						code: z.ZodIssueCode.custom,
-						message: t(
-							"backups.restore.validation.databaseTypeRequiredForCompose",
-						),
-						path: ["databaseType"],
-					});
-				}
+		.object({
+			destinationId: z
+				.string({
+					required_error: t("backups.restore.validation.destinationRequired"),
+				})
+				.min(1, {
+					message: t("backups.restore.validation.destinationRequired"),
+				}),
+			backupFile: z
+				.string({
+					required_error: t("backups.restore.validation.backupFileRequired"),
+				})
+				.min(1, {
+					message: t("backups.restore.validation.backupFileRequired"),
+				}),
+			databaseName: z
+				.string({
+					required_error: t("backups.restore.validation.databaseNameRequired"),
+				})
+				.min(1, {
+					message: t("backups.restore.validation.databaseNameRequired"),
+				}),
+			databaseType: z
+				.enum(["postgres", "mariadb", "mysql", "mongo", "web-server"])
+				.optional(),
+			backupType: z.enum(["database", "compose"]).default("database"),
+			metadata: z
+				.object({
+					postgres: z
+						.object({
+							databaseUser: z.string(),
+						})
+						.optional(),
+					mariadb: z
+						.object({
+							databaseUser: z.string(),
+							databasePassword: z.string(),
+						})
+						.optional(),
+					mongo: z
+						.object({
+							databaseUser: z.string(),
+							databasePassword: z.string(),
+						})
+						.optional(),
+					mysql: z
+						.object({
+							databaseRootPassword: z.string(),
+						})
+						.optional(),
+					serviceName: z.string().optional(),
+				})
+				.optional(),
+		})
+		.superRefine((data, ctx) => {
+			if (data.backupType === "compose" && !data.databaseType) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: t(
+						"backups.restore.validation.databaseTypeRequiredForCompose",
+					),
+					path: ["databaseType"],
+				});
+			}
 
-				if (data.backupType === "compose" && !data.metadata?.serviceName) {
-					ctx.addIssue({
-						code: z.ZodIssueCode.custom,
-						message: t(
-							"backups.restore.validation.serviceNameRequiredForCompose",
-						),
-						path: ["metadata", "serviceName"],
-					});
-				}
+			if (data.backupType === "compose" && !data.metadata?.serviceName) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: t(
+						"backups.restore.validation.serviceNameRequiredForCompose",
+					),
+					path: ["metadata", "serviceName"],
+				});
+			}
 
-				if (data.backupType === "compose" && data.databaseType) {
-					if (data.databaseType === "postgres") {
-						if (!data.metadata?.postgres?.databaseUser) {
-							ctx.addIssue({
-								code: z.ZodIssueCode.custom,
-								message: t(
-									"backups.restore.validation.postgresUserRequired",
-								),
-								path: ["metadata", "postgres", "databaseUser"],
-							});
-						}
-					} else if (data.databaseType === "mariadb") {
-						if (!data.metadata?.mariadb?.databaseUser) {
-							ctx.addIssue({
-								code: z.ZodIssueCode.custom,
-								message: t(
-									"backups.restore.validation.mariadbUserRequired",
-								),
-								path: ["metadata", "mariadb", "databaseUser"],
-							});
-						}
-						if (!data.metadata?.mariadb?.databasePassword) {
-							ctx.addIssue({
-								code: z.ZodIssueCode.custom,
-								message: t(
-									"backups.restore.validation.mariadbPasswordRequired",
-								),
-								path: ["metadata", "mariadb", "databasePassword"],
-							});
-						}
-					} else if (data.databaseType === "mongo") {
-						if (!data.metadata?.mongo?.databaseUser) {
-							ctx.addIssue({
-								code: z.ZodIssueCode.custom,
-								message: t(
-									"backups.restore.validation.mongoUserRequired",
-								),
-								path: ["metadata", "mongo", "databaseUser"],
-							});
-						}
-						if (!data.metadata?.mongo?.databasePassword) {
-							ctx.addIssue({
-								code: z.ZodIssueCode.custom,
-								message: t(
-									"backups.restore.validation.mongoPasswordRequired",
-								),
-								path: ["metadata", "mongo", "databasePassword"],
-							});
-						}
-					} else if (data.databaseType === "mysql") {
-						if (!data.metadata?.mysql?.databaseRootPassword) {
-							ctx.addIssue({
-								code: z.ZodIssueCode.custom,
-								message: t(
-									"backups.restore.validation.mysqlRootPasswordRequired",
-								),
-								path: ["metadata", "mysql", "databaseRootPassword"],
-							});
-						}
+			if (data.backupType === "compose" && data.databaseType) {
+				if (data.databaseType === "postgres") {
+					if (!data.metadata?.postgres?.databaseUser) {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: t("backups.restore.validation.postgresUserRequired"),
+							path: ["metadata", "postgres", "databaseUser"],
+						});
+					}
+				} else if (data.databaseType === "mariadb") {
+					if (!data.metadata?.mariadb?.databaseUser) {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: t("backups.restore.validation.mariadbUserRequired"),
+							path: ["metadata", "mariadb", "databaseUser"],
+						});
+					}
+					if (!data.metadata?.mariadb?.databasePassword) {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: t("backups.restore.validation.mariadbPasswordRequired"),
+							path: ["metadata", "mariadb", "databasePassword"],
+						});
+					}
+				} else if (data.databaseType === "mongo") {
+					if (!data.metadata?.mongo?.databaseUser) {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: t("backups.restore.validation.mongoUserRequired"),
+							path: ["metadata", "mongo", "databaseUser"],
+						});
+					}
+					if (!data.metadata?.mongo?.databasePassword) {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: t("backups.restore.validation.mongoPasswordRequired"),
+							path: ["metadata", "mongo", "databasePassword"],
+						});
+					}
+				} else if (data.databaseType === "mysql") {
+					if (!data.metadata?.mysql?.databaseRootPassword) {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: t(
+								"backups.restore.validation.mysqlRootPasswordRequired",
+							),
+							path: ["metadata", "mysql", "databaseRootPassword"],
+						});
 					}
 				}
-			});
+			}
+		});
 
 export const formatBytes = (bytes: number): string => {
 	if (bytes === 0) return "0 Bytes";
@@ -247,7 +230,7 @@ export const RestoreBackup = ({
 
 	const { data: destinations = [] } = api.destination.all.useQuery();
 
-	const form = useForm<z.infer<ReturnType<typeof createRestoreBackupSchema>>>	({
+	const form = useForm<z.infer<ReturnType<typeof createRestoreBackupSchema>>>({
 		defaultValues: {
 			destinationId: "",
 			backupFile: "",
@@ -393,9 +376,7 @@ export const RestoreBackup = ({
 														? destinations.find(
 																(d) => d.destinationId === field.value,
 															)?.name
-														: t(
-																"backups.restore.field.destinationPlaceholder",
-															)}
+														: t("backups.restore.field.destinationPlaceholder")}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -505,10 +486,9 @@ export const RestoreBackup = ({
 													</div>
 												) : files.length === 0 && search ? (
 													<div className="py-6 text-center text-sm text-muted-foreground">
-														{t(
-															"backups.restore.field.backupFileEmptySearch",
-															{ search },
-														)}
+														{t("backups.restore.field.backupFileEmptySearch", {
+															search,
+														})}
 													</div>
 												) : files.length === 0 ? (
 													<div className="py-6 text-center text-sm text-muted-foreground">
@@ -549,9 +529,12 @@ export const RestoreBackup = ({
 																		</div>
 																		<div className="flex items-center gap-4 text-xs text-muted-foreground">
 																			<span>
-																				{t("backups.restore.field.backupFileSize", {
-																					size: formatBytes(file.Size),
-																				})}
+																				{t(
+																					"backups.restore.field.backupFileSize",
+																					{
+																						size: formatBytes(file.Size),
+																					},
+																				)}
 																			</span>
 																			{file.IsDir && (
 																				<span className="text-blue-500">
@@ -675,9 +658,7 @@ export const RestoreBackup = ({
 														))}
 														{(!services || services.length === 0) && (
 															<SelectItem value="none" disabled>
-																{t(
-																	"backups.restore.field.serviceNameEmpty",
-																)}
+																{t("backups.restore.field.serviceNameEmpty")}
 															</SelectItem>
 														)}
 													</SelectContent>
@@ -705,9 +686,7 @@ export const RestoreBackup = ({
 															sideOffset={5}
 															className="max-w-[10rem]"
 														>
-															<p>
-																{t("backups.restore.tooltip.fetch")}
-															</p>
+															<p>{t("backups.restore.tooltip.fetch")}</p>
 														</TooltipContent>
 													</Tooltip>
 												</TooltipProvider>
@@ -734,9 +713,7 @@ export const RestoreBackup = ({
 															sideOffset={5}
 															className="max-w-[10rem]"
 														>
-															<p>
-																{t("backups.restore.tooltip.cache")}
-															</p>
+															<p>{t("backups.restore.tooltip.cache")}</p>
 														</TooltipContent>
 													</Tooltip>
 												</TooltipProvider>
@@ -758,12 +735,12 @@ export const RestoreBackup = ({
 												</FormLabel>
 												<FormControl>
 													<Input
-															placeholder={t(
-																"database.form.databaseUserPlaceholder",
-																{ defaultUser: "postgres" },
-															)}
-															{...field}
-														/>
+														placeholder={t(
+															"database.form.databaseUserPlaceholder",
+															{ defaultUser: "postgres" },
+														)}
+														{...field}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>

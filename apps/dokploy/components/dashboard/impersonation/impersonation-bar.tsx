@@ -174,8 +174,8 @@ export const ImpersonationBar = () => {
 					</TooltipTrigger>
 					<TooltipContent>
 						{isImpersonating
-								? t("impersonation.tooltip.controls")
-								: t("impersonation.tooltip.entry")}
+							? t("impersonation.tooltip.controls")
+							: t("impersonation.tooltip.entry")}
 					</TooltipContent>
 				</Tooltip>
 
@@ -236,7 +236,9 @@ export const ImpersonationBar = () => {
 														{t("impersonation.search.empty")}
 													</CommandEmpty>
 													<CommandList>
-														<CommandGroup heading={t("impersonation.search.groupAll")}>
+														<CommandGroup
+															heading={t("impersonation.search.groupAll")}
+														>
 															{users.map((user) => (
 																<CommandItem
 																	key={user.id}
@@ -289,23 +291,23 @@ export const ImpersonationBar = () => {
 								<div className="flex items-center gap-4 flex-1 flex-wrap">
 									<Avatar className="h-10 w-10">
 										<AvatarImage
-												className="object-cover"
-												src={data?.user?.image || ""}
-												alt={data?.user?.name || ""}
-											/>
-											<AvatarFallback>
-												{data?.user?.name?.slice(0, 2).toUpperCase() || "U"}
-											</AvatarFallback>
+											className="object-cover"
+											src={data?.user?.image || ""}
+											alt={data?.user?.name || ""}
+										/>
+										<AvatarFallback>
+											{data?.user?.name?.slice(0, 2).toUpperCase() || "U"}
+										</AvatarFallback>
 									</Avatar>
 									<div className="flex flex-col gap-1">
 										<div className="flex items-center gap-2">
 											<Badge
-													variant="outline"
-													className="gap-1 py-1 text-yellow-500 bg-yellow-50/20"
-												>
-													<Shield className="h-3 w-3" />
-													{t("impersonation.badge.impersonating")}
-												</Badge>
+												variant="outline"
+												className="gap-1 py-1 text-yellow-500 bg-yellow-50/20"
+											>
+												<Shield className="h-3 w-3" />
+												{t("impersonation.badge.impersonating")}
+											</Badge>
 											<span className="font-medium">
 												{data?.user?.name || ""}
 											</span>
@@ -318,7 +320,8 @@ export const ImpersonationBar = () => {
 											<span className="flex items-center gap-1">
 												<Key className="h-3 w-3" />
 												<span className="flex items-center gap-1">
-													{t("swarm.applications.table.id")}: {data?.user?.id?.slice(0, 8)}
+													{t("swarm.applications.table.id")}:{" "}
+													{data?.user?.id?.slice(0, 8)}
 													<Button
 														variant="ghost"
 														size="icon"
@@ -326,7 +329,9 @@ export const ImpersonationBar = () => {
 														onClick={() => {
 															if (data?.id) {
 																copy(data.id);
-																toast.success(t("impersonation.toast.idCopied"));
+																toast.success(
+																	t("impersonation.toast.idCopied"),
+																);
 															}
 														}}
 													>
@@ -337,7 +342,8 @@ export const ImpersonationBar = () => {
 											<span className="flex items-center gap-1">
 												<Building2 className="h-3 w-3" />
 												<span className="flex items-center gap-1">
-													{t("organization.title")}: {data?.organizationId?.slice(0, 8)}
+													{t("organization.title")}:{" "}
+													{data?.organizationId?.slice(0, 8)}
 													<Button
 														variant="ghost"
 														size="icon"
@@ -345,7 +351,9 @@ export const ImpersonationBar = () => {
 														onClick={() => {
 															if (data?.organizationId) {
 																copy(data.organizationId);
-																toast.success(t("impersonation.toast.orgIdCopied"));
+																toast.success(
+																	t("impersonation.toast.orgIdCopied"),
+																);
 															}
 														}}
 													>
@@ -354,104 +362,109 @@ export const ImpersonationBar = () => {
 												</span>
 											</span>
 											{data?.user?.stripeCustomerId && (
+												<span className="flex items-center gap-1">
+													<CreditCard className="h-3 w-3" />
 													<span className="flex items-center gap-1">
-														<CreditCard className="h-3 w-3" />
-														<span className="flex items-center gap-1">
-															{t("impersonation.label.customer")}:
-															{data?.user?.stripeCustomerId?.slice(0, 8)}
-															<Button
-																variant="ghost"
-																size="icon"
-																className="h-4 w-4 hover:bg-muted/50"
-																onClick={() => {
-																	copy(data?.user?.stripeCustomerId || "");
-																	toast.success(t("impersonation.toast.customerIdCopied"));
-																}}
-															>
-																<Copy className="h-3 w-3" />
-															</Button>
-														</span>
+														{t("impersonation.label.customer")}:
+														{data?.user?.stripeCustomerId?.slice(0, 8)}
+														<Button
+															variant="ghost"
+															size="icon"
+															className="h-4 w-4 hover:bg-muted/50"
+															onClick={() => {
+																copy(data?.user?.stripeCustomerId || "");
+																toast.success(
+																	t("impersonation.toast.customerIdCopied"),
+																);
+															}}
+														>
+															<Copy className="h-3 w-3" />
+														</Button>
 													</span>
-												)}
-												{data?.user?.stripeSubscriptionId && (
+												</span>
+											)}
+											{data?.user?.stripeSubscriptionId && (
+												<span className="flex items-center gap-1">
+													<CreditCard className="h-3 w-3" />
 													<span className="flex items-center gap-1">
-														<CreditCard className="h-3 w-3" />
-														<span className="flex items-center gap-1">
-															{t("impersonation.label.subscription")}: {data?.user?.stripeSubscriptionId?.slice(0, 8)}
-															<Button
-																variant="ghost"
-																size="icon"
-																className="h-4 w-4 hover:bg-muted/50"
-																onClick={() => {
-																	copy(data.user.stripeSubscriptionId || "");
-																	toast.success(t("impersonation.toast.subscriptionIdCopied"));
-																}}
-															>
-																<Copy className="h-3 w-3" />
-															</Button>
-														</span>
+														{t("impersonation.label.subscription")}:{" "}
+														{data?.user?.stripeSubscriptionId?.slice(0, 8)}
+														<Button
+															variant="ghost"
+															size="icon"
+															className="h-4 w-4 hover:bg-muted/50"
+															onClick={() => {
+																copy(data.user.stripeSubscriptionId || "");
+																toast.success(
+																	t("impersonation.toast.subscriptionIdCopied"),
+																);
+															}}
+														>
+															<Copy className="h-3 w-3" />
+														</Button>
 													</span>
-												)}
-												{data?.user?.serversQuantity !== undefined && (
-													<span className="flex items-center gap-1">
-														<Server className="h-3 w-3" />
-														<span>
-															{t("impersonation.label.servers", {
-																count: data.user.serversQuantity,
-															})}
-														</span>
+												</span>
+											)}
+											{data?.user?.serversQuantity !== undefined && (
+												<span className="flex items-center gap-1">
+													<Server className="h-3 w-3" />
+													<span>
+														{t("impersonation.label.servers", {
+															count: data.user.serversQuantity,
+														})}
 													</span>
-												)}
-												{data?.createdAt && (
-													<span className="flex items-center gap-1">
-														<Calendar className="h-3 w-3" />
-														{t("impersonation.label.created")} {" "}
-														{format(new Date(data.createdAt), "MMM d, yyyy")}
+												</span>
+											)}
+											{data?.createdAt && (
+												<span className="flex items-center gap-1">
+													<Calendar className="h-3 w-3" />
+													{t("impersonation.label.created")}{" "}
+													{format(new Date(data.createdAt), "MMM d, yyyy")}
+												</span>
+											)}
+											<Tooltip>
+												<TooltipTrigger asChild>
+													<span className="flex items-center gap-1 cursor-default">
+														<Fingerprint
+															className={cn(
+																"h-3 w-3",
+																data?.user?.twoFactorEnabled
+																	? "text-green-500"
+																	: "text-muted-foreground",
+															)}
+														/>
+														<Badge
+															variant={
+																data?.user?.twoFactorEnabled
+																	? "green"
+																	: "secondary"
+															}
+															className="text-[10px] px-1 py-0"
+														>
+															{t("impersonation.badge.twoFactor")}{" "}
+															{data?.user?.twoFactorEnabled
+																? t("impersonation.badge.enabled")
+																: t("impersonation.badge.disabled")}
+														</Badge>
 													</span>
-												)}
-												<Tooltip>
-													<TooltipTrigger asChild>
-														<span className="flex items-center gap-1 cursor-default">
-															<Fingerprint
-																className={cn(
-																	"h-3 w-3",
-																	data?.user?.twoFactorEnabled
-																		? "text-green-500"
-																		: "text-muted-foreground",
-																)}
-															/>
-															<Badge
-																variant={
-																	data?.user?.twoFactorEnabled
-																		? "green"
-																		: "secondary"
-																}
-																className="text-[10px] px-1 py-0"
-															>
-																{t("impersonation.badge.twoFactor")} {" "}
-																{data?.user?.twoFactorEnabled
-																		? t("impersonation.badge.enabled")
-																		: t("impersonation.badge.disabled")}
-															</Badge>
-														</span>
-													</TooltipTrigger>
-													<TooltipContent>
-														{t("impersonation.tooltip.twoFactorStatus")}
-													</TooltipContent>
-												</Tooltip>
-											</div>
+												</TooltipTrigger>
+												<TooltipContent>
+													{t("impersonation.tooltip.twoFactorStatus")}
+												</TooltipContent>
+											</Tooltip>
 										</div>
 									</div>
-									<Button
-										onClick={handleStopImpersonating}
-										variant="secondary"
-										className="gap-2"
-										size="sm"
-									>
-										<XIcon className="w-4 h-4" />
-										{t("impersonation.button.stop")}
-									</Button>
 								</div>
+								<Button
+									onClick={handleStopImpersonating}
+									variant="secondary"
+									className="gap-2"
+									size="sm"
+								>
+									<XIcon className="w-4 h-4" />
+									{t("impersonation.button.stop")}
+								</Button>
+							</div>
 						)}
 					</div>
 				</div>

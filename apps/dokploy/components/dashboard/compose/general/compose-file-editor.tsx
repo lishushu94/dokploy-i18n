@@ -112,7 +112,9 @@ export const ComposeFileEditor = ({ composeId }: Props) => {
 			<div className="w-full flex flex-col gap-4 ">
 				<div className="flex items-center justify-between">
 					<div>
-						<h3 className="text-lg font-medium">{t("compose.fileEditor.title")}</h3>
+						<h3 className="text-lg font-medium">
+							{t("compose.fileEditor.title")}
+						</h3>
 						<p className="text-sm text-muted-foreground">
 							{t("compose.fileEditor.description")}
 							{hasUnsavedChanges && (

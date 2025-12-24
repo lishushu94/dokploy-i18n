@@ -70,7 +70,7 @@ const Mongo = (
 			<UseKeyboardNav forPage="mongodb" />
 			<BreadcrumbSidebar
 				list={[
-					{ name: "Projects", href: "/dashboard/projects" },
+					{ name: t("dashboard.projects"), href: "/dashboard/projects" },
 					{
 						name: data?.environment?.project?.name || "",
 					},
@@ -85,7 +85,10 @@ const Mongo = (
 			/>
 			<Head>
 				<title>
-					Database: {data?.name} - {data?.environment?.project?.name} | Dokploy
+					{t("database.pageTitle", {
+						dbName: data?.name || "",
+						projectName: data?.environment?.project?.name || "",
+					})}
 				</title>
 			</Head>
 			<div className="w-full">
@@ -137,9 +140,7 @@ const Mongo = (
 													align="start"
 													side="top"
 												>
-													<span>
-														{t("server.inactive.tooltip")}
-													</span>
+													<span>{t("server.inactive.tooltip")}</span>
 												</TooltipContent>
 											</Tooltip>
 										</TooltipProvider>
@@ -165,7 +166,7 @@ const Mongo = (
 											})}
 										</span>
 										<span className="text-center text-base text-muted-foreground">
-											{t("common.goTo")} {" "}
+											{t("common.goTo")}{" "}
 											<Link
 												href="/dashboard/settings/billing"
 												className="text-primary"
@@ -204,9 +205,7 @@ const Mongo = (
 											<TabsTrigger value="environment">
 												{t("tabs.environment")}
 											</TabsTrigger>
-											<TabsTrigger value="logs">
-												{t("tabs.logs")}
-											</TabsTrigger>
+											<TabsTrigger value="logs">{t("tabs.logs")}</TabsTrigger>
 											{((data?.serverId && isCloud) || !data?.server) && (
 												<TabsTrigger value="monitoring">
 													{t("tabs.monitoring")}

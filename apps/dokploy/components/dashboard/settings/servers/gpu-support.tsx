@@ -45,10 +45,7 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 			await utils.settings.checkGPUStatus.invalidate({ serverId });
 		},
 		onError: (error) => {
-			toast.error(
-				error.message ||
-																								t("settings.servers.gpu.toast.enableError"),
-			);
+			toast.error(error.message || t("settings.servers.gpu.toast.enableError"));
 			setIsLoading(false);
 		},
 	});
@@ -113,8 +110,8 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 										{isLoading
 											? t("settings.servers.gpu.button.enabling")
 											: gpuStatus?.swarmEnabled
-													? t("settings.servers.gpu.button.reconfigure")
-													: t("settings.servers.gpu.button.enable")}
+												? t("settings.servers.gpu.button.reconfigure")
+												: t("settings.servers.gpu.button.enable")}
 									</Button>
 								</DialogAction>
 								<Button
@@ -136,30 +133,18 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 								{t("settings.servers.gpu.requirements.title")}
 							</div>
 							<ul className="list-disc list-inside text-sm space-y-1">
-								<li>
-									{t("settings.servers.gpu.requirements.hardware")}
-								</li>
-								<li>
-									{t("settings.servers.gpu.requirements.drivers")}
-								</li>
-								<li>
-									{t("settings.servers.gpu.requirements.runtime")}
-								</li>
-								<li>
-									{t("settings.servers.gpu.requirements.privileges")}
-								</li>
-								<li>
-									{t("settings.servers.gpu.requirements.cudaSupport")}
-								</li>
+								<li>{t("settings.servers.gpu.requirements.hardware")}</li>
+								<li>{t("settings.servers.gpu.requirements.drivers")}</li>
+								<li>{t("settings.servers.gpu.requirements.runtime")}</li>
+								<li>{t("settings.servers.gpu.requirements.privileges")}</li>
+								<li>{t("settings.servers.gpu.requirements.cudaSupport")}</li>
 							</ul>
 						</AlertBlock>
 
 						{isChecking ? (
 							<div className="flex items-center justify-center text-muted-foreground py-4">
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								<span>
-									{t("settings.servers.gpu.loading")}
-								</span>
+								<span>{t("settings.servers.gpu.loading")}</span>
 							</div>
 						) : (
 							<div className="grid gap-4">
@@ -169,7 +154,9 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 										{t("settings.servers.gpu.section.prerequisites.title")}
 									</h3>
 									<p className="text-sm text-muted-foreground mb-4">
-										{t("settings.servers.gpu.section.prerequisites.description")}
+										{t(
+											"settings.servers.gpu.section.prerequisites.description",
+										)}
 									</p>
 									<div className="grid gap-2.5">
 										<StatusRow
@@ -177,24 +164,17 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 											isEnabled={gpuStatus?.driverInstalled}
 											description={
 												gpuStatus?.driverVersion
-													? t(
-														"settings.servers.gpu.status.driver.installed",
-														{
+													? t("settings.servers.gpu.status.driver.installed", {
 															version: gpuStatus.driverVersion,
-														},
-													)
-													: t(
-														"settings.servers.gpu.status.driver.notInstalled",
-													)
+														})
+													: t("settings.servers.gpu.status.driver.notInstalled")
 											}
 										/>
 										<StatusRow
 											label={t("settings.servers.gpu.status.gpuModel.label")}
 											value={
 												gpuStatus?.gpuModel ||
-													t(
-														"settings.servers.gpu.status.gpuModel.notDetected",
-													)
+												t("settings.servers.gpu.status.gpuModel.notDetected")
 											}
 											showIcon={false}
 										/>
@@ -202,14 +182,14 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 											label={t("settings.servers.gpu.status.memory.label")}
 											value={
 												gpuStatus?.memoryInfo ||
-													t(
-														"settings.servers.gpu.status.memory.notAvailable",
-													)
+												t("settings.servers.gpu.status.memory.notAvailable")
 											}
 											showIcon={false}
 										/>
 										<StatusRow
-											label={t("settings.servers.gpu.status.availableGpus.label")}
+											label={t(
+												"settings.servers.gpu.status.availableGpus.label",
+											)}
 											value={gpuStatus?.availableGPUs || 0}
 											showIcon={false}
 										/>
@@ -218,15 +198,10 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 											isEnabled={gpuStatus?.cudaSupport}
 											description={
 												gpuStatus?.cudaVersion
-													? t(
-														"settings.servers.gpu.status.cuda.available",
-														{
+													? t("settings.servers.gpu.status.cuda.available", {
 															version: gpuStatus.cudaVersion,
-														},
-													)
-													: t(
-														"settings.servers.gpu.status.cuda.notAvailable",
-													)
+														})
+													: t("settings.servers.gpu.status.cuda.notAvailable")
 											}
 										/>
 										<StatusRow
@@ -251,14 +226,18 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 									</p>
 									<div className="grid gap-2.5">
 										<StatusRow
-											label={t("settings.servers.gpu.status.runtimeConfig.label")}
+											label={t(
+												"settings.servers.gpu.status.runtimeConfig.label",
+											)}
 											isEnabled={gpuStatus?.runtimeConfigured}
 											description={
 												gpuStatus?.runtimeConfigured
-													? t("settings.servers.gpu.status.runtimeConfig.default")
+													? t(
+															"settings.servers.gpu.status.runtimeConfig.default",
+														)
 													: t(
-														"settings.servers.gpu.status.runtimeConfig.notDefault",
-													)
+															"settings.servers.gpu.status.runtimeConfig.notDefault",
+														)
 											}
 										/>
 										<StatusRow
@@ -269,14 +248,14 @@ export function GPUSupport({ serverId }: GPUSupportProps) {
 											description={
 												gpuStatus?.swarmEnabled
 													? t(
-														"settings.servers.gpu.status.swarmSupport.enabled",
-														{
-															count: gpuStatus.gpuResources,
-														},
-													)
+															"settings.servers.gpu.status.swarmSupport.enabled",
+															{
+																count: gpuStatus.gpuResources,
+															},
+														)
 													: t(
-														"settings.servers.gpu.status.swarmSupport.notEnabled",
-													)
+															"settings.servers.gpu.status.swarmSupport.notEnabled",
+														)
 											}
 										/>
 									</div>

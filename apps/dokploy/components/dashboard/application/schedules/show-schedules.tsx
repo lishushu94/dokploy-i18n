@@ -82,9 +82,7 @@ export const ShowSchedules = ({ id, scheduleType = "application" }: Props) => {
 						<CardTitle className="text-xl font-bold flex items-center gap-2">
 							{t("schedules.page.title")}
 						</CardTitle>
-						<CardDescription>
-							{t("schedules.page.description")}
-						</CardDescription>
+						<CardDescription>{t("schedules.page.description")}</CardDescription>
 					</div>
 					{schedules && schedules.length > 0 && (
 						<HandleSchedules id={id} scheduleType={scheduleType} />
@@ -188,7 +186,9 @@ export const ShowSchedules = ({ id, scheduleType = "application" }: Props) => {
 														)}
 													</Button>
 												</TooltipTrigger>
-												<TooltipContent>{t("schedules.run.tooltip")}</TooltipContent>
+												<TooltipContent>
+													{t("schedules.run.tooltip")}
+												</TooltipContent>
 											</Tooltip>
 										</TooltipProvider>
 										<HandleSchedules

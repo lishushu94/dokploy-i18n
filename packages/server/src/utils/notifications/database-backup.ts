@@ -73,11 +73,7 @@ export const sendDatabaseBackupNotifications = async ({
 						date: date.toLocaleString(),
 					}),
 				).catch();
-				await sendEmailNotification(
-					email,
-					emailContent.subject,
-					template,
-				);
+				await sendEmailNotification(email, emailContent.subject, template);
 			}
 
 			if (discord) {

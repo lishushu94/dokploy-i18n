@@ -876,6 +876,41 @@
       "when": 1764571454170,
       "tag": "0124_certain_cloak",
       "breakpoints": true
+    },
+    {
+      "idx": 125,
+      "version": "7",
+      "when": 1764571454171,
+      "tag": "0125_ai_conversations",
+      "breakpoints": true
+    },
+    {
+      "idx": 126,
+      "version": "7",
+      "when": 1764571454172,
+      "tag": "0126_ai_provider_type",
+      "breakpoints": true
+    },
+    {
+      "idx": 127,
+      "version": "7",
+      "when": 1766310000000,
+      "tag": "0127_ai_provider_type_cleanup",
+      "breakpoints": true
+    },
+    {
+      "idx": 128,
+      "version": "7",
+      "when": 1766310000001,
+      "tag": "0128_github_network_acceleration",
+      "breakpoints": true
+    },
+    {
+      "idx": 129,
+      "version": "7",
+      "when": 1766320000000,
+      "tag": "0129_update_tags_url",
+      "breakpoints": true
     }
   ]
 }

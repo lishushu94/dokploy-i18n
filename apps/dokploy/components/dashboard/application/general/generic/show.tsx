@@ -1,6 +1,6 @@
 import { GitBranch, Loader2, UploadCloud } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import { toast } from "sonner";
 import { SaveDockerProvider } from "@/components/dashboard/application/general/generic/save-docker-provider";
@@ -224,8 +224,7 @@ export const ShowProviderForm = ({ applicationId }: Props) => {
 								<span className="text-base text-muted-foreground">
 									{t("application.git.github.empty.description", {
 										settingsLink: t("application.git.main.settingsLink"),
-									})}
-									{" "}
+									})}{" "}
 									<Link
 										href="/dashboard/settings/git-providers"
 										className="text-foreground underline"
@@ -245,8 +244,7 @@ export const ShowProviderForm = ({ applicationId }: Props) => {
 								<span className="text-base text-muted-foreground">
 									{t("application.git.gitlab.empty.description", {
 										settingsLink: t("application.git.main.settingsLink"),
-									})}
-									{" "}
+									})}{" "}
 									<Link
 										href="/dashboard/settings/git-providers"
 										className="text-foreground underline"
@@ -266,8 +264,7 @@ export const ShowProviderForm = ({ applicationId }: Props) => {
 								<span className="text-base text-muted-foreground">
 									{t("application.git.bitbucket.empty.description", {
 										settingsLink: t("application.git.main.settingsLink"),
-									})}
-									{" "}
+									})}{" "}
 									<Link
 										href="/dashboard/settings/git-providers"
 										className="text-foreground underline"
@@ -287,8 +284,7 @@ export const ShowProviderForm = ({ applicationId }: Props) => {
 								<span className="text-base text-muted-foreground">
 									{t("application.git.gitea.empty.description", {
 										settingsLink: t("application.git.main.settingsLink"),
-									})}
-									{" "}
+									})}{" "}
 									<Link
 										href="/dashboard/settings/git-providers"
 										className="text-foreground underline"

@@ -214,7 +214,9 @@ export const AddCertificate = () => {
 													<FormLabel className="break-all w-fit flex flex-row gap-1 items-center">
 														{isCloud
 															? t("settings.certificates.add.form.server.label")
-															: t("settings.certificates.add.form.server.labelOptional")}
+															: t(
+																	"settings.certificates.add.form.server.labelOptional",
+																)}
 														<HelpCircle className="size-4 text-muted-foreground" />
 													</FormLabel>
 												</TooltipTrigger>
@@ -233,10 +235,10 @@ export const AddCertificate = () => {
 														!isCloud
 															? t(
 																	"settings.certificates.add.form.server.placeholder.selfHosted",
-															  )
+																)
 															: t(
 																	"settings.certificates.add.form.server.placeholder.cloud",
-															  )
+																)
 													}
 												/>
 											</SelectTrigger>
@@ -247,7 +249,9 @@ export const AddCertificate = () => {
 															<span className="flex items-center gap-2 justify-between w-full">
 																<span>Dokploy</span>
 																<span className="text-muted-foreground text-xs self-center">
-																	{t("settings.certificates.add.form.server.defaultBadge")}
+																	{t(
+																		"settings.certificates.add.form.server.defaultBadge",
+																	)}
 																</span>
 															</span>
 														</SelectItem>

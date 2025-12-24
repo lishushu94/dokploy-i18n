@@ -38,9 +38,7 @@ export const AddManager = ({ serverId }: Props) => {
 				) : (
 					<>
 						<div className="flex flex-col gap-2.5 text-sm">
-							<span>
-								{t("settings.cluster.nodes.manager.step1")}
-							</span>
+							<span>{t("settings.cluster.nodes.manager.step1")}</span>
 							<span className="bg-muted rounded-lg p-2 flex justify-between">
 								{t("settings.cluster.nodes.manager.command", {
 									command: `curl https://get.docker.com | sh -s -- --version ${data?.version}`,
@@ -61,9 +59,7 @@ export const AddManager = ({ serverId }: Props) => {
 						</div>
 
 						<div className="flex flex-col gap-2.5 text-sm">
-							<span>
-								{t("settings.cluster.nodes.manager.step2")}
-							</span>
+							<span>{t("settings.cluster.nodes.manager.step2")}</span>
 
 							<span className="bg-muted rounded-lg p-2  flex">
 								{t("settings.cluster.nodes.manager.command", {

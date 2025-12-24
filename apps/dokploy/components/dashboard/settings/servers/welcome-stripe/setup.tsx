@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useState } from "react";
 import {
 	type LogLine,
 	parseLogs,
@@ -74,9 +74,7 @@ export const Setup = () => {
 			<Card className="bg-background">
 				<CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2">
 					<div className="flex flex-col gap-2 w-full">
-						<Label>
-							{t("settings.servers.onboarding.setup.selectLabel")}
-						</Label>
+						<Label>{t("settings.servers.onboarding.setup.selectLabel")}</Label>
 						<Select onValueChange={setServerId} defaultValue={serverId}>
 							<SelectTrigger>
 								<SelectValue
@@ -93,12 +91,9 @@ export const Setup = () => {
 										</SelectItem>
 									))}
 									<SelectLabel>
-										{t(
-											"settings.servers.onboarding.common.serversLabel",
-											{
-												count: servers?.length ?? 0,
-											},
-										)}
+										{t("settings.servers.onboarding.common.serversLabel", {
+											count: servers?.length ?? 0,
+										})}
 									</SelectLabel>
 								</SelectGroup>
 							</SelectContent>
@@ -132,9 +127,7 @@ export const Setup = () => {
 									setIsDeploying(true);
 								}}
 							>
-								<Button>
-									{t("settings.servers.onboarding.setup.button")}
-								</Button>
+								<Button>{t("settings.servers.onboarding.setup.button")}</Button>
 							</DialogAction>
 						</div>
 					</div>

@@ -102,7 +102,9 @@ export const ShowGeneralMongo = ({ mongoId }: Props) => {
 										<TooltipPrimitive.Portal>
 											<TooltipContent sideOffset={5} className="z-[60]">
 												<p>
-													{t("database.common.deployTooltip", { db: "MongoDB" })}
+													{t("database.common.deployTooltip", {
+														db: "MongoDB",
+													})}
 												</p>
 											</TooltipContent>
 										</TooltipPrimitive.Portal>
@@ -142,7 +144,9 @@ export const ShowGeneralMongo = ({ mongoId }: Props) => {
 										<TooltipPrimitive.Portal>
 											<TooltipContent sideOffset={5} className="z-[60]">
 												<p>
-													{t("database.common.reloadTooltip", { db: "MongoDB" })}
+													{t("database.common.reloadTooltip", {
+														db: "MongoDB",
+													})}
 												</p>
 											</TooltipContent>
 										</TooltipPrimitive.Portal>
@@ -182,7 +186,9 @@ export const ShowGeneralMongo = ({ mongoId }: Props) => {
 											<TooltipPrimitive.Portal>
 												<TooltipContent sideOffset={5} className="z-[60]">
 													<p>
-														{t("database.common.startTooltip", { db: "MongoDB" })}
+														{t("database.common.startTooltip", {
+															db: "MongoDB",
+														})}
 													</p>
 												</TooltipContent>
 											</TooltipPrimitive.Portal>
@@ -221,7 +227,9 @@ export const ShowGeneralMongo = ({ mongoId }: Props) => {
 											<TooltipPrimitive.Portal>
 												<TooltipContent sideOffset={5} className="z-[60]">
 													<p>
-														{t("database.common.stopTooltip", { db: "MongoDB" })}
+														{t("database.common.stopTooltip", {
+															db: "MongoDB",
+														})}
 													</p>
 												</TooltipContent>
 											</TooltipPrimitive.Portal>

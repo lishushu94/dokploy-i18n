@@ -1,7 +1,7 @@
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { Ban, CheckCircle2, RefreshCcw, Rocket, Terminal } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
 import { DialogAction } from "@/components/shared/dialog-action";
 import { Button } from "@/components/ui/button";
@@ -140,18 +140,16 @@ export const ComposeActions = ({ composeId }: Props) => {
 						>
 							<Tooltip>
 								<TooltipTrigger asChild>
-								<div className="flex items-center">
-									<CheckCircle2 className="size-4 mr-1" />
-									{t("compose.button.start")}
-								</div>
-							</TooltipTrigger>
-							<TooltipPrimitive.Portal>
-								<TooltipContent sideOffset={5} className="z-[60]">
-									<p>
-										{t("compose.tooltip.start")}
-									</p>
-								</TooltipContent>
-							</TooltipPrimitive.Portal>
+									<div className="flex items-center">
+										<CheckCircle2 className="size-4 mr-1" />
+										{t("compose.button.start")}
+									</div>
+								</TooltipTrigger>
+								<TooltipPrimitive.Portal>
+									<TooltipContent sideOffset={5} className="z-[60]">
+										<p>{t("compose.tooltip.start")}</p>
+									</TooltipContent>
+								</TooltipPrimitive.Portal>
 							</Tooltip>
 						</Button>
 					</DialogAction>
@@ -179,16 +177,16 @@ export const ComposeActions = ({ composeId }: Props) => {
 						>
 							<Tooltip>
 								<TooltipTrigger asChild>
-								<div className="flex items-center">
-									<Ban className="size-4 mr-1" />
-									{t("compose.button.stop")}
-								</div>
-							</TooltipTrigger>
-							<TooltipPrimitive.Portal>
-								<TooltipContent sideOffset={5} className="z-[60]">
-									<p>{t("compose.tooltip.stop")}</p>
-								</TooltipContent>
-							</TooltipPrimitive.Portal>
+									<div className="flex items-center">
+										<Ban className="size-4 mr-1" />
+										{t("compose.button.stop")}
+									</div>
+								</TooltipTrigger>
+								<TooltipPrimitive.Portal>
+									<TooltipContent sideOffset={5} className="z-[60]">
+										<p>{t("compose.tooltip.stop")}</p>
+									</TooltipContent>
+								</TooltipPrimitive.Portal>
 							</Tooltip>
 						</Button>
 					</DialogAction>
@@ -208,7 +206,9 @@ export const ComposeActions = ({ composeId }: Props) => {
 				</Button>
 			</DockerTerminalModal>
 			<div className="flex flex-row items-center gap-2 rounded-md px-4 py-2 border">
-				<span className="text-sm font-medium">{t("compose.autoDeploy.label")}</span>
+				<span className="text-sm font-medium">
+					{t("compose.autoDeploy.label")}
+				</span>
 				<Switch
 					aria-label="Toggle autodeploy"
 					checked={data?.autoDeploy || false}

@@ -19,11 +19,11 @@
     }
   },
   "scripts": {
-    "build": "npm run switch:prod && rm -rf ./dist && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
+    "build": "npm run switch:prod && node -e \"require('fs').rmSync('./dist',{ recursive: true, force: true });\" && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "build:types": "tsc --emitDeclarationOnly --experimenta-dts",
     "switch:dev": "node scripts/switchToSrc.js",
     "switch:prod": "node scripts/switchToDist.js",
-    "dev": "rm -rf ./dist && pnpm esbuild && tsc --emitDeclarationOnly --outDir dist -p tsconfig.server.json",
+    "dev": "node -e \"require('fs').rmSync('./dist',{ recursive: true, force: true });\" && pnpm esbuild && tsc --emitDeclarationOnly --outDir dist -p tsconfig.server.json",
     "esbuild": "tsx ./esbuild.config.ts && tsc --project tsconfig.server.json --emitDeclarationOnly ",
     "typecheck": "tsc --noEmit"
   },
@@ -32,6 +32,7 @@
     "@ai-sdk/azure": "^2.0.16",
     "@ai-sdk/cohere": "^2.0.4",
     "@ai-sdk/deepinfra": "^1.0.10",
+    "@ai-sdk/google": "^2.0.16",
     "@ai-sdk/mistral": "^2.0.7",
     "@ai-sdk/openai": "^2.0.16",
     "@ai-sdk/openai-compatible": "^1.0.10",
@@ -50,6 +51,7 @@
     "better-auth": "v1.2.8-beta.7",
     "bl": "6.0.11",
     "boxen": "^7.1.1",
+    "bullmq": "5.4.2",
     "date-fns": "3.6.0",
     "dockerode": "4.0.2",
     "dotenv": "16.4.5",
@@ -57,7 +59,6 @@
     "drizzle-orm": "^0.39.3",
     "drizzle-zod": "0.5.1",
     "hi-base32": "^0.5.1",
-    "yaml": "2.8.1",
     "lodash": "4.17.21",
     "micromatch": "4.0.8",
     "nanoid": "3.3.11",
@@ -79,7 +80,9 @@
     "slugify": "^1.6.6",
     "ssh2": "1.15.0",
     "toml": "3.0.0",
+    "undici": "6.21.3",
     "ws": "8.16.0",
+    "yaml": "2.8.1",
     "zod": "^3.25.32"
   },
   "devDependencies": {

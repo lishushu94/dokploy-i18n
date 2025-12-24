@@ -1,4 +1,5 @@
 import { HardDrive } from "lucide-react";
+import { useTranslation } from "next-i18next";
 import {
 	Label,
 	PolarGrid,
@@ -6,8 +7,6 @@ import {
 	RadialBar,
 	RadialBarChart,
 } from "recharts";
-
-import { useTranslation } from "next-i18next";
 import {
 	Card,
 	CardContent,
@@ -48,9 +47,7 @@ export function DiskChart({ data }: RadialChartProps) {
 		<Card className="flex flex-col bg-transparent">
 			<CardHeader className="items-center border-b pb-5">
 				<CardTitle>{t("monitoring.card.disk")}</CardTitle>
-				<CardDescription>
-					{t("monitoring.disk.storageSpace")}
-				</CardDescription>
+				<CardDescription>{t("monitoring.disk.storageSpace")}</CardDescription>
 			</CardHeader>
 			<CardContent className="flex-1 pb-0">
 				<ChartContainer

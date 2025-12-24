@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import {
 	Area,
 	AreaChart,
@@ -6,7 +7,6 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { useTranslation } from "next-i18next";
 import {
 	type ChartConfig,
 	ChartContainer,

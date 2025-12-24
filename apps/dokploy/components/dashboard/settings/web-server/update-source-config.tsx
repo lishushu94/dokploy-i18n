@@ -1,6 +1,6 @@
 import { Settings2, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { api } from "@/utils/api";
 
 const UPDATE_TAGS_URL_STORAGE_KEY = "dokployUpdateTagsUrl";
 
@@ -34,32 +35,79 @@ export const writeUpdateTagsUrlToStorage = (tagsUrl: string | null) => {
 	window.localStorage.setItem(UPDATE_TAGS_URL_STORAGE_KEY, trimmed);
 };
 
-export const UpdateSourceConfig = ({
-	disabled,
-}: {
-	disabled?: boolean;
-}) => {
+export const UpdateSourceConfig = ({ disabled }: { disabled?: boolean }) => {
 	const { t } = useTranslation("settings");
+	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState("");
+
+	const { data: updateTagsUrl } = api.settings.getUpdateTagsUrl.useQuery(
+		undefined,
+		{
+			enabled: open,
+		},
+	);
+
+	const { mutateAsync: setUpdateTagsUrl } =
+		api.settings.setUpdateTagsUrl.useMutation();
 
 	useEffect(() => {
 		if (!open) {
 			return;
 		}
-		setValue(readUpdateTagsUrlFromStorage() ?? "");
-	}, [open]);
+		if (updateTagsUrl === undefined) {
+			return;
+		}
+		setValue(updateTagsUrl ?? "");
+	}, [open, updateTagsUrl]);
+
+	useEffect(() => {
+		if (!open) {
+			return;
+		}
+		if (updateTagsUrl !== null) {
+			return;
+		}
+		const fromStorage = readUpdateTagsUrlFromStorage();
+		if (!fromStorage) {
+			return;
+		}
+		setValue(fromStorage);
+		void setUpdateTagsUrl({ tagsUrl: fromStorage })
+			.then(async () => {
+				writeUpdateTagsUrlToStorage(null);
+				await utils.settings.getUpdateTagsUrl.invalidate();
+			})
+			.catch(() => {
+				// ignore migration errors
+			});
+	}, [open, setUpdateTagsUrl, updateTagsUrl, utils]);
 
 	const handleSave = () => {
-		writeUpdateTagsUrlToStorage(value);
-		toast.success(t("settings.server.webServer.updateSource.saved"));
-		setOpen(false);
+		const trimmed = value.trim();
+		void setUpdateTagsUrl({ tagsUrl: trimmed ? trimmed : null })
+			.then(async () => {
+				writeUpdateTagsUrlToStorage(null);
+				await utils.settings.getUpdateTagsUrl.invalidate();
+				toast.success(t("settings.server.webServer.updateSource.saved"));
+				setOpen(false);
+			})
+			.catch(() => {
+				// ignore save errors
+			});
 	};
 
 	const handleClear = () => {
-		writeUpdateTagsUrlToStorage(null);
-		setValue("");
-		toast.success(t("settings.server.webServer.updateSource.cleared"));
+		void setUpdateTagsUrl({ tagsUrl: null })
+			.then(async () => {
+				writeUpdateTagsUrlToStorage(null);
+				await utils.settings.getUpdateTagsUrl.invalidate();
+				setValue("");
+				toast.success(t("settings.server.webServer.updateSource.cleared"));
+			})
+			.catch(() => {
+				// ignore clear errors
+			});
 	};
 
 	return (
@@ -73,7 +121,9 @@ export const UpdateSourceConfig = ({
 			<PopoverContent align="end" className="w-[420px]">
 				<div className="space-y-3">
 					<div className="space-y-1">
-						<Label htmlFor="updateTagsUrl">{t("settings.server.webServer.updateSource.urlLabel")}</Label>
+						<Label htmlFor="updateTagsUrl">
+							{t("settings.server.webServer.updateSource.urlLabel")}
+						</Label>
 						<Input
 							id="updateTagsUrl"
 							value={value}

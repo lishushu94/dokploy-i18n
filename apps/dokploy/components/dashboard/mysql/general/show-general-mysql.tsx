@@ -246,7 +246,9 @@ export const ShowGeneralMysql = ({ mysqlId }: Props) => {
 									<TooltipPrimitive.Portal>
 										<TooltipContent sideOffset={5} className="z-[60]">
 											<p>
-												{t("database.common.openTerminalTooltip", { db: "MySQL" })}
+												{t("database.common.openTerminalTooltip", {
+													db: "MySQL",
+												})}
 											</p>
 										</TooltipContent>
 									</TooltipPrimitive.Portal>

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, ChevronsUpDown, HelpCircle, Plus, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -244,9 +244,7 @@ export const SaveGithubProvider = ({ applicationId }: Props) => {
 											>
 												<GithubIcon className="h-4 w-4" />
 												<span>
-													{t(
-														"application.git.github.form.viewRepositoryLink",
-													)}
+													{t("application.git.github.form.viewRepositoryLink")}
 												</span>
 											</Link>
 										)}
@@ -262,14 +260,16 @@ export const SaveGithubProvider = ({ applicationId }: Props) => {
 													)}
 												>
 													{isLoadingRepositories
-														? t("application.git.github.state.loadingRepositories")
+														? t(
+																"application.git.github.state.loadingRepositories",
+															)
 														: field.value.owner
 															? repositories?.find(
 																	(repo) => repo.name === field.value.repo,
 																)?.name
 															: t(
-														"application.git.github.form.repositorySelectPlaceholder",
-													)}
+																	"application.git.github.form.repositorySelectPlaceholder",
+																)}
 
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
@@ -285,7 +285,9 @@ export const SaveGithubProvider = ({ applicationId }: Props) => {
 												/>
 												{isLoadingRepositories && (
 													<span className="py-6 text-center text-sm">
-														{t("application.git.github.state.loadingRepositories")}
+														{t(
+															"application.git.github.state.loadingRepositories",
+														)}
 													</span>
 												)}
 												<CommandEmpty>
@@ -328,7 +330,9 @@ export const SaveGithubProvider = ({ applicationId }: Props) => {
 									</Popover>
 									{form.formState.errors.repository && (
 										<p className={cn("text-sm font-medium text-destructive")}>
-											{t("application.git.github.validation.repositoryRequired")}
+											{t(
+												"application.git.github.validation.repositoryRequired",
+											)}
 										</p>
 									)}
 								</FormItem>
@@ -359,8 +363,8 @@ export const SaveGithubProvider = ({ applicationId }: Props) => {
 																	(branch) => branch.name === field.value,
 																)?.name
 															: t(
-														"application.git.github.form.branchSelectPlaceholder",
-													)}
+																	"application.git.github.form.branchSelectPlaceholder",
+																)}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -538,39 +542,39 @@ export const SaveGithubProvider = ({ applicationId }: Props) => {
 										<div className="flex gap-2">
 											<FormControl>
 												<Input
-														ref={watchPathInputRef}
-														placeholder={t(
-															"application.git.github.form.watchPathsPlaceholder",
-														)}
-														onKeyDown={(e) => {
-															if (e.key === "Enter") {
-																e.preventDefault();
-																const input = e.currentTarget;
-																const path = input.value.trim();
-																if (path) {
-																	field.onChange([...(field.value || []), path]);
-																	input.value = "";
-																}
+													ref={watchPathInputRef}
+													placeholder={t(
+														"application.git.github.form.watchPathsPlaceholder",
+													)}
+													onKeyDown={(e) => {
+														if (e.key === "Enter") {
+															e.preventDefault();
+															const input = e.currentTarget;
+															const path = input.value.trim();
+															if (path) {
+																field.onChange([...(field.value || []), path]);
+																input.value = "";
 															}
-														}}
-													/>
-											</FormControl>
-											<Button
-													type="button"
-													variant="outline"
-													size="icon"
-													onClick={() => {
-														const input = watchPathInputRef.current;
-														if (!input) return;
-														const path = input.value.trim();
-														if (path) {
-															field.onChange([...(field.value || []), path]);
-															input.value = "";
 														}
 													}}
-												>
-													<Plus className="size-4" />
-												</Button>
+												/>
+											</FormControl>
+											<Button
+												type="button"
+												variant="outline"
+												size="icon"
+												onClick={() => {
+													const input = watchPathInputRef.current;
+													if (!input) return;
+													const path = input.value.trim();
+													if (path) {
+														field.onChange([...(field.value || []), path]);
+														input.value = "";
+													}
+												}}
+											>
+												<Plus className="size-4" />
+											</Button>
 										</div>
 										<FormMessage />
 									</FormItem>

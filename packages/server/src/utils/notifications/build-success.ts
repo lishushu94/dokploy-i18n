@@ -76,11 +76,7 @@ export const sendBuildSuccessNotifications = async ({
 						environmentName,
 					}),
 				).catch();
-				await sendEmailNotification(
-					email,
-					emailContent.subject,
-					template,
-				);
+				await sendEmailNotification(email, emailContent.subject, template);
 			}
 
 			if (discord) {

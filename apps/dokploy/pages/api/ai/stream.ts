@@ -1,0 +1,148 @@
+import { validateRequest } from "@dokploy/server";
+import { chatStream, getConversationById } from "@dokploy/server/services/ai";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { z } from "zod";
+
+const bodySchema = z.object({
+	conversationId: z.string().min(1),
+	aiId: z.string().min(1),
+	message: z.string().min(1),
+});
+
+function writeSseEvent(
+	res: NextApiResponse,
+	event: string,
+	data: Record<string, unknown>,
+) {
+	res.write(`event: ${event}\n`);
+	res.write(`data: ${JSON.stringify(data)}\n\n`);
+}
+
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse,
+) {
+	if (req.method !== "POST") {
+		res.setHeader("Allow", "POST");
+		res.status(405).end("Method Not Allowed");
+		return;
+	}
+
+	const { session, user } = await validateRequest(req);
+	if (!user || !session) {
+		res.status(401).json({ message: "Unauthorized" });
+		return;
+	}
+
+	let rawBody: unknown = req.body;
+	if (typeof rawBody === "string") {
+		try {
+			rawBody = JSON.parse(rawBody);
+		} catch {
+			res.status(400).json({ message: "Invalid JSON body" });
+			return;
+		}
+	}
+
+	const parsed = bodySchema.safeParse(rawBody);
+	if (!parsed.success) {
+		res
+			.status(400)
+			.json({ message: "Invalid request", issues: parsed.error.issues });
+		return;
+	}
+
+	try {
+		const conversation = await getConversationById(parsed.data.conversationId);
+		if (conversation.organizationId !== session.activeOrganizationId) {
+			res.status(403).json({ message: "Forbidden" });
+			return;
+		}
+	} catch {
+		res.status(404).json({ message: "Conversation not found" });
+		return;
+	}
+
+	res.writeHead(200, {
+		"Content-Type": "text/event-stream; charset=utf-8",
+		"Cache-Control": "no-cache, no-transform",
+		Connection: "keep-alive",
+		"X-Accel-Buffering": "no",
+	});
+
+	const abortController = new AbortController();
+	const handleClose = () => abortController.abort();
+	req.on("close", handleClose);
+	req.on("aborted", handleClose);
+
+	const pingInterval = setInterval(() => {
+		try {
+			writeSseEvent(res, "ping", { ts: Date.now() });
+		} catch {
+			abortController.abort();
+		}
+	}, 15000);
+
+	writeSseEvent(res, "start", { conversationId: parsed.data.conversationId });
+
+	let textChunks = 0;
+	let toolCalls = 0;
+
+	try {
+		const result = await chatStream(
+			{
+				conversationId: parsed.data.conversationId,
+				message: parsed.data.message,
+				aiId: parsed.data.aiId,
+				organizationId: session.activeOrganizationId,
+				userId: user.id,
+			},
+			{
+				abortSignal: abortController.signal,
+				onTextDelta: (delta) => {
+					if (typeof delta !== "string" || delta.length === 0) return;
+					textChunks++;
+					writeSseEvent(res, "delta", { delta });
+				},
+				onToolCall: (toolCallId, toolName, args) => {
+					toolCalls++;
+					writeSseEvent(res, "tool-call", {
+						toolCallId,
+						toolName,
+						arguments: args,
+					});
+				},
+				onToolResult: (toolCallId, toolName, result) => {
+					writeSseEvent(res, "tool-result", { toolCallId, toolName, result });
+				},
+				onError: (error) => {
+					writeSseEvent(res, "stream-error", { error });
+				},
+			},
+		);
+
+		const messageId = result?.message?.messageId;
+		console.log(
+			`[AI Stream] Completed: ${textChunks} text chunks, ${toolCalls} tool calls, message: ${messageId ?? ""}`,
+		);
+
+		writeSseEvent(res, "done", {
+			conversationId: parsed.data.conversationId,
+			messageId: messageId ?? "",
+			usage: result.usage,
+		});
+	} catch (error) {
+		writeSseEvent(res, "error", {
+			message: error instanceof Error ? error.message : String(error),
+		});
+	} finally {
+		clearInterval(pingInterval);
+		res.end();
+	}
+}
+
+export const config = {
+	api: {
+		responseLimit: false,
+	},
+};

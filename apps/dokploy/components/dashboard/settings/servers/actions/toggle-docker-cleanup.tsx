@@ -1,5 +1,5 @@
-import { toast } from "sonner";
 import { useTranslation } from "next-i18next";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { api } from "@/utils/api";

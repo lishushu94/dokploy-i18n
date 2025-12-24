@@ -1,6 +1,5 @@
 import { loadStripe } from "@stripe/stripe-js";
 import clsx from "clsx";
-import { useTranslation } from "next-i18next";
 import {
 	AlertTriangle,
 	CheckIcon,
@@ -10,6 +9,7 @@ import {
 	PlusIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -85,7 +85,9 @@ export const ShowBilling = () => {
 							<CreditCard className="size-6 text-muted-foreground self-center" />
 							{t("settings.billing.page.title")}
 						</CardTitle>
-						<CardDescription>{t("settings.billing.page.description")}</CardDescription>
+						<CardDescription>
+							{t("settings.billing.page.description")}
+						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2 py-8 border-t">
 						<div className="flex flex-col gap-4 w-full">
@@ -301,7 +303,9 @@ export const ShowBilling = () => {
 																		window.open(session.url);
 																	}}
 																>
-																	{t("settings.billing.button.manageSubscription")}
+																	{t(
+																		"settings.billing.button.manageSubscription",
+																	)}
 																</Button>
 															)}
 

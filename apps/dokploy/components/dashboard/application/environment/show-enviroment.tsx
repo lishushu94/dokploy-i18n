@@ -178,7 +178,9 @@ export const ShowEnvironment = ({ id, type }: Props) => {
 												disabled={isEnvVisible}
 												className="font-mono"
 												wrapperClassName="compose-file-editor"
-												placeholder={t("application.environment.placeholder.env")}
+												placeholder={t(
+													"application.environment.placeholder.env",
+												)}
 												{...field}
 											/>
 										</FormControl>

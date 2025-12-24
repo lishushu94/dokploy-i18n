@@ -118,8 +118,7 @@ export const ShowUsers = () => {
 																			: "secondary"
 																	}
 																>
-																	{roleLabels[member.role] ||
-																		member.role}
+																	{roleLabels[member.role] || member.role}
 																</Badge>
 															</TableCell>
 															<TableCell className="text-center">
@@ -144,7 +143,9 @@ export const ShowUsers = () => {
 																				className="h-8 w-8 p-0"
 																			>
 																				<span className="sr-only">
-																					{t("settings.users.page.actions.openMenu")}
+																					{t(
+																						"settings.users.page.actions.openMenu",
+																					)}
 																				</span>
 																				<MoreHorizontal className="h-4 w-4" />
 																			</Button>
@@ -160,7 +161,9 @@ export const ShowUsers = () => {
 
 																			{!isCloud && (
 																				<DialogAction
-																					title={t("settings.users.page.actions.delete.title")}
+																					title={t(
+																						"settings.users.page.actions.delete.title",
+																					)}
 																					description={t(
 																						"settings.users.page.actions.delete.description",
 																					)}
@@ -171,13 +174,17 @@ export const ShowUsers = () => {
 																						})
 																							.then(() => {
 																								toast.success(
-																									t("settings.users.page.actions.delete.success"),
+																									t(
+																										"settings.users.page.actions.delete.success",
+																									),
 																								);
 																								refetch();
 																							})
 																							.catch(() => {
 																								toast.error(
-																									t("settings.users.page.actions.delete.error"),
+																									t(
+																										"settings.users.page.actions.delete.error",
+																									),
 																								);
 																							});
 																					}}
@@ -186,13 +193,17 @@ export const ShowUsers = () => {
 																						className="w-full cursor-pointer text-red-500 hover:!text-red-600"
 																						onSelect={(e) => e.preventDefault()}
 																					>
-																						{t("settings.users.page.actions.delete.menu")}
+																						{t(
+																							"settings.users.page.actions.delete.menu",
+																						)}
 																					</DropdownMenuItem>
 																				</DialogAction>
 																			)}
 
 																			<DialogAction
-																				title={t("settings.users.page.actions.unlink.title")}
+																				title={t(
+																					"settings.users.page.actions.unlink.title",
+																				)}
 																				description={t(
 																					"settings.users.page.actions.unlink.description",
 																				)}
@@ -214,13 +225,17 @@ export const ShowUsers = () => {
 																							})
 																								.then(() => {
 																									toast.success(
-																										t("settings.users.page.actions.delete.success"),
+																										t(
+																											"settings.users.page.actions.delete.success",
+																										),
 																									);
 																									refetch();
 																								})
 																								.catch(() => {
 																									toast.error(
-																										t("settings.users.page.actions.delete.error"),
+																										t(
+																											"settings.users.page.actions.delete.error",
+																										),
 																									);
 																								});
 																							return;
@@ -236,12 +251,16 @@ export const ShowUsers = () => {
 
 																					if (!error) {
 																						toast.success(
-																							t("settings.users.page.actions.unlink.success"),
+																							t(
+																								"settings.users.page.actions.unlink.success",
+																							),
 																						);
 																						refetch();
 																					} else {
 																						toast.error(
-																							t("settings.users.page.actions.unlink.error"),
+																							t(
+																								"settings.users.page.actions.unlink.error",
+																							),
 																						);
 																					}
 																				}}
@@ -250,7 +269,9 @@ export const ShowUsers = () => {
 																					className="w-full cursor-pointer text-red-500 hover:!text-red-600"
 																					onSelect={(e) => e.preventDefault()}
 																				>
-																					{t("settings.users.page.actions.unlink.menu")}
+																					{t(
+																						"settings.users.page.actions.unlink.menu",
+																					)}
 																				</DropdownMenuItem>
 																			</DialogAction>
 																		</DropdownMenuContent>

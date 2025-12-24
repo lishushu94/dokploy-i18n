@@ -107,9 +107,7 @@ export const RandomizeCompose = ({ composeId }: Props) => {
 				</DialogDescription>
 			</DialogHeader>
 			<div className="text-sm text-muted-foreground flex flex-col gap-2">
-				<span>
-					{t("compose.randomize.description")}
-				</span>
+				<span>{t("compose.randomize.description")}</span>
 				<ul className="list-disc list-inside">
 					<li>{t("compose.randomize.volumes")}</li>
 					<li>{t("compose.randomize.networks")}</li>
@@ -117,9 +115,7 @@ export const RandomizeCompose = ({ composeId }: Props) => {
 					<li>{t("compose.randomize.configs")}</li>
 					<li>{t("compose.randomize.secrets")}</li>
 				</ul>
-				<AlertBlock type="info">
-					{t("compose.randomize.envInfo")}
-				</AlertBlock>
+				<AlertBlock type="info">{t("compose.randomize.envInfo")}</AlertBlock>
 			</div>
 			{isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
 			<Form {...form}>

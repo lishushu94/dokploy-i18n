@@ -95,9 +95,7 @@ export const AddInvitation = () => {
 					notificationId: data.notificationId || "",
 				})
 					.then(() => {
-						toast.success(
-							t("settings.invitations.create.withEmailSuccess"),
-						);
+						toast.success(t("settings.invitations.create.withEmailSuccess"));
 					})
 					.catch((error: any) => {
 						toast.error(error.message);
@@ -116,13 +114,18 @@ export const AddInvitation = () => {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger className="" asChild>
 				<Button>
-					<PlusIcon className="h-4 w-4" /> {t("settings.invitations.add.button")}
+					<PlusIcon className="h-4 w-4" />{" "}
+					{t("settings.invitations.add.button")}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-2xl">
 				<DialogHeader>
-					<DialogTitle>{t("settings.invitations.add.dialog.title")}</DialogTitle>
-					<DialogDescription>{t("settings.invitations.add.dialog.description")}</DialogDescription>
+					<DialogTitle>
+						{t("settings.invitations.add.dialog.title")}
+					</DialogTitle>
+					<DialogDescription>
+						{t("settings.invitations.add.dialog.description")}
+					</DialogDescription>
 				</DialogHeader>
 				{error && <AlertBlock type="error">{error}</AlertBlock>}
 
@@ -138,7 +141,9 @@ export const AddInvitation = () => {
 							render={({ field }) => {
 								return (
 									<FormItem>
-										<FormLabel>{t("settings.invitations.add.form.email.label")}</FormLabel>
+										<FormLabel>
+											{t("settings.invitations.add.form.email.label")}
+										</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t(
@@ -162,7 +167,9 @@ export const AddInvitation = () => {
 							render={({ field }) => {
 								return (
 									<FormItem>
-										<FormLabel>{t("settings.invitations.add.form.role.label")}</FormLabel>
+										<FormLabel>
+											{t("settings.invitations.add.form.role.label")}
+										</FormLabel>
 										<Select
 											onValueChange={field.onChange}
 											defaultValue={field.value}
@@ -199,9 +206,7 @@ export const AddInvitation = () => {
 									return (
 										<FormItem>
 											<FormLabel>
-												{t(
-													"settings.invitations.add.form.emailProvider.label",
-												)}
+												{t("settings.invitations.add.form.emailProvider.label")}
 											</FormLabel>
 											<Select
 												onValueChange={field.onChange}

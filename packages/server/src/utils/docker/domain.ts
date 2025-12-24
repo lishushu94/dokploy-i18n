@@ -93,6 +93,77 @@ export const loadDockerComposeRemote = async (
 	}
 };
 
+const getLabelKey = (label: string) => {
+	const idx = label.indexOf("=");
+	return idx === -1 ? label.trim() : label.slice(0, idx).trim();
+};
+
+const isDokployManagedTraefikKey = (key: string, appName: string) => {
+	return (
+		key.startsWith(`traefik.http.routers.${appName}-`) ||
+		key.startsWith(`traefik.http.services.${appName}-`) ||
+		key.startsWith(`traefik.http.middlewares.stripprefix-${appName}-`) ||
+		key.startsWith(`traefik.http.middlewares.addprefix-${appName}-`)
+	);
+};
+
+const normalizeLabelsToArray = (
+	labels: DefinitionsService["labels"],
+): string[] => {
+	if (!labels) return [];
+	if (Array.isArray(labels)) return labels.slice();
+	if (typeof labels === "object") {
+		return Object.entries(labels).map(([k, v]) => `${k}=${v}`);
+	}
+	return [];
+};
+
+const stripDokployTraefikLabelsFromArray = (
+	labels: string[],
+	appName: string,
+) => {
+	const withoutManaged = labels.filter((l) => {
+		const key = getLabelKey(l);
+		return !isDokployManagedTraefikKey(key, appName);
+	});
+
+	const hasOtherTraefik = withoutManaged.some((l) => {
+		const key = getLabelKey(l);
+		if (!key.startsWith("traefik.")) return false;
+		return (
+			key !== "traefik.enable" &&
+			key !== "traefik.docker.network" &&
+			key !== "traefik.swarm.network"
+		);
+	});
+
+	if (hasOtherTraefik) return withoutManaged;
+	return withoutManaged.filter((l) => {
+		const key = getLabelKey(l);
+		return (
+			key !== "traefik.enable" &&
+			key !== "traefik.docker.network" &&
+			key !== "traefik.swarm.network"
+		);
+	});
+};
+
+const stripDokployTraefikLabelsFromService = (
+	service: DefinitionsService,
+	composeType: Compose["composeType"],
+	appName: string,
+) => {
+	if (composeType === "docker-compose") {
+		const current = normalizeLabelsToArray(service.labels);
+		service.labels = stripDokployTraefikLabelsFromArray(current, appName);
+		return;
+	}
+
+	if (!service.deploy) service.deploy = {};
+	const current = normalizeLabelsToArray(service.deploy.labels);
+	service.deploy.labels = stripDokployTraefikLabelsFromArray(current, appName);
+};
+
 export const readComposeFile = async (compose: Compose) => {
 	const path = getComposePath(compose);
 	if (existsSync(path)) {
@@ -106,10 +177,6 @@ export const writeDomainsToCompose = async (
 	compose: Compose,
 	domains: Domain[],
 ) => {
-	if (!domains.length) {
-		return "";
-	}
-
 	try {
 		const composeConverted = await addDomainToCompose(compose, domains);
 		const path = getComposePath(compose);
@@ -145,7 +212,7 @@ export const addDomainToCompose = async (
 		result = await loadDockerCompose(compose);
 	}
 
-	if (!result || domains.length === 0) {
+	if (!result) {
 		return null;
 	}
 
@@ -159,6 +226,19 @@ export const addDomainToCompose = async (
 	} else if (compose.randomize) {
 		const randomized = randomizeSpecificationFile(result, compose.suffix);
 		result = randomized;
+	}
+
+	if (result.services) {
+		for (const serviceName of Object.keys(result.services)) {
+			const service = result.services[serviceName];
+			if (service) {
+				stripDokployTraefikLabelsFromService(
+					service,
+					compose.composeType,
+					appName,
+				);
+			}
+		}
 	}
 
 	for (const domain of domains) {
@@ -176,40 +256,32 @@ export const addDomainToCompose = async (
 			httpLabels.push(...httpsLabels);
 		}
 
-		let labels: DefinitionsService["labels"] = [];
+		let labels: string[] = [];
 		if (compose.composeType === "docker-compose") {
-			if (!result.services[serviceName].labels) {
-				result.services[serviceName].labels = [];
-			}
-
-			labels = result.services[serviceName].labels;
+			labels = normalizeLabelsToArray(result.services[serviceName].labels);
+			result.services[serviceName].labels = labels;
 		} else {
-			// Stack Case
 			if (!result.services[serviceName].deploy) {
 				result.services[serviceName].deploy = {};
 			}
-			if (!result.services[serviceName].deploy.labels) {
-				result.services[serviceName].deploy.labels = [];
-			}
-
-			labels = result.services[serviceName].deploy.labels;
+			labels = normalizeLabelsToArray(
+				result.services[serviceName].deploy.labels,
+			);
+			result.services[serviceName].deploy.labels = labels;
 		}
 
-		if (Array.isArray(labels)) {
-			if (!labels.includes("traefik.enable=true")) {
-				labels.unshift("traefik.enable=true");
-			}
-			labels.unshift(...httpLabels);
-			if (!compose.isolatedDeployment) {
-				if (compose.composeType === "docker-compose") {
-					if (!labels.includes("traefik.docker.network=dokploy-network")) {
-						labels.unshift("traefik.docker.network=dokploy-network");
-					}
-				} else {
-					// Stack Case
-					if (!labels.includes("traefik.swarm.network=dokploy-network")) {
-						labels.unshift("traefik.swarm.network=dokploy-network");
-					}
+		if (!labels.includes("traefik.enable=true")) {
+			labels.unshift("traefik.enable=true");
+		}
+		labels.unshift(...httpLabels);
+		if (!compose.isolatedDeployment) {
+			if (compose.composeType === "docker-compose") {
+				if (!labels.includes("traefik.docker.network=dokploy-network")) {
+					labels.unshift("traefik.docker.network=dokploy-network");
+				}
+			} else {
+				if (!labels.includes("traefik.swarm.network=dokploy-network")) {
+					labels.unshift("traefik.swarm.network=dokploy-network");
 				}
 			}
 		}
@@ -223,7 +295,7 @@ export const addDomainToCompose = async (
 	}
 
 	// Add dokploy-network to the root of the compose file
-	if (!compose.isolatedDeployment) {
+	if (!compose.isolatedDeployment && domains.length > 0) {
 		result.networks = addDokployNetworkToRoot(result.networks);
 	}
 

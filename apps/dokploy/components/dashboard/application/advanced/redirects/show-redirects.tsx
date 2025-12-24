@@ -35,12 +35,8 @@ export const ShowRedirects = ({ applicationId }: Props) => {
 		<Card className="bg-background">
 			<CardHeader className="flex flex-row justify-between flex-wrap gap-4">
 				<div>
-					<CardTitle className="text-xl">
-						{t("redirects.card.title")}
-					</CardTitle>
-					<CardDescription>
-						{t("redirects.card.description")}
-					</CardDescription>
+					<CardTitle className="text-xl">{t("redirects.card.title")}</CardTitle>
+					<CardDescription>{t("redirects.card.description")}</CardDescription>
 				</div>
 
 				{data && data?.redirects.length > 0 && (
@@ -113,9 +109,7 @@ export const ShowRedirects = ({ applicationId }: Props) => {
 															utils.application.readTraefikConfig.invalidate({
 																applicationId,
 															});
-															toast.success(
-																t("redirects.toast.deleteSuccess"),
-															);
+															toast.success(t("redirects.toast.deleteSuccess"));
 														})
 														.catch(() => {
 															toast.error(t("redirects.toast.deleteError"));

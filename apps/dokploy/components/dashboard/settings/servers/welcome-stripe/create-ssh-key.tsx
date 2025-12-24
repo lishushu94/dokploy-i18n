@@ -1,7 +1,7 @@
 import copy from "copy-to-clipboard";
 import { CopyIcon, ExternalLinkIcon, Loader2 } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { CodeEditor } from "@/components/shared/code-editor";
@@ -160,7 +160,9 @@ export const CreateSSHKey = () => {
 														onClick={() => {
 															copy(
 																cloudSSHKey?.publicKey ||
-																	t("settings.sshKeys.welcome.provider.missingKeyFallback"),
+																	t(
+																		"settings.sshKeys.welcome.provider.missingKeyFallback",
+																	),
 															);
 															toast.success(
 																t("settings.sshKeys.welcome.copyPublicKey"),
@@ -180,7 +182,8 @@ export const CreateSSHKey = () => {
 											target="_blank"
 											className="text-primary flex flex-row gap-2 mt-2"
 										>
-											{t("settings.sshKeys.welcome.provider.tutorial")} <ExternalLinkIcon className="size-4" />
+											{t("settings.sshKeys.welcome.provider.tutorial")}{" "}
+											<ExternalLinkIcon className="size-4" />
 										</Link>
 									</div>
 								)}

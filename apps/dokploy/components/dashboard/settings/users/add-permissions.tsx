@@ -1,9 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useTranslation } from "next-i18next";
 import { AlertBlock } from "@/components/shared/alert-block";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -387,9 +387,7 @@ export const AddUserPermissions = ({ userId }: Props) => {
 								<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
 									<div className="space-y-0.5">
 										<FormLabel>
-											{t(
-												"settings.users.permissions.createEnvironments.label",
-											)}
+											{t("settings.users.permissions.createEnvironments.label")}
 										</FormLabel>
 										<FormDescription>
 											{t(
@@ -413,9 +411,7 @@ export const AddUserPermissions = ({ userId }: Props) => {
 								<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
 									<div className="space-y-0.5">
 										<FormLabel>
-											{t(
-												"settings.users.permissions.deleteEnvironments.label",
-											)}
+											{t("settings.users.permissions.deleteEnvironments.label")}
 										</FormLabel>
 										<FormDescription>
 											{t(
@@ -442,9 +438,7 @@ export const AddUserPermissions = ({ userId }: Props) => {
 											{t("settings.users.permissions.traefikFiles.label")}
 										</FormLabel>
 										<FormDescription>
-											{t(
-												"settings.users.permissions.traefikFiles.description",
-											)}
+											{t("settings.users.permissions.traefikFiles.description")}
 										</FormDescription>
 									</div>
 									<FormControl>
@@ -466,9 +460,7 @@ export const AddUserPermissions = ({ userId }: Props) => {
 											{t("settings.users.permissions.docker.label")}
 										</FormLabel>
 										<FormDescription>
-											{t(
-												"settings.users.permissions.docker.description",
-											)}
+											{t("settings.users.permissions.docker.description")}
 										</FormDescription>
 									</div>
 									<FormControl>
@@ -512,9 +504,7 @@ export const AddUserPermissions = ({ userId }: Props) => {
 											{t("settings.users.permissions.sshKeys.label")}
 										</FormLabel>
 										<FormDescription>
-											{t(
-												"settings.users.permissions.sshKeys.description",
-											)}
+											{t("settings.users.permissions.sshKeys.description")}
 										</FormDescription>
 									</div>
 									<FormControl>
@@ -536,9 +526,7 @@ export const AddUserPermissions = ({ userId }: Props) => {
 											{t("settings.users.permissions.gitProviders.label")}
 										</FormLabel>
 										<FormDescription>
-											{t(
-												"settings.users.permissions.gitProviders.description",
-											)}
+											{t("settings.users.permissions.gitProviders.description")}
 										</FormDescription>
 									</div>
 									<FormControl>
@@ -560,9 +548,7 @@ export const AddUserPermissions = ({ userId }: Props) => {
 											{t("settings.users.permissions.projects.title")}
 										</FormLabel>
 										<FormDescription>
-											{t(
-												"settings.users.permissions.projects.description",
-											)}
+											{t("settings.users.permissions.projects.description")}
 										</FormDescription>
 									</div>
 									{projects?.length === 0 && (
@@ -753,15 +739,20 @@ export const AddUserPermissions = ({ userId }: Props) => {
 																								<div className="flex items-center gap-2">
 																									<div className="w-2 h-2 bg-blue-500 rounded-full" />
 																									<FormLabel className="text-sm font-medium text-foreground cursor-pointer">
-																	{environment.name === "production"
-																		? t("environment.default.production")
-																		: environment.name}
-																	</FormLabel>
+																										{environment.name ===
+																										"production"
+																											? t(
+																													"environment.default.production",
+																												)
+																											: environment.name}
+																									</FormLabel>
 																									<span className="text-xs text-muted-foreground">
-																		{t(
-																			"settings.users.permissions.projects.services.count",
-																			{ count: services.length },
-																		)}
+																										{t(
+																											"settings.users.permissions.projects.services.count",
+																											{
+																												count: services.length,
+																											},
+																										)}
 																									</span>
 																								</div>
 																							</FormItem>
@@ -915,5 +906,5 @@ export const AddUserPermissions = ({ userId }: Props) => {
 				</Form>
 			</DialogContent>
 		</Dialog>
-		);
+	);
 };

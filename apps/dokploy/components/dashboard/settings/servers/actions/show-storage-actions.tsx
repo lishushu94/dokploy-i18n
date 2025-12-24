@@ -153,9 +153,7 @@ export const ShowStorageActions = ({ serverId }: Props) => {
 							})
 								.then(async () => {
 									toast.success(
-										t(
-											"settings.server.webServer.storage.cleanedDockerBuilder",
-										),
+										t("settings.server.webServer.storage.cleanedDockerBuilder"),
 									);
 								})
 								.catch(() => {

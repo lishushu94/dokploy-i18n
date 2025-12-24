@@ -105,9 +105,7 @@ export default function Home({ tokenResetPassword }: Props) {
 					</Link>
 					{t("auth.reset.title")}
 				</CardTitle>
-				<CardDescription>
-					{t("auth.reset.password.subtitle")}
-				</CardDescription>
+				<CardDescription>{t("auth.reset.password.subtitle")}</CardDescription>
 
 				<div className="w-full">
 					<CardContent className="p-0">

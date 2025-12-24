@@ -38,30 +38,73 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { api } from "@/utils/api";
 
-const aiSchema = z.object({
+const providerTypeSchema = z.enum([
+	"openai",
+	"azure",
+	"anthropic",
+	"cohere",
+	"perplexity",
+	"mistral",
+	"ollama",
+	"deepinfra",
+	"deepseek",
+	"gemini",
+	"openai_compatible",
+]);
+
+const baseAiSchema = z.object({
 	name: z.string().min(1),
+	providerType: providerTypeSchema.default("openai_compatible"),
 	apiUrl: z.string().url(),
 	apiKey: z.string(),
 	model: z.string().min(1),
 	isEnabled: z.boolean(),
 });
 
+type BaseSchema = z.infer<typeof baseAiSchema>;
+
+const normalizeAiSchema = (data: BaseSchema): BaseSchema => {
+	const trimmed = data.apiUrl.replace(/\/+$/, "");
+	const fixed = trimmed
+		.replace(/\/v1beta\/v1$/, "/v1beta")
+		.replace(/\/beta\/v1$/, "/beta")
+		.replace(/\/v2\/v2$/, "/v2")
+		.replace(/\/v1\/v1$/, "/v1");
+
+	if (data.providerType === "gemini") {
+		return { ...data, apiUrl: fixed.replace(/\/v1beta$/, "") };
+	}
+
+	return { ...data, apiUrl: fixed };
+};
+
+const aiSchema = baseAiSchema.transform(normalizeAiSchema);
+
 const createAiSchema = (t: (key: string) => string) =>
-	aiSchema.extend({
-		name: aiSchema.shape.name.min(1, {
-			message: t("settings.ai.validation.nameRequired"),
-		}),
-		apiUrl: aiSchema.shape.apiUrl.url({
-			message: t("settings.ai.validation.apiUrlInvalid"),
-		}),
-		model: aiSchema.shape.model.min(1, {
-			message: t("settings.ai.validation.modelRequired"),
-		}),
-	});
+	baseAiSchema
+		.extend({
+			name: baseAiSchema.shape.name.min(1, {
+				message: t("settings.ai.validation.nameRequired"),
+			}),
+			apiUrl: baseAiSchema.shape.apiUrl.url({
+				message: t("settings.ai.validation.apiUrlInvalid"),
+			}),
+			model: baseAiSchema.shape.model.min(1, {
+				message: t("settings.ai.validation.modelRequired"),
+			}),
+		})
+		.transform(normalizeAiSchema);
 
 type Schema = z.infer<typeof aiSchema>;
 
@@ -94,7 +137,8 @@ export const HandleAi = ({ aiId }: Props) => {
 		resolver: zodResolver(schema),
 		defaultValues: {
 			name: "",
-			apiUrl: "",
+			providerType: "openai_compatible",
+			apiUrl: "https://api.openai.com/v1",
 			apiKey: "",
 			model: "",
 			isEnabled: true,
@@ -103,9 +147,23 @@ export const HandleAi = ({ aiId }: Props) => {
 
 	useEffect(() => {
 		if (data) {
+			const parsedProviderType = providerTypeSchema.safeParse(
+				data?.providerType,
+			);
+			const providerType = parsedProviderType.success
+				? parsedProviderType.data
+				: "openai_compatible";
+			const displayApiUrl = (() => {
+				const raw = (data?.apiUrl ?? "https://api.openai.com/v1")
+					.replace(/\/+$/, "")
+					.trim();
+				if (providerType === "gemini") return raw.replace(/\/v1beta$/, "");
+				return raw;
+			})();
 			form.reset({
 				name: data?.name ?? "",
-				apiUrl: data?.apiUrl ?? "https://api.openai.com/v1",
+				providerType,
+				apiUrl: displayApiUrl,
 				apiKey: data?.apiKey ?? "",
 				model: data?.model ?? "",
 				isEnabled: data?.isEnabled ?? true,
@@ -117,13 +175,15 @@ export const HandleAi = ({ aiId }: Props) => {
 
 	const apiUrl = form.watch("apiUrl");
 	const apiKey = form.watch("apiKey");
+	const providerType = form.watch("providerType");
 
-	const isOllama = apiUrl.includes(":11434") || apiUrl.includes("ollama");
+	const isOllama = providerType === "ollama";
 	const { data: models, isLoading: isLoadingServerModels } =
 		api.ai.getModels.useQuery(
 			{
 				apiUrl: apiUrl ?? "",
 				apiKey: apiKey ?? "",
+				providerType: providerType ?? "openai_compatible",
 			},
 			{
 				enabled: !!apiUrl && (isOllama || !!apiKey),
@@ -211,6 +271,91 @@ export const HandleAi = ({ aiId }: Props) => {
 									</FormControl>
 									<FormDescription>
 										{t("settings.ai.form.name.description")}
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="providerType"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>
+										{t("settings.ai.form.providerType.label")}
+									</FormLabel>
+									<Select
+										onValueChange={(value) => {
+											field.onChange(value);
+											form.setValue("model", "");
+											if (value === "openai") {
+												form.setValue("apiUrl", "https://api.openai.com/v1");
+											} else if (value === "gemini") {
+												form.setValue(
+													"apiUrl",
+													"https://generativelanguage.googleapis.com/v1beta",
+												);
+											} else if (value === "ollama") {
+												form.setValue("apiUrl", "http://localhost:11434");
+											} else if (value === "anthropic") {
+												form.setValue("apiUrl", "https://api.anthropic.com");
+											}
+										}}
+										value={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue
+													placeholder={t(
+														"settings.ai.form.providerType.placeholder",
+													)}
+												/>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="openai">
+												{t("settings.ai.form.providerType.options.openai")}
+											</SelectItem>
+											<SelectItem value="azure">
+												{t("settings.ai.form.providerType.options.azure")}
+											</SelectItem>
+											<SelectItem value="anthropic">
+												{t("settings.ai.form.providerType.options.anthropic")}
+											</SelectItem>
+											<SelectItem value="cohere">
+												{t("settings.ai.form.providerType.options.cohere")}
+											</SelectItem>
+											<SelectItem value="gemini">
+												{t("settings.ai.form.providerType.options.gemini")}
+											</SelectItem>
+											<SelectItem value="ollama">
+												{t("settings.ai.form.providerType.options.ollama")}
+											</SelectItem>
+											<SelectItem value="mistral">
+												{t("settings.ai.form.providerType.options.mistral")}
+											</SelectItem>
+											<SelectItem value="cohere">
+												{t("settings.ai.form.providerType.options.cohere")}
+											</SelectItem>
+											<SelectItem value="perplexity">
+												{t("settings.ai.form.providerType.options.perplexity")}
+											</SelectItem>
+											<SelectItem value="deepinfra">
+												{t("settings.ai.form.providerType.options.deepinfra")}
+											</SelectItem>
+											<SelectItem value="deepseek">
+												{t("settings.ai.form.providerType.options.deepseek")}
+											</SelectItem>
+											<SelectItem value="openai_compatible">
+												{t(
+													"settings.ai.form.providerType.options.openai_compatible",
+												)}
+											</SelectItem>
+										</SelectContent>
+									</Select>
+									<FormDescription>
+										{t("settings.ai.form.providerType.description")}
 									</FormDescription>
 									<FormMessage />
 								</FormItem>

@@ -55,7 +55,9 @@ function syncLocaleFile(localesDir, locale, baseLocale, fileName) {
 
 	// 如果基础语言或目标语言 JSON 无法解析，跳过该文件
 	if (!baseJson || !targetJson) {
-		console.error(`Skip syncing ${fileName} for locale: ${locale} due to invalid JSON`);
+		console.error(
+			`Skip syncing ${fileName} for locale: ${locale} due to invalid JSON`,
+		);
 		return;
 	}
 

@@ -348,7 +348,9 @@ export const DockerLogsId: React.FC<Props> = ({
 								size="sm"
 								className="h-9"
 								onClick={handlePauseResume}
-								title={isPaused ? t("logs.resume.title") : t("logs.pause.title")}
+								title={
+									isPaused ? t("logs.resume.title") : t("logs.pause.title")
+								}
 							>
 								{isPaused ? (
 									<Play className="mr-2 h-4 w-4" />

@@ -169,7 +169,9 @@ export const AddPreviewDomain = ({
 											<div className="flex gap-2">
 												<FormControl>
 													<Input
-														placeholder={t("preview.domain.field.hostPlaceholder")}
+														placeholder={t(
+															"preview.domain.field.hostPlaceholder",
+														)}
 														{...field}
 													/>
 												</FormControl>
@@ -203,7 +205,11 @@ export const AddPreviewDomain = ({
 															sideOffset={5}
 															className="max-w-[10rem]"
 														>
-															<p>{t("preview.domain.tooltip.generateTraefikDomain")}</p>
+															<p>
+																{t(
+																	"preview.domain.tooltip.generateTraefikDomain",
+																)}
+															</p>
 														</TooltipContent>
 													</Tooltip>
 												</TooltipProvider>
@@ -223,7 +229,9 @@ export const AddPreviewDomain = ({
 												<FormLabel>{t("preview.domain.field.path")}</FormLabel>
 												<FormControl>
 													<Input
-														placeholder={t("preview.domain.field.pathPlaceholder")}
+														placeholder={t(
+															"preview.domain.field.pathPlaceholder",
+														)}
 														{...field}
 													/>
 												</FormControl>
@@ -242,7 +250,9 @@ export const AddPreviewDomain = ({
 												<FormLabel>{t("preview.domain.field.port")}</FormLabel>
 												<FormControl>
 													<NumberInput
-														placeholder={t("preview.domain.field.portPlaceholder")}
+														placeholder={t(
+															"preview.domain.field.portPlaceholder",
+														)}
 														{...field}
 													/>
 												</FormControl>
@@ -280,7 +290,9 @@ export const AddPreviewDomain = ({
 										name="certificateType"
 										render={({ field }) => (
 											<FormItem className="col-span-2">
-												<FormLabel>{t("preview.domain.certificate.label")}</FormLabel>
+												<FormLabel>
+													{t("preview.domain.certificate.label")}
+												</FormLabel>
 												<Select
 													onValueChange={field.onChange}
 													defaultValue={field.value || ""}
@@ -288,7 +300,9 @@ export const AddPreviewDomain = ({
 													<FormControl>
 														<SelectTrigger>
 															<SelectValue
-																placeholder={t("preview.domain.certificate.placeholder")}
+																placeholder={t(
+																	"preview.domain.certificate.placeholder",
+																)}
 															/>
 														</SelectTrigger>
 													</FormControl>
@@ -298,7 +312,9 @@ export const AddPreviewDomain = ({
 															{t("preview.domain.certificate.option.none")}
 														</SelectItem>
 														<SelectItem value={"letsencrypt"}>
-															{t("preview.domain.certificate.option.letsencrypt")}
+															{t(
+																"preview.domain.certificate.option.letsencrypt",
+															)}
 														</SelectItem>
 													</SelectContent>
 												</Select>

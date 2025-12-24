@@ -106,9 +106,7 @@ export const ShowBackups = ({
 						<Database className="size-6 text-muted-foreground" />
 						{t("backups.page.title")}
 					</CardTitle>
-					<CardDescription>
-						{t("backups.page.description")}
-					</CardDescription>
+					<CardDescription>{t("backups.page.description")}</CardDescription>
 				</div>
 
 				{postgres && postgres?.backups?.length > 0 && (
@@ -135,7 +133,7 @@ export const ShowBackups = ({
 					<div className="flex flex-col items-center gap-3 min-h-[35vh] justify-center">
 						<DatabaseBackup className="size-8 text-muted-foreground" />
 						<span className="text-base text-muted-foreground text-center">
-							{t("backups.empty.noDestination.prefix")} {" "}
+							{t("backups.empty.noDestination.prefix")}{" "}
 							<Link
 								href="/dashboard/settings/destinations"
 								className="text-foreground"
@@ -274,7 +272,8 @@ export const ShowBackups = ({
 																	{t("backups.field.keepLatest")}
 																</span>
 																<p className="font-medium text-sm mt-0.5">
-																	{backup.keepLatestCount || t("backups.field.keepLatestAll")}
+																	{backup.keepLatestCount ||
+																		t("backups.field.keepLatestAll")}
 																</p>
 															</div>
 														</div>
@@ -312,10 +311,14 @@ export const ShowBackups = ({
 																				backupId: backup.backupId as string,
 																			})
 																				.then(async () => {
-																					toast.success(t("backups.manual.success"));
+																					toast.success(
+																						t("backups.manual.success"),
+																					);
 																				})
 																				.catch(() => {
-																					toast.error(t("backups.manual.error"));
+																					toast.error(
+																						t("backups.manual.error"),
+																					);
 																				});
 																			setActiveManualBackup(undefined);
 																		}}

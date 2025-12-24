@@ -1,6 +1,6 @@
 import { Rss, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { useTranslation } from "next-i18next";
+import { toast } from "sonner";
 import { AlertBlock } from "@/components/shared/alert-block";
 import { DialogAction } from "@/components/shared/dialog-action";
 import { Button } from "@/components/ui/button";
@@ -34,12 +34,8 @@ export const ShowPorts = ({ applicationId }: Props) => {
 		<Card className="bg-background">
 			<CardHeader className="flex flex-row justify-between flex-wrap gap-4">
 				<div>
-					<CardTitle className="text-xl">
-						{t("ports.card.title")}
-					</CardTitle>
-					<CardDescription>
-						{t("ports.card.description")}
-					</CardDescription>
+					<CardTitle className="text-xl">{t("ports.card.title")}</CardTitle>
+					<CardDescription>{t("ports.card.description")}</CardDescription>
 				</div>
 
 				{data && data?.ports.length > 0 && (

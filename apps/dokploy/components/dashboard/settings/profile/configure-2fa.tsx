@@ -110,14 +110,12 @@ export const Configure2FA = () => {
 		} catch (error) {
 			form.setError("password", {
 				message:
-											error instanceof Error
-												? error.message
-												: t(
-														"settings.profile.twoFactor.configure.error.incorrectPassword",
-												),
+					error instanceof Error
+						? error.message
+						: t("settings.profile.twoFactor.configure.error.incorrectPassword"),
 			});
 			toast.error(
-											t("settings.profile.twoFactor.configure.error.incorrectPassword"),
+				t("settings.profile.twoFactor.configure.error.incorrectPassword"),
 			);
 		} finally {
 			setIsRegenerating(false);
@@ -147,9 +145,7 @@ export const Configure2FA = () => {
 			toast.error(
 				error instanceof Error
 					? error.message
-					: t(
-							"settings.profile.twoFactor.configure.error.regenerate",
-					  ),
+					: t("settings.profile.twoFactor.configure.error.regenerate"),
 			);
 		} finally {
 			setIsRegenerating(false);
@@ -168,16 +164,12 @@ export const Configure2FA = () => {
 				return;
 			}
 
-			toast.success(
-				t("settings.profile.twoFactor.configure.toast.disabled"),
-			);
+			toast.success(t("settings.profile.twoFactor.configure.toast.disabled"));
 			utils.user.get.invalidate();
 			setIsDialogOpen(false);
 			setShowDisableConfirm(false);
 		} catch (error) {
-			toast.error(
-				t("settings.profile.twoFactor.configure.error.disable"),
-			);
+			toast.error(t("settings.profile.twoFactor.configure.error.disable"));
 		} finally {
 			setIsDisabling(false);
 		}
@@ -238,9 +230,7 @@ export const Configure2FA = () => {
 			.replace(BACKUP_CODES_PLACEHOLDER, backupCodesFormatted);
 
 		copy(backupCodesText);
-		toast.success(
-			t("settings.profile.twoFactor.configure.toast.copied"),
-		);
+		toast.success(t("settings.profile.twoFactor.configure.toast.copied"));
 	};
 
 	return (
@@ -256,17 +246,11 @@ export const Configure2FA = () => {
 					<DialogHeader>
 						<DialogTitle>
 							{step === "password" &&
-								t(
-									"settings.profile.twoFactor.configure.dialog.titlePassword",
-								)}
+								t("settings.profile.twoFactor.configure.dialog.titlePassword")}
 							{step === "actions" &&
-								t(
-									"settings.profile.twoFactor.configure.dialog.titleActions",
-								)}
+								t("settings.profile.twoFactor.configure.dialog.titleActions")}
 							{step === "backup-codes" &&
-								t(
-									"settings.profile.twoFactor.configure.dialog.titleBackup",
-								)}
+								t("settings.profile.twoFactor.configure.dialog.titleBackup")}
 						</DialogTitle>
 						<DialogDescription>
 							{step === "password" &&
@@ -324,14 +308,10 @@ export const Configure2FA = () => {
 										variant="outline"
 										onClick={() => setIsDialogOpen(false)}
 									>
-										{t(
-											"settings.profile.twoFactor.configure.password.cancel",
-										)}
+										{t("settings.profile.twoFactor.configure.password.cancel")}
 									</Button>
 									<Button type="submit" isLoading={isRegenerating}>
-										{t(
-											"settings.profile.twoFactor.configure.password.submit",
-										)}
+										{t("settings.profile.twoFactor.configure.password.submit")}
 									</Button>
 								</div>
 							</form>
@@ -424,9 +404,7 @@ export const Configure2FA = () => {
 									))}
 								</div>
 								<p className="text-sm text-muted-foreground">
-									{t(
-										"settings.profile.twoFactor.configure.backup.description",
-									)}
+									{t("settings.profile.twoFactor.configure.backup.description")}
 								</p>
 							</div>
 
@@ -437,9 +415,7 @@ export const Configure2FA = () => {
 									className="flex-1"
 								>
 									<DownloadIcon className="size-4 mr-2" />
-									{t(
-										"settings.profile.twoFactor.configure.backup.download",
-									)}
+									{t("settings.profile.twoFactor.configure.backup.download")}
 								</Button>
 								<Button
 									variant="outline"
@@ -447,9 +423,7 @@ export const Configure2FA = () => {
 									className="flex-1"
 								>
 									<CopyIcon className="size-4 mr-2" />
-									{t(
-										"settings.profile.twoFactor.configure.backup.copy",
-									)}
+									{t("settings.profile.twoFactor.configure.backup.copy")}
 								</Button>
 							</div>
 
@@ -460,9 +434,7 @@ export const Configure2FA = () => {
 									)}
 								</Button>
 								<Button onClick={() => setIsDialogOpen(false)}>
-									{t(
-										"settings.profile.twoFactor.configure.backup.done",
-									)}
+									{t("settings.profile.twoFactor.configure.backup.done")}
 								</Button>
 							</div>
 						</div>
@@ -477,9 +449,7 @@ export const Configure2FA = () => {
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>
-							{t(
-								"settings.profile.twoFactor.configure.disableConfirm.title",
-							)}
+							{t("settings.profile.twoFactor.configure.disableConfirm.title")}
 						</AlertDialogTitle>
 						<AlertDialogDescription>
 							{t(
@@ -489,9 +459,7 @@ export const Configure2FA = () => {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>
-							{t(
-								"settings.profile.twoFactor.configure.password.cancel",
-							)}
+							{t("settings.profile.twoFactor.configure.password.cancel")}
 						</AlertDialogCancel>
 						<AlertDialogAction
 							onClick={handleDisable2FA}
@@ -501,10 +469,10 @@ export const Configure2FA = () => {
 							{isDisabling
 								? t(
 										"settings.profile.twoFactor.configure.disableConfirm.action.disabling",
-								  )
+									)
 								: t(
 										"settings.profile.twoFactor.configure.actions.disable.button",
-								  )}
+									)}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

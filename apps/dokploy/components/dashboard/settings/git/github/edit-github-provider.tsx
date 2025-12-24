@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
 
-const createSchema = (t: (key: string) => string) =>
+const createSchema = (t: (key: string, options?: any) => string) =>
 	z.object({
 		name: z.string().min(1, {
 			message: t("settings.gitProviders.validation.nameRequired"),
@@ -35,6 +35,24 @@ const createSchema = (t: (key: string) => string) =>
 		appName: z.string().min(1, {
 			message: t("settings.gitProviders.validation.appNameRequired"),
 		}),
+		githubMirrorPrefixUrl: z
+			.string()
+			.url({
+				message: t("settings.gitProviders.validation.invalidUrl", {
+					defaultValue: "Invalid URL",
+				}),
+			})
+			.optional()
+			.or(z.literal("")),
+		githubApiProxyUrl: z
+			.string()
+			.url({
+				message: t("settings.gitProviders.validation.invalidUrl", {
+					defaultValue: "Invalid URL",
+				}),
+			})
+			.optional()
+			.or(z.literal("")),
 	});
 
 type Schema = z.infer<ReturnType<typeof createSchema>>;
@@ -63,6 +81,8 @@ export const EditGithubProvider = ({ githubId }: Props) => {
 		defaultValues: {
 			name: "",
 			appName: "",
+			githubMirrorPrefixUrl: "",
+			githubApiProxyUrl: "",
 		},
 		resolver: zodResolver(schema),
 	});
@@ -71,6 +91,8 @@ export const EditGithubProvider = ({ githubId }: Props) => {
 		form.reset({
 			name: github?.gitProvider.name || "",
 			appName: github?.githubAppName || "",
+			githubMirrorPrefixUrl: github?.githubMirrorPrefixUrl || "",
+			githubApiProxyUrl: github?.githubApiProxyUrl || "",
 		});
 	}, [form, isOpen]);
 
@@ -80,6 +102,8 @@ export const EditGithubProvider = ({ githubId }: Props) => {
 			name: data.name || "",
 			gitProviderId: github?.gitProviderId || "",
 			githubAppName: data.appName || "",
+			githubMirrorPrefixUrl: data.githubMirrorPrefixUrl || null,
+			githubApiProxyUrl: data.githubApiProxyUrl || null,
 		})
 			.then(async () => {
 				await utils.gitProvider.getAll.invalidate();
@@ -153,6 +177,55 @@ export const EditGithubProvider = ({ githubId }: Props) => {
 												<Input
 													placeholder={t(
 														"settings.gitProviders.github.edit.appNamePlaceholder",
+													)}
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="githubMirrorPrefixUrl"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												{t(
+													"settings.gitProviders.github.edit.mirrorPrefixLabel",
+													{
+														defaultValue: "Mirror Prefix URL (Git Clone)",
+													},
+												)}
+											</FormLabel>
+											<FormControl>
+												<Input
+													placeholder={t(
+														"settings.gitProviders.github.edit.mirrorPrefixPlaceholder",
+														{ defaultValue: "e.g. https://ghproxy.com/" },
+													)}
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="githubApiProxyUrl"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												{t("settings.gitProviders.github.edit.apiProxyLabel", {
+													defaultValue: "GitHub API Proxy URL",
+												})}
+											</FormLabel>
+											<FormControl>
+												<Input
+													placeholder={t(
+														"settings.gitProviders.github.edit.apiProxyPlaceholder",
+														{ defaultValue: "e.g. http://1.2.3.4:7890" },
 													)}
 													{...field}
 												/>

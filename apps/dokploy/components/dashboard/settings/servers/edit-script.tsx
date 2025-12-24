@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileTerminal } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";

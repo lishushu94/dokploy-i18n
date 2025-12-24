@@ -113,7 +113,7 @@ export const ShowExternalMysqlCredentials = ({ mysqlId }: Props) => {
 					<CardContent className="flex w-full flex-col gap-4">
 						{!getIp && (
 							<AlertBlock type="warning">
-								{t("database.externalCredentials.setIpPrefix")} {" "}
+								{t("database.externalCredentials.setIpPrefix")}{" "}
 								<Link
 									href="/dashboard/settings/server"
 									className="text-primary"
@@ -139,11 +139,15 @@ export const ShowExternalMysqlCredentials = ({ mysqlId }: Props) => {
 												return (
 													<FormItem>
 														<FormLabel>
-															{t("database.externalCredentials.externalPortLabel")}
+															{t(
+																"database.externalCredentials.externalPortLabel",
+															)}
 														</FormLabel>
 														<FormControl>
 															<Input
-																placeholder={t("database.mysql.externalCredentials.externalPortPlaceholder")}
+																placeholder={t(
+																	"database.mysql.externalCredentials.externalPortPlaceholder",
+																)}
 																{...field}
 																value={field.value || ""}
 															/>

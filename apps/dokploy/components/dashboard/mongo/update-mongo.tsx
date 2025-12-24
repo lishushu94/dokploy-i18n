@@ -105,7 +105,9 @@ export const UpdateMongo = ({ mongoId }: Props) => {
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>{t("database.mongo.update.dialogTitle")}</DialogTitle>
-					<DialogDescription>{t("database.mongo.update.dialogDescription")}</DialogDescription>
+					<DialogDescription>
+						{t("database.mongo.update.dialogDescription")}
+					</DialogDescription>
 				</DialogHeader>
 				{isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
 

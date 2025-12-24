@@ -2,8 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import copy from "copy-to-clipboard";
 import { debounce } from "lodash";
 import { CheckIcon, ChevronsUpDown, Copy, RotateCcw } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -57,9 +57,7 @@ const createRestoreVolumeBackupSchema = (t: (key: string) => string) =>
 	z.object({
 		destinationId: z
 			.string({
-				required_error: t(
-					"backups.restore.validation.destinationRequired",
-				),
+				required_error: t("backups.restore.validation.destinationRequired"),
 			})
 			.min(1, {
 				message: t("backups.restore.validation.destinationRequired"),
@@ -78,9 +76,7 @@ const createRestoreVolumeBackupSchema = (t: (key: string) => string) =>
 				),
 			})
 			.min(1, {
-				message: t(
-					"volumeBackups.restore.validation.volumeNameRequired",
-				),
+				message: t("volumeBackups.restore.validation.volumeNameRequired"),
 			}),
 	});
 
@@ -214,9 +210,7 @@ export const RestoreVolumeBackups = ({ id, type, serverId }: Props) => {
 														? destinations.find(
 																(d) => d.destinationId === field.value,
 															)?.name
-														: t(
-																"backups.restore.field.destinationPlaceholder",
-															)}
+														: t("backups.restore.field.destinationPlaceholder")}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -282,7 +276,9 @@ export const RestoreVolumeBackups = ({ id, type, serverId }: Props) => {
 														e.stopPropagation();
 														e.preventDefault();
 														copy(field.value);
-														toast.success(t("backups.restore.toast.fileCopied"));
+														toast.success(
+															t("backups.restore.toast.fileCopied"),
+														);
 													}}
 												/>
 											</Badge>
@@ -300,7 +296,9 @@ export const RestoreVolumeBackups = ({ id, type, serverId }: Props) => {
 												>
 													<span className="truncate text-left flex-1 w-52">
 														{field.value ||
-															t("backups.restore.field.backupFileButtonPlaceholder")}
+															t(
+																"backups.restore.field.backupFileButtonPlaceholder",
+															)}
 													</span>
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
@@ -365,9 +363,12 @@ export const RestoreVolumeBackups = ({ id, type, serverId }: Props) => {
 																		</div>
 																		<div className="flex items-center gap-4 text-xs text-muted-foreground">
 																			<span>
-																				{t("backups.restore.field.backupFileSize", {
-																					size: formatBytes(file.Size, t),
-																				})}
+																				{t(
+																					"backups.restore.field.backupFileSize",
+																					{
+																						size: formatBytes(file.Size),
+																					},
+																				)}
 																			</span>
 																			{file.IsDir && (
 																				<span className="text-blue-500">
@@ -378,9 +379,12 @@ export const RestoreVolumeBackups = ({ id, type, serverId }: Props) => {
 																			)}
 																			{file.Hashes?.MD5 && (
 																				<span>
-																					{t("backups.restore.field.backupFileMd5Label", {
-																						hash: file.Hashes.MD5,
-																					})}
+																					{t(
+																						"backups.restore.field.backupFileMd5Label",
+																						{
+																							hash: file.Hashes.MD5,
+																						},
+																					)}
 																				</span>
 																			)}
 																		</div>
@@ -407,7 +411,9 @@ export const RestoreVolumeBackups = ({ id, type, serverId }: Props) => {
 									</FormLabel>
 									<FormControl>
 										<Input
-											placeholder={t("volumeBackups.restore.field.volumeNamePlaceholder")}
+											placeholder={t(
+												"volumeBackups.restore.field.volumeNamePlaceholder",
+											)}
 											{...field}
 										/>
 									</FormControl>

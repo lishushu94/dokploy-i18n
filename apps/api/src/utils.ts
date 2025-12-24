@@ -1,13 +1,15 @@
 import {
 	deployApplication,
-	deployCompose,
 	deployPreviewApplication,
 	rebuildApplication,
-	rebuildCompose,
 	updateApplicationStatus,
+} from "@dokploy/server/services/application";
+import {
+	deployCompose,
+	rebuildCompose,
 	updateCompose,
-	updatePreviewDeployment,
-} from "@dokploy/server";
+} from "@dokploy/server/services/compose";
+import { updatePreviewDeployment } from "@dokploy/server/services/preview-deployment";
 import type { DeployJob } from "./schema";
 
 export const deploy = async (job: DeployJob) => {

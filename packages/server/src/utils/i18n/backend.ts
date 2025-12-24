@@ -193,7 +193,7 @@ export const getTestNotificationContent = (): TestNotificationContent => {
 			"view, visit Dokploy on Github, https://github.com/dokploy/dokploy, clear=true;",
 	};
 };
- 
+
 export type BuildSuccessEmailContent = {
 	subject: string;
 	previewText: string;
@@ -478,8 +478,7 @@ export const getDockerCleanupEmailContent = (params: {
 		previewText: "Docker cleanup for dokploy",
 		headingText: "Docker cleanup for dokploy",
 		greeting: "Hello,",
-		bodyText:
-			"The docker cleanup for dokploy was successful ✅",
+		bodyText: "The docker cleanup for dokploy was successful ✅",
 		detailsLabel: "Details:",
 		messageLabel: "Message:",
 		dateLabel: "Date:",
@@ -525,11 +524,13 @@ export const getDokployRestartEmailContent = (params: {
 	};
 };
 
-export const getDeploymentCommitDescription = (hash: string, locale?: BackendLocale): string => {
+export const getDeploymentCommitDescription = (
+	hash: string,
+	locale?: BackendLocale,
+): string => {
 	const currentLocale = locale ?? getBackendLocale();
 	if (currentLocale === "zh-Hans") {
 		return `提交：${hash}`;
 	}
 	return `Commit: ${hash}`;
 };
-

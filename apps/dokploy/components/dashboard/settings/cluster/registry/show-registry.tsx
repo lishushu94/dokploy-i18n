@@ -77,7 +77,9 @@ export const ShowRegistry = () => {
 
 															<DialogAction
 																title={t("settings.registry.delete.title")}
-																description={t("settings.registry.delete.description")}
+																description={t(
+																	"settings.registry.delete.description",
+																)}
 																type="destructive"
 																onClick={async () => {
 																	await mutateAsync({

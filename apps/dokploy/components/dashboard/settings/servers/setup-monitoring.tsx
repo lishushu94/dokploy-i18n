@@ -363,9 +363,7 @@ export const SetupMonitoring = ({ serverId }: Props) => {
 											<NumberInput {...field} />
 										</FormControl>
 										<FormDescription>
-											{t(
-												"settings.monitoring.form.retentionDays.description",
-											)}
+											{t("settings.monitoring.form.retentionDays.description")}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -630,7 +628,9 @@ export const SetupMonitoring = ({ serverId }: Props) => {
 											<NumberInput {...field} />
 										</FormControl>
 										<FormDescription>
-											{t("settings.monitoring.form.memoryThreshold.description")}
+											{t(
+												"settings.monitoring.form.memoryThreshold.description",
+											)}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -661,9 +661,11 @@ export const SetupMonitoring = ({ serverId }: Props) => {
 														size="icon"
 														className="absolute right-0 top-1/2 -translate-y-1/2"
 														onClick={() => setShowToken(!showToken)}
-														title={showToken
-															? t("settings.monitoring.form.token.hide")
-															: t("settings.monitoring.form.token.show")}
+														title={
+															showToken
+																? t("settings.monitoring.form.token.hide")
+																: t("settings.monitoring.form.token.show")
+														}
 													>
 														{showToken ? (
 															<EyeOff className="h-4 w-4" />
@@ -683,11 +685,14 @@ export const SetupMonitoring = ({ serverId }: Props) => {
 															newToken,
 														);
 														toast.success(
-															
-															t("settings.monitoring.form.token.generateSuccess"),
+															t(
+																"settings.monitoring.form.token.generateSuccess",
+															),
 														);
 													}}
-													title={t("settings.monitoring.form.token.generateTitle")}
+													title={t(
+														"settings.monitoring.form.token.generateTitle",
+													)}
 												>
 													<RefreshCw className="h-4 w-4" />
 												</Button>

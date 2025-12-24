@@ -2,20 +2,16 @@ import type { findEnvironmentById } from "@dokploy/server";
 import { validateRequest } from "@dokploy/server/lib/auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import {
-	Ban,
 	Check,
-	CheckCircle2,
 	ChevronsUpDown,
 	CircuitBoard,
 	FolderInput,
 	GlobeIcon,
 	Loader2,
-	Play,
 	PlusIcon,
 	Search,
 	ServerIcon,
 	SquareTerminal,
-	Trash2,
 	X,
 } from "lucide-react";
 import type {
@@ -34,7 +30,6 @@ import { AddCompose } from "@/components/dashboard/project/add-compose";
 import { AddDatabase } from "@/components/dashboard/project/add-database";
 import { AddTemplate } from "@/components/dashboard/project/add-template";
 import { AdvancedEnvironmentSelector } from "@/components/dashboard/project/advanced-environment-selector";
-import { DuplicateProject } from "@/components/dashboard/project/duplicate-project";
 import { EnvironmentVariables } from "@/components/dashboard/project/environment-variables";
 import { ProjectEnvironment } from "@/components/dashboard/projects/project-environment";
 import {
@@ -45,7 +40,6 @@ import {
 	RedisIcon,
 } from "@/components/icons/data-tools-icons";
 import { DashboardLayout } from "@/components/layouts/dashboard-layout";
-import { AlertBlock } from "@/components/shared/alert-block";
 import { BreadcrumbSidebar } from "@/components/shared/breadcrumb-sidebar";
 import { DateTooltip } from "@/components/shared/date-tooltip";
 import { DialogAction } from "@/components/shared/dialog-action";
@@ -68,15 +62,6 @@ import {
 	CommandInput,
 	CommandItem,
 } from "@/components/ui/command";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -658,9 +643,7 @@ const EnvironmentPage = (
 					t("services.bulk.move.error.generic", {
 						serviceId,
 						errorMessage:
-								error instanceof Error
-									? error.message
-									: t("common.unknownError"),
+							error instanceof Error ? error.message : t("common.unknownError"),
 					}),
 				);
 			}
@@ -737,9 +720,7 @@ const EnvironmentPage = (
 					t("services.bulk.delete.error.generic", {
 						serviceId,
 						errorMessage:
-								error instanceof Error
-									? error.message
-									: t("common.unknownError"),
+							error instanceof Error ? error.message : t("common.unknownError"),
 					}),
 				);
 			}
@@ -811,18 +792,16 @@ const EnvironmentPage = (
 					t("services.bulk.deploy.error.generic", {
 						serviceId,
 						errorMessage:
-								error instanceof Error
-									? error.message
-									: t("common.unknownError"),
+							error instanceof Error ? error.message : t("common.unknownError"),
 					}),
 				);
 			}
 		}
 		if (success > 0) {
 			const successKey =
-					success === 1
-						? "services.bulk.deploy.success.single"
-						: "services.bulk.deploy.success.multiple";
+				success === 1
+					? "services.bulk.deploy.success.single"
+					: "services.bulk.deploy.success.multiple";
 			toast.success(
 				t(successKey, {
 					count: success,
@@ -831,9 +810,9 @@ const EnvironmentPage = (
 		}
 		if (failed > 0) {
 			const failedKey =
-					failed === 1
-						? "services.bulk.deploy.failed.single"
-						: "services.bulk.deploy.failed.multiple";
+				failed === 1
+					? "services.bulk.deploy.failed.single"
+					: "services.bulk.deploy.failed.multiple";
 			toast.error(
 				t(failedKey, {
 					count: failed,
@@ -951,8 +930,8 @@ const EnvironmentPage = (
 								</CardTitle>
 								<CardDescription>
 									{currentEnvironment.description
-											? currentEnvironment.description
-											: t("environment.description.default", {
+										? currentEnvironment.description
+										: t("environment.description.default", {
 												name:
 													currentEnvironment.name === "production"
 														? t("environment.default.production")
@@ -1020,7 +999,7 @@ const EnvironmentPage = (
 												onCheckedChange={handleSelectAll}
 											/>
 											<span className="text-sm">
-												{t("services.bulk.selectAll")} {" "}
+												{t("services.bulk.selectAll")}{" "}
 												{selectedServices.length > 0 &&
 													`(${selectedServices.length}/${filteredServices.length})`}
 											</span>
@@ -1107,7 +1086,9 @@ const EnvironmentPage = (
 										</div>
 										<Select value={sortBy} onValueChange={setSortBy}>
 											<SelectTrigger className="lg:w-[280px]">
-												<SelectValue placeholder={t("project.sort.placeholder")} />
+												<SelectValue
+													placeholder={t("project.sort.placeholder")}
+												/>
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value="lastDeploy-desc">
@@ -1151,7 +1132,9 @@ const EnvironmentPage = (
 											<PopoverContent className="w-[200px] p-0">
 												<Command>
 													<CommandInput
-														placeholder={t("services.filter.types.searchPlaceholder")}
+														placeholder={t(
+															"services.filter.types.searchPlaceholder",
+														)}
 													/>
 													<CommandEmpty>{t("search.noResults")}</CommandEmpty>
 													<CommandGroup>
@@ -1201,43 +1184,47 @@ const EnvironmentPage = (
 										</Popover>
 										{(availableServers.length > 0 ||
 											hasServicesWithoutServer) && (
-												<Select
-													value={selectedServerId || "all"}
-													onValueChange={setSelectedServerId}
-												>
-													<SelectTrigger className="lg:w-[200px]">
-														<SelectValue
-															placeholder={t("services.filter.server.placeholder")}
-														/>
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value="all">
-															{t("services.filter.server.all")}
-														</SelectItem>
-														{hasServicesWithoutServer && (
-															<SelectItem value="dokploy-server">
-																<div className="flex items-center gap-2">
-																	<ServerIcon className="size-4" />
-																	<span>{t("services.filter.server.dokploy")}</span>
-																</div>
-															</SelectItem>
+											<Select
+												value={selectedServerId || "all"}
+												onValueChange={setSelectedServerId}
+											>
+												<SelectTrigger className="lg:w-[200px]">
+													<SelectValue
+														placeholder={t(
+															"services.filter.server.placeholder",
 														)}
-														{availableServers.map((server) => (
-															<SelectItem
-																key={server.serverId}
-																value={server.serverId}
-															>
-																<div className="flex items-center gap-2">
-																	<ServerIcon className="size-4" />
-																	<span>{server.serverName}</span>
-																</div>
-															</SelectItem>
-														))}
-													</SelectContent>
-												</Select>
-											)}
-										</div>
+													/>
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="all">
+														{t("services.filter.server.all")}
+													</SelectItem>
+													{hasServicesWithoutServer && (
+														<SelectItem value="dokploy-server">
+															<div className="flex items-center gap-2">
+																<ServerIcon className="size-4" />
+																<span>
+																	{t("services.filter.server.dokploy")}
+																</span>
+															</div>
+														</SelectItem>
+													)}
+													{availableServers.map((server) => (
+														<SelectItem
+															key={server.serverId}
+															value={server.serverId}
+														>
+															<div className="flex items-center gap-2">
+																<ServerIcon className="size-4" />
+																<span>{server.serverName}</span>
+															</div>
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+										)}
 									</div>
+								</div>
 								<div className="flex w-full gap-8">
 									{emptyServices ? (
 										<div className="flex h-[70vh] w-full flex-col items-center justify-center">

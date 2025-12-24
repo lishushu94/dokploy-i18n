@@ -1,6 +1,6 @@
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react";
 import { GithubIcon } from "@/components/icons/data-tools-icons";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
@@ -67,7 +67,8 @@ export const AddGithubProvider = () => {
 			<DialogContent className="sm:max-w-2xl ">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						{t("settings.gitProviders.github.add.title")} <GithubIcon className="size-5" />
+						{t("settings.gitProviders.github.add.title")}{" "}
+						<GithubIcon className="size-5" />
 					</DialogTitle>
 				</DialogHeader>
 
@@ -131,7 +132,9 @@ export const AddGithubProvider = () => {
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										{t("settings.gitProviders.github.add.installationsLinkText")}
+										{t(
+											"settings.gitProviders.github.add.installationsLinkText",
+										)}
 									</a>
 									<Button
 										disabled={isOrganization && organizationName.length < 1}

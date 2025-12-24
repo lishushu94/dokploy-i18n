@@ -24,7 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/utils/api";
-import { getLocale, serverSideTranslations } from "@/utils/i18n";
 
 const createRegisterSchema = (t: (key: string) => string) =>
 	z
@@ -193,9 +192,7 @@ const Invitation = ({
 													name="name"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>
-																{t("auth.nameLabel")}
-															</FormLabel>
+															<FormLabel>{t("auth.nameLabel")}</FormLabel>
 															<FormControl>
 																<Input
 																	placeholder={t("auth.namePlaceholder")}
@@ -211,9 +208,7 @@ const Invitation = ({
 													name="email"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>
-																{t("auth.emailLabel")}
-															</FormLabel>
+															<FormLabel>{t("auth.emailLabel")}</FormLabel>
 															<FormControl>
 																<Input
 																	disabled
@@ -230,9 +225,7 @@ const Invitation = ({
 													name="password"
 													render={({ field }) => (
 														<FormItem>
-															<FormLabel>
-																{t("auth.passwordLabel")}
-															</FormLabel>
+															<FormLabel>{t("auth.passwordLabel")}</FormLabel>
 															<FormControl>
 																<Input
 																	type="password"
@@ -256,7 +249,9 @@ const Invitation = ({
 															<FormControl>
 																<Input
 																	type="password"
-																	placeholder={t("auth.confirmPasswordPlaceholder")}
+																	placeholder={t(
+																		"auth.confirmPasswordPlaceholder",
+																	)}
 																	{...field}
 																/>
 															</FormControl>

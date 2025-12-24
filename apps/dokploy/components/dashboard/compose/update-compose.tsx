@@ -105,7 +105,9 @@ export const UpdateCompose = ({ composeId }: Props) => {
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>{t("compose.update.dialogTitle")}</DialogTitle>
-					<DialogDescription>{t("compose.update.dialogDescription")}</DialogDescription>
+					<DialogDescription>
+						{t("compose.update.dialogDescription")}
+					</DialogDescription>
 				</DialogHeader>
 				{isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
 
@@ -122,9 +124,14 @@ export const UpdateCompose = ({ composeId }: Props) => {
 									name="name"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>{t("compose.update.form.nameLabel")}</FormLabel>
+											<FormLabel>
+												{t("compose.update.form.nameLabel")}
+											</FormLabel>
 											<FormControl>
-												<Input placeholder={t("compose.update.form.namePlaceholder")} {...field} />
+												<Input
+													placeholder={t("compose.update.form.namePlaceholder")}
+													{...field}
+												/>
 											</FormControl>
 
 											<FormMessage />
@@ -136,10 +143,14 @@ export const UpdateCompose = ({ composeId }: Props) => {
 									name="description"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>{t("compose.update.form.descriptionLabel")}</FormLabel>
+											<FormLabel>
+												{t("compose.update.form.descriptionLabel")}
+											</FormLabel>
 											<FormControl>
 												<Textarea
-													placeholder={t("compose.update.form.descriptionPlaceholder")}
+													placeholder={t(
+														"compose.update.form.descriptionPlaceholder",
+													)}
 													className="resize-none"
 													{...field}
 												/>

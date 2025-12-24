@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, ChevronsUpDown, Plus, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -52,11 +52,9 @@ import type { Repository } from "@/utils/gitea-utils";
 
 const createGiteaProviderSchema = (t: (key: string) => string) =>
 	z.object({
-		composePath: z
-			.string()
-			.min(1, {
-				message: t("compose.git.validation.composePathRequired"),
-			}),
+		composePath: z.string().min(1, {
+			message: t("compose.git.validation.composePathRequired"),
+		}),
 		repository: z
 			.object({
 				repo: z.string().min(1, {
@@ -272,14 +270,16 @@ export const SaveGiteaProviderCompose = ({ composeId }: Props) => {
 													)}
 												>
 													{isLoadingRepositories
-														? t("application.git.gitea.state.loadingRepositories")
+														? t(
+																"application.git.gitea.state.loadingRepositories",
+															)
 														: field.value.owner
 															? repositories?.find(
 																	(repo) => repo.name === field.value.repo,
 																)?.name
 															: t(
-																"application.git.gitea.form.repositorySelectPlaceholder",
-															)}
+																	"application.git.gitea.form.repositorySelectPlaceholder",
+																)}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -294,7 +294,9 @@ export const SaveGiteaProviderCompose = ({ composeId }: Props) => {
 												/>
 												{isLoadingRepositories && (
 													<span className="py-6 text-center text-sm">
-														{t("application.git.gitea.state.loadingRepositories")}
+														{t(
+															"application.git.gitea.state.loadingRepositories",
+														)}
 													</span>
 												)}
 												<CommandEmpty>
@@ -369,8 +371,8 @@ export const SaveGiteaProviderCompose = ({ composeId }: Props) => {
 																	(branch) => branch.name === field.value,
 																)?.name
 															: t(
-																"application.git.gitea.form.branchSelectPlaceholder",
-															)}
+																	"application.git.gitea.form.branchSelectPlaceholder",
+																)}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -463,7 +465,9 @@ export const SaveGiteaProviderCompose = ({ composeId }: Props) => {
 													</TooltipTrigger>
 													<TooltipContent>
 														<p>
-															{t("application.git.gitea.form.watchPathsTooltip")}
+															{t(
+																"application.git.gitea.form.watchPathsTooltip",
+															)}
 														</p>
 													</TooltipContent>
 												</Tooltip>
@@ -497,7 +501,10 @@ export const SaveGiteaProviderCompose = ({ composeId }: Props) => {
 															const input = e.currentTarget;
 															const value = input.value.trim();
 															if (value) {
-																const newPaths = [...(field.value || []), value];
+																const newPaths = [
+																	...(field.value || []),
+																	value,
+																];
 																form.setValue("watchPaths", newPaths);
 																input.value = "";
 															}

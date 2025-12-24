@@ -232,7 +232,7 @@ export const HandleServers = ({ serverId }: Props) => {
 				</div>
 				{!canCreateMoreServers && (
 					<AlertBlock type="warning" className="mt-4">
-						{t("settings.remoteServers.limitReached")} {" "}
+						{t("settings.remoteServers.limitReached")}{" "}
 						<Link href="/dashboard/settings/billing" className="text-primary">
 							{t("settings.remoteServers.upgradePlan")}
 						</Link>

@@ -57,29 +57,80 @@ type FormValues = z.infer<ReturnType<typeof createFormSchema>>;
 
 const EXPIRATION_OPTIONS = [
 	{ labelKey: "settings.api.keys.expiration.never", value: "0" },
-	{ labelKey: "settings.api.keys.expiration.1day", value: String(60 * 60 * 24) },
-	{ labelKey: "settings.api.keys.expiration.7days", value: String(60 * 60 * 24 * 7) },
-	{ labelKey: "settings.api.keys.expiration.30days", value: String(60 * 60 * 24 * 30) },
-	{ labelKey: "settings.api.keys.expiration.90days", value: String(60 * 60 * 24 * 90) },
-	{ labelKey: "settings.api.keys.expiration.1year", value: String(60 * 60 * 24 * 365) },
+	{
+		labelKey: "settings.api.keys.expiration.1day",
+		value: String(60 * 60 * 24),
+	},
+	{
+		labelKey: "settings.api.keys.expiration.7days",
+		value: String(60 * 60 * 24 * 7),
+	},
+	{
+		labelKey: "settings.api.keys.expiration.30days",
+		value: String(60 * 60 * 24 * 30),
+	},
+	{
+		labelKey: "settings.api.keys.expiration.90days",
+		value: String(60 * 60 * 24 * 90),
+	},
+	{
+		labelKey: "settings.api.keys.expiration.1year",
+		value: String(60 * 60 * 24 * 365),
+	},
 ];
 
 const TIME_WINDOW_OPTIONS = [
-	{ labelKey: "settings.api.keys.timeWindow.1minute", value: String(60 * 1000) },
-	{ labelKey: "settings.api.keys.timeWindow.5minutes", value: String(5 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.timeWindow.15minutes", value: String(15 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.timeWindow.30minutes", value: String(30 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.timeWindow.1hour", value: String(60 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.timeWindow.1day", value: String(24 * 60 * 60 * 1000) },
+	{
+		labelKey: "settings.api.keys.timeWindow.1minute",
+		value: String(60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.timeWindow.5minutes",
+		value: String(5 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.timeWindow.15minutes",
+		value: String(15 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.timeWindow.30minutes",
+		value: String(30 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.timeWindow.1hour",
+		value: String(60 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.timeWindow.1day",
+		value: String(24 * 60 * 60 * 1000),
+	},
 ];
 
 const REFILL_INTERVAL_OPTIONS = [
-	{ labelKey: "settings.api.keys.refillInterval.1hour", value: String(60 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.refillInterval.6hours", value: String(6 * 60 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.refillInterval.12hours", value: String(12 * 60 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.refillInterval.1day", value: String(24 * 60 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.refillInterval.7days", value: String(7 * 24 * 60 * 60 * 1000) },
-	{ labelKey: "settings.api.keys.refillInterval.30days", value: String(30 * 24 * 60 * 60 * 1000) },
+	{
+		labelKey: "settings.api.keys.refillInterval.1hour",
+		value: String(60 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.refillInterval.6hours",
+		value: String(6 * 60 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.refillInterval.12hours",
+		value: String(12 * 60 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.refillInterval.1day",
+		value: String(24 * 60 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.refillInterval.7days",
+		value: String(7 * 24 * 60 * 60 * 1000),
+	},
+	{
+		labelKey: "settings.api.keys.refillInterval.30days",
+		value: String(30 * 24 * 60 * 60 * 1000),
+	},
 ];
 
 export const AddApiKey = () => {
@@ -163,9 +214,7 @@ export const AddApiKey = () => {
 								name="name"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.api.keys.form.name")}
-										</FormLabel>
+										<FormLabel>{t("settings.api.keys.form.name")}</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t(
@@ -183,9 +232,7 @@ export const AddApiKey = () => {
 								name="prefix"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("settings.api.keys.form.prefix")}
-										</FormLabel>
+										<FormLabel>{t("settings.api.keys.form.prefix")}</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t(
@@ -279,9 +326,7 @@ export const AddApiKey = () => {
 													{t("settings.api.keys.rateLimit.enable.label")}
 												</FormLabel>
 												<FormDescription>
-													{t(
-														"settings.api.keys.rateLimit.enable.description",
-													)}
+													{t("settings.api.keys.rateLimit.enable.description")}
 												</FormDescription>
 											</div>
 											<FormControl>
@@ -406,9 +451,7 @@ export const AddApiKey = () => {
 												/>
 											</FormControl>
 											<FormDescription>
-												{t(
-													"settings.api.keys.requestLimit.total.description",
-												)}
+												{t("settings.api.keys.requestLimit.total.description")}
 											</FormDescription>
 											<FormMessage />
 										</FormItem>
@@ -455,7 +498,9 @@ export const AddApiKey = () => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>
-												{t("settings.api.keys.requestLimit.refillInterval.label")}
+												{t(
+													"settings.api.keys.requestLimit.refillInterval.label",
+												)}
 											</FormLabel>
 											<Select
 												value={field.value?.toString()}
@@ -511,9 +556,7 @@ export const AddApiKey = () => {
 			<Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
 				<DialogContent className="sm:max-w-xl">
 					<DialogHeader>
-						<DialogTitle>
-							{t("settings.api.keys.success.title")}
-						</DialogTitle>
+						<DialogTitle>{t("settings.api.keys.success.title")}</DialogTitle>
 						<DialogDescription>
 							{t("settings.api.keys.success.description")}
 						</DialogDescription>

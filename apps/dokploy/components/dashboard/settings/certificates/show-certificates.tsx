@@ -79,9 +79,12 @@ export const ShowCertificates = () => {
 																		<div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted/50">
 																			<Link className="size-3 text-muted-foreground" />
 																			<span className="text-xs text-muted-foreground">
-																				{t("settings.certificates.page.chainLabel", {
-																					count: chainInfo.count,
-																				})}
+																				{t(
+																					"settings.certificates.page.chainLabel",
+																					{
+																						count: chainInfo.count,
+																					},
+																				)}
 																			</span>
 																		</div>
 																	)}
@@ -95,7 +98,9 @@ export const ShowCertificates = () => {
 																		{certificate.autoRenew &&
 																			expiration.status !== "valid" && (
 																				<span className="text-xs text-emerald-500 ml-1">
-																					{t("settings.certificates.page.autoRenewEnabled")}
+																					{t(
+																						"settings.certificates.page.autoRenewEnabled",
+																					)}
 																				</span>
 																			)}
 																	</div>
@@ -104,8 +109,12 @@ export const ShowCertificates = () => {
 
 															<div className="flex flex-row gap-1">
 																<DialogAction
-																	title={t("settings.certificates.page.delete.title")}
-																	description={t("settings.certificates.page.delete.description")}
+																	title={t(
+																		"settings.certificates.page.delete.title",
+																	)}
+																	description={t(
+																		"settings.certificates.page.delete.description",
+																	)}
 																	type="destructive"
 																	onClick={async () => {
 																		await mutateAsync({
@@ -113,13 +122,17 @@ export const ShowCertificates = () => {
 																		})
 																			.then(() => {
 																				toast.success(
-																					t("settings.certificates.page.deleteSuccess"),
+																					t(
+																						"settings.certificates.page.deleteSuccess",
+																					),
 																				);
 																				refetch();
 																			})
 																			.catch(() => {
 																				toast.error(
-																					t("settings.certificates.page.deleteError"),
+																					t(
+																						"settings.certificates.page.deleteError",
+																					),
 																				);
 																			});
 																	}}

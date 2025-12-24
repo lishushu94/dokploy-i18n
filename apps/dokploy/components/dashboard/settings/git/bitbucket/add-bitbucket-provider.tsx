@@ -81,15 +81,11 @@ export const AddBitbucketProvider = () => {
 		})
 			.then(async () => {
 				await utils.gitProvider.getAll.invalidate();
-				toast.success(
-						t("settings.gitProviders.bitbucket.add.toast.success"),
-					);
+				toast.success(t("settings.gitProviders.bitbucket.add.toast.success"));
 				setIsOpen(false);
 			})
 			.catch(() => {
-				toast.error(
-						t("settings.gitProviders.bitbucket.add.toast.error"),
-					);
+				toast.error(t("settings.gitProviders.bitbucket.add.toast.error"));
 			});
 	};
 
@@ -107,7 +103,8 @@ export const AddBitbucketProvider = () => {
 			<DialogContent className="sm:max-w-2xl ">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						{t("settings.gitProviders.bitbucket.add.title")} <BitbucketIcon className="size-5" />
+						{t("settings.gitProviders.bitbucket.add.title")}{" "}
+						<BitbucketIcon className="size-5" />
 					</DialogTitle>
 				</DialogHeader>
 
@@ -127,9 +124,7 @@ export const AddBitbucketProvider = () => {
 								</AlertBlock>
 
 								<div className="mt-1 text-sm">
-									{t(
-										"settings.gitProviders.bitbucket.add.manageTokensIntro",
-									)}{" "}
+									{t("settings.gitProviders.bitbucket.add.manageTokensIntro")}{" "}
 									<Link
 										href="https://id.atlassian.com/manage-profile/security/api-tokens"
 										target="_blank"
@@ -148,10 +143,14 @@ export const AddBitbucketProvider = () => {
 										{t("settings.gitProviders.bitbucket.add.guide.createToken")}
 									</li>
 									<li className="text-muted-foreground text-sm">
-										{t("settings.gitProviders.bitbucket.add.guide.selectExpiration")}
+										{t(
+											"settings.gitProviders.bitbucket.add.guide.selectExpiration",
+										)}
 									</li>
 									<li className="text-muted-foreground text-sm">
-										{t("settings.gitProviders.bitbucket.add.guide.selectProduct")}
+										{t(
+											"settings.gitProviders.bitbucket.add.guide.selectProduct",
+										)}
 									</li>
 								</ul>
 								<p className="text-muted-foreground text-sm">
@@ -212,9 +211,7 @@ export const AddBitbucketProvider = () => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>
-												{t(
-													"settings.gitProviders.bitbucket.add.usernameLabel",
-												)}
+												{t("settings.gitProviders.bitbucket.add.usernameLabel")}
 											</FormLabel>
 											<FormControl>
 												<Input

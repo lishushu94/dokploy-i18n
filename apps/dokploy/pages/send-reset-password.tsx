@@ -92,9 +92,7 @@ export default function Home() {
 				<CardTitle className="text-2xl font-bold">
 					{t("auth.reset.title")}
 				</CardTitle>
-				<CardDescription>
-					{t("auth.reset.email.subtitle")}
-				</CardDescription>
+				<CardDescription>{t("auth.reset.email.subtitle")}</CardDescription>
 
 				<div className="mx-auto w-full max-w-lg bg-transparent ">
 					<CardContent className="p-0">

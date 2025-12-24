@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PenBoxIcon } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -71,9 +71,7 @@ export const EditGiteaProvider = ({ giteaId }: Props) => {
 
 		if (connected) {
 			toast.success(
-					t(
-						"settings.gitProviders.gitea.edit.toast.connectionSuccessTitle",
-					),
+				t("settings.gitProviders.gitea.edit.toast.connectionSuccessTitle"),
 				{
 					description: t(
 						"settings.gitProviders.gitea.edit.toast.connectionSuccessDescription",
@@ -94,9 +92,7 @@ export const EditGiteaProvider = ({ giteaId }: Props) => {
 
 		if (error) {
 			toast.error(
-					t(
-						"settings.gitProviders.gitea.edit.toast.connectionFailedTitle",
-					),
+				t("settings.gitProviders.gitea.edit.toast.connectionFailedTitle"),
 				{
 					description: decodeURIComponent(error as string),
 					id: "gitea-connection-error",
@@ -145,7 +141,9 @@ export const EditGiteaProvider = ({ giteaId }: Props) => {
 		})
 			.then(async () => {
 				await utils.gitProvider.getAll.invalidate();
-				toast.success(t("settings.gitProviders.gitea.edit.toast.updatedSuccess"));
+				toast.success(
+					t("settings.gitProviders.gitea.edit.toast.updatedSuccess"),
+				);
 				await refetch();
 				setOpen(false);
 			})
@@ -157,9 +155,12 @@ export const EditGiteaProvider = ({ giteaId }: Props) => {
 	const handleTestConnection = async () => {
 		try {
 			const result = await testConnection({ giteaId });
-			toast.success(t("settings.gitProviders.gitea.edit.toast.testSuccessTitle"), {
-				description: result,
-			});
+			toast.success(
+				t("settings.gitProviders.gitea.edit.toast.testSuccessTitle"),
+				{
+					description: result,
+				},
+			);
 		} catch (error: any) {
 			const formValues = form.getValues();
 			const authUrl =
@@ -172,13 +173,11 @@ export const EditGiteaProvider = ({ giteaId }: Props) => {
 				);
 
 			toast.error(
-						t("settings.gitProviders.gitea.edit.toast.notConnectedTitle"),
+				t("settings.gitProviders.gitea.edit.toast.notConnectedTitle"),
 				{
 					description:
 						error.message ||
-						t(
-							"settings.gitProviders.gitea.edit.toast.notConnectedDescription",
-						),
+						t("settings.gitProviders.gitea.edit.toast.notConnectedDescription"),
 					action:
 						authUrl && authUrl !== "#"
 							? {

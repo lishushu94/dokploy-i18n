@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "next-i18next";
+import type { ReactNode } from "react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,8 +13,6 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import type { ReactNode } from "react";
-import { useTranslation } from "next-i18next";
 
 interface Props {
 	title?: string | ReactNode;

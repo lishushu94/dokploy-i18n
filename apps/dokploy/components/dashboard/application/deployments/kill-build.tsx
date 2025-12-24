@@ -37,8 +37,12 @@ export const KillBuild = ({ id, type }: Props) => {
 			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>{t("deployments.killBuild.dialog.title")}</AlertDialogTitle>
-					<AlertDialogDescription>{t("deployments.killBuild.dialog.description")}</AlertDialogDescription>
+					<AlertDialogTitle>
+						{t("deployments.killBuild.dialog.title")}
+					</AlertDialogTitle>
+					<AlertDialogDescription>
+						{t("deployments.killBuild.dialog.description")}
+					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>{t("button.cancel")}</AlertDialogCancel>

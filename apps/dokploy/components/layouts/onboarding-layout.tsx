@@ -1,6 +1,6 @@
 import Link from "next/link";
-import type React from "react";
 import { useTranslation } from "next-i18next";
+import type React from "react";
 import { cn } from "@/lib/utils";
 import { GithubIcon } from "../icons/data-tools-icons";
 import { Logo } from "../shared/logo";

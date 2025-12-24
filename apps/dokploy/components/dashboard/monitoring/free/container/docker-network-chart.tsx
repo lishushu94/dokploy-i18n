@@ -98,12 +98,8 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 						})}
 					</p>
 				)}
-				<p>
-					{`${t("monitoring.tooltip.input")}: ${inMB} MB`}
-				</p>
-				<p>
-					{`${t("monitoring.tooltip.output")}: ${outMB} MB`}
-				</p>
+				<p>{`${t("monitoring.tooltip.input")}: ${inMB} MB`}</p>
+				<p>{`${t("monitoring.tooltip.output")}: ${outMB} MB`}</p>
 			</div>
 		);
 	}

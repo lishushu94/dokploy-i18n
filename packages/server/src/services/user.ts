@@ -6,6 +6,9 @@ import { auth } from "../lib/auth";
 
 export type User = typeof user.$inferSelect;
 
+const isOwnerOrAdminRole = (role: unknown) =>
+	role === "owner" || role === "admin";
+
 export const addNewProject = async (
 	userId: string,
 	projectId: string,
@@ -61,10 +64,13 @@ export const canPerformCreationService = async (
 	projectId: string,
 	organizationId: string,
 ) => {
-	const { accessedProjects, canCreateServices } = await findMemberById(
+	const { accessedProjects, canCreateServices, role } = await findMemberById(
 		userId,
 		organizationId,
 	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 	const haveAccessToProject = accessedProjects.includes(projectId);
 
 	if (canCreateServices && haveAccessToProject) {
@@ -79,7 +85,13 @@ export const canPerformAccessService = async (
 	serviceId: string,
 	organizationId: string,
 ) => {
-	const { accessedServices } = await findMemberById(userId, organizationId);
+	const { accessedServices, role } = await findMemberById(
+		userId,
+		organizationId,
+	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 	const haveAccessToService = accessedServices.includes(serviceId);
 
 	if (haveAccessToService) {
@@ -94,10 +106,13 @@ export const canPeformDeleteService = async (
 	serviceId: string,
 	organizationId: string,
 ) => {
-	const { accessedServices, canDeleteServices } = await findMemberById(
+	const { accessedServices, canDeleteServices, role } = await findMemberById(
 		userId,
 		organizationId,
 	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 	const haveAccessToService = accessedServices.includes(serviceId);
 
 	if (canDeleteServices && haveAccessToService) {
@@ -111,7 +126,13 @@ export const canPerformCreationProject = async (
 	userId: string,
 	organizationId: string,
 ) => {
-	const { canCreateProjects } = await findMemberById(userId, organizationId);
+	const { canCreateProjects, role } = await findMemberById(
+		userId,
+		organizationId,
+	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 
 	if (canCreateProjects) {
 		return true;
@@ -124,7 +145,13 @@ export const canPerformDeleteProject = async (
 	userId: string,
 	organizationId: string,
 ) => {
-	const { canDeleteProjects } = await findMemberById(userId, organizationId);
+	const { canDeleteProjects, role } = await findMemberById(
+		userId,
+		organizationId,
+	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 
 	if (canDeleteProjects) {
 		return true;
@@ -138,7 +165,13 @@ export const canPerformAccessProject = async (
 	projectId: string,
 	organizationId: string,
 ) => {
-	const { accessedProjects } = await findMemberById(userId, organizationId);
+	const { accessedProjects, role } = await findMemberById(
+		userId,
+		organizationId,
+	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 
 	const haveAccessToProject = accessedProjects.includes(projectId);
 
@@ -153,7 +186,13 @@ export const canPerformAccessEnvironment = async (
 	environmentId: string,
 	organizationId: string,
 ) => {
-	const { accessedEnvironments } = await findMemberById(userId, organizationId);
+	const { accessedEnvironments, role } = await findMemberById(
+		userId,
+		organizationId,
+	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 	const haveAccessToEnvironment = accessedEnvironments.includes(environmentId);
 
 	if (haveAccessToEnvironment) {
@@ -168,10 +207,11 @@ export const canPerformDeleteEnvironment = async (
 	projectId: string,
 	organizationId: string,
 ) => {
-	const { accessedProjects, canDeleteEnvironments } = await findMemberById(
-		userId,
-		organizationId,
-	);
+	const { accessedProjects, canDeleteEnvironments, role } =
+		await findMemberById(userId, organizationId);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 	const haveAccessToProject = accessedProjects.includes(projectId);
 
 	if (canDeleteEnvironments && haveAccessToProject) {
@@ -185,10 +225,13 @@ export const canAccessToTraefikFiles = async (
 	userId: string,
 	organizationId: string,
 ) => {
-	const { canAccessToTraefikFiles } = await findMemberById(
+	const { canAccessToTraefikFiles, role } = await findMemberById(
 		userId,
 		organizationId,
 	);
+	if (isOwnerOrAdminRole(role)) {
+		return true;
+	}
 	return canAccessToTraefikFiles;
 };
 

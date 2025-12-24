@@ -20,9 +20,7 @@ export default Page;
 
 Page.getLayout = (page: ReactElement) => {
 	return (
-		<DashboardLayout metaName="settings.git.page.title">
-			{page}
-		</DashboardLayout>
+		<DashboardLayout metaName="settings.git.page.title">{page}</DashboardLayout>
 	);
 };
 export async function getServerSideProps(

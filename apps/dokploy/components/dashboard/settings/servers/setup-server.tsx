@@ -163,24 +163,23 @@ export const SetupServer = ({ serverId }: Props) => {
 									</p>
 
 									<ul>
-										<li>
-											1. {t("settings.sshKeys.welcome.optionProvider")}
-										</li>
-										<li>
-											2. {t("settings.sshKeys.welcome.optionManual")}
-										</li>
+										<li>1. {t("settings.sshKeys.welcome.optionProvider")}</li>
+										<li>2. {t("settings.sshKeys.welcome.optionManual")}</li>
 									</ul>
 									<div className="flex flex-col gap-4 w-full overflow-auto">
 										<div className="flex relative flex-col gap-2 overflow-y-auto">
 											<div className="text-sm text-primary flex flex-row gap-2 items-center">
-												{t("settings.sshKeys.welcome.provider.copyLabel")} ({server?.sshKey?.name})
+												{t("settings.sshKeys.welcome.provider.copyLabel")} (
+												{server?.sshKey?.name})
 												<button
 													type="button"
 													className="right-2 top-8"
 													onClick={() => {
 														copy(
 															server?.sshKey?.publicKey ||
-																t("settings.sshKeys.welcome.provider.missingKeyFallback"),
+																t(
+																	"settings.sshKeys.welcome.provider.missingKeyFallback",
+																),
 														);
 														toast.success(
 															t("settings.sshKeys.welcome.copyPublicKey"),
@@ -202,7 +201,7 @@ export const SetupServer = ({ serverId }: Props) => {
 											target="_blank"
 											className="text-primary flex flex-row gap-2"
 										>
-											{t("settings.sshKeys.welcome.provider.tutorial")} {" "}
+											{t("settings.sshKeys.welcome.provider.tutorial")}{" "}
 											<ExternalLinkIcon className="size-4" />
 										</Link>
 									</div>
@@ -212,7 +211,7 @@ export const SetupServer = ({ serverId }: Props) => {
 										</span>
 										<ul>
 											<li className="items-center flex gap-1">
-												{t("settings.sshKeys.welcome.manual.step1")} {" "}
+												{t("settings.sshKeys.welcome.manual.step1")}{" "}
 												<span className="text-primary bg-secondary p-1 rounded-lg">
 													ssh {server?.username}@{server?.ipAddress}
 												</span>
@@ -270,37 +269,70 @@ export const SetupServer = ({ serverId }: Props) => {
 										</p>
 										<ul>
 											<li>
-												1. {t("settings.servers.onboarding.requisites.supportedDistros.ubuntu2404")}
+												1.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.ubuntu2404",
+												)}
 											</li>
 											<li>
-												2. {t("settings.servers.onboarding.requisites.supportedDistros.ubuntu2310")}
+												2.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.ubuntu2310",
+												)}
 											</li>
 											<li>
-												3. {t("settings.servers.onboarding.requisites.supportedDistros.ubuntu2204")}
+												3.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.ubuntu2204",
+												)}
 											</li>
 											<li>
-												4. {t("settings.servers.onboarding.requisites.supportedDistros.ubuntu2004")}
+												4.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.ubuntu2004",
+												)}
 											</li>
 											<li>
-												5. {t("settings.servers.onboarding.requisites.supportedDistros.ubuntu1804")}
+												5.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.ubuntu1804",
+												)}
 											</li>
 											<li>
-												6. {t("settings.servers.onboarding.requisites.supportedDistros.debian12")}
+												6.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.debian12",
+												)}
 											</li>
 											<li>
-												7. {t("settings.servers.onboarding.requisites.supportedDistros.debian11")}
+												7.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.debian11",
+												)}
 											</li>
 											<li>
-												8. {t("settings.servers.onboarding.requisites.supportedDistros.debian10")}
+												8.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.debian10",
+												)}
 											</li>
 											<li>
-												9. {t("settings.servers.onboarding.requisites.supportedDistros.fedora40")}
+												9.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.fedora40",
+												)}
 											</li>
 											<li>
-												10. {t("settings.servers.onboarding.requisites.supportedDistros.centos9")}
+												10.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.centos9",
+												)}
 											</li>
 											<li>
-												11. {t("settings.servers.onboarding.requisites.supportedDistros.centos8")}
+												11.{" "}
+												{t(
+													"settings.servers.onboarding.requisites.supportedDistros.centos8",
+												)}
 											</li>
 										</ul>
 									</div>
@@ -317,7 +349,9 @@ export const SetupServer = ({ serverId }: Props) => {
 															{t("settings.servers.onboarding.setup.cardTitle")}
 														</CardTitle>
 														<CardDescription>
-															{t("settings.servers.onboarding.setup.cardDescription")}
+															{t(
+																"settings.servers.onboarding.setup.cardDescription",
+															)}
 														</CardDescription>
 													</div>
 												</div>
@@ -330,7 +364,9 @@ export const SetupServer = ({ serverId }: Props) => {
 													<div className="flex flex-row gap-2">
 														<EditScript serverId={server?.serverId || ""} />
 														<DialogAction
-															title={t("settings.servers.onboarding.setup.dialog.title")}
+															title={t(
+																"settings.servers.onboarding.setup.dialog.title",
+															)}
 															type="default"
 															description={t(
 																"settings.servers.onboarding.setup.dialog.description",

@@ -6,6 +6,33 @@ import type { InferResultType } from "@dokploy/server/types/with";
 import { createAppAuth } from "@octokit/auth-app";
 import { TRPCError } from "@trpc/server";
 import { Octokit } from "octokit";
+import { ProxyAgent, fetch as undiciFetch } from "undici";
+
+const normalizeMirrorPrefixUrl = (input: string) => {
+	const trimmed = input.trim();
+	if (!trimmed) {
+		return "";
+	}
+	return trimmed.endsWith("/") ? trimmed : `${trimmed}/`;
+};
+
+const shSingleQuote = (value: string) => `'${value.replaceAll("'", "'\\''")}'`;
+
+const getOctokitRequestOptions = (githubProvider: Github) => {
+	const proxyUrl = githubProvider.githubApiProxyUrl?.trim();
+	if (!proxyUrl) {
+		return undefined;
+	}
+
+	const agent = new ProxyAgent(proxyUrl);
+	return {
+		fetch: (url: any, options: any) =>
+			undiciFetch(url, {
+				...options,
+				dispatcher: agent,
+			}) as any,
+	} as const;
+};
 
 export const authGithub = (githubProvider: Github): Octokit => {
 	if (!haveGithubRequirements(githubProvider)) {
@@ -22,6 +49,11 @@ export const authGithub = (githubProvider: Github): Octokit => {
 			privateKey: githubProvider?.githubPrivateKey || "",
 			installationId: githubProvider?.githubInstallationId,
 		},
+		...(githubProvider.githubApiProxyUrl
+			? {
+					request: getOctokitRequestOptions(githubProvider),
+				}
+			: {}),
 	});
 
 	return octokit;
@@ -156,15 +188,35 @@ export const cloneGithubRepository = async ({
 	const githubProvider = await findGithubById(githubId);
 	const basePath = isCompose ? COMPOSE_PATH : APPLICATIONS_PATH;
 	const outputPath = join(basePath, appName, "code");
-	const octokit = authGithub(githubProvider);
-	const token = await getGithubToken(octokit);
 	const repoclone = `github.com/${owner}/${repository}.git`;
-	command += `rm -rf ${outputPath};`;
-	command += `mkdir -p ${outputPath};`;
-	const cloneUrl = `https://oauth2:${token}@${repoclone}`;
+	const mirrorPrefixUrl = normalizeMirrorPrefixUrl(
+		githubProvider.githubMirrorPrefixUrl ?? "",
+	);
+	const shouldUseMirror = Boolean(mirrorPrefixUrl);
+
+	let cloneUrl = "";
+	if (shouldUseMirror) {
+		const canonical = `https://${repoclone}`;
+		cloneUrl = `${mirrorPrefixUrl}${canonical}`;
+	} else {
+		const octokit = authGithub(githubProvider);
+		const token = await getGithubToken(octokit);
+		cloneUrl = `https://oauth2:${token}@${repoclone}`;
+	}
+
+	if (githubProvider.githubApiProxyUrl) {
+		const proxy = shSingleQuote(githubProvider.githubApiProxyUrl);
+		command += `export http_proxy=${proxy}; export https_proxy=${proxy}; `;
+		command += `export HTTP_PROXY=${proxy}; export HTTPS_PROXY=${proxy}; `;
+	}
+
+	command += `rm -rf ${shSingleQuote(outputPath)};`;
+	command += `mkdir -p ${shSingleQuote(outputPath)};`;
 
 	command += `echo "Cloning Repo ${repoclone} to ${outputPath}: ✅";`;
-	command += `git clone --branch ${branch} --depth 1 ${enableSubmodules ? "--recurse-submodules" : ""} ${cloneUrl} ${outputPath} --progress;`;
+	command += `git clone --branch ${shSingleQuote(branch || "")} --depth 1 ${
+		enableSubmodules ? "--recurse-submodules" : ""
+	} ${shSingleQuote(cloneUrl)} ${shSingleQuote(outputPath)} --progress;`;
 
 	return command;
 };
@@ -175,15 +227,7 @@ export const getGithubRepositories = async (githubId?: string) => {
 	}
 
 	const githubProvider = await findGithubById(githubId);
-
-	const octokit = new Octokit({
-		authStrategy: createAppAuth,
-		auth: {
-			appId: githubProvider.githubAppId,
-			privateKey: githubProvider.githubPrivateKey,
-			installationId: githubProvider.githubInstallationId,
-		},
-	});
+	const octokit = authGithub(githubProvider);
 
 	const repositories = (await octokit.paginate(
 		octokit.rest.apps.listReposAccessibleToInstallation,
@@ -201,15 +245,7 @@ export const getGithubBranches = async (
 		return [];
 	}
 	const githubProvider = await findGithubById(input.githubId);
-
-	const octokit = new Octokit({
-		authStrategy: createAppAuth,
-		auth: {
-			appId: githubProvider.githubAppId,
-			privateKey: githubProvider.githubPrivateKey,
-			installationId: githubProvider.githubInstallationId,
-		},
-	});
+	const octokit = authGithub(githubProvider);
 
 	const branches = (await octokit.paginate(octokit.rest.repos.listBranches, {
 		owner: input.owner,

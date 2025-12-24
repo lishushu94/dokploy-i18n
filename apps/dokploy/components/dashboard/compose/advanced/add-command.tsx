@@ -92,7 +92,9 @@ export const AddCommandCompose = ({ composeId }: Props) => {
 		<Card className="bg-background">
 			<CardHeader className="flex flex-row justify-between">
 				<div>
-					<CardTitle className="text-xl">{t("compose.command.cardTitle")}</CardTitle>
+					<CardTitle className="text-xl">
+						{t("compose.command.cardTitle")}
+					</CardTitle>
 					<CardDescription>
 						{t("compose.command.cardDescription")}
 					</CardDescription>
@@ -115,11 +117,16 @@ export const AddCommandCompose = ({ composeId }: Props) => {
 									<FormItem>
 										<FormLabel>{t("compose.command.label")}</FormLabel>
 										<FormControl>
-											<Input placeholder={t("compose.command.placeholder")} {...field} />
+											<Input
+												placeholder={t("compose.command.placeholder")}
+												{...field}
+											/>
 										</FormControl>
 
 										<FormDescription>
-											{t("compose.command.defaultDescription", { command: defaultCommand })}
+											{t("compose.command.defaultDescription", {
+												command: defaultCommand,
+											})}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>

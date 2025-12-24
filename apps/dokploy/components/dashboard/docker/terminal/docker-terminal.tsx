@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from "react";
 import { FitAddon } from "xterm-addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import { AttachAddon } from "@xterm/addon-attach";
-import { useTheme } from "next-themes";
 import { useTranslation } from "next-i18next";
+import { useTheme } from "next-themes";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Props {

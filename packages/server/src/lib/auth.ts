@@ -10,12 +10,12 @@ import { db } from "../db";
 import * as schema from "../db/schema";
 import { getUserByToken } from "../services/admin";
 import { updateUser } from "../services/user";
-import { getHubSpotUTK, submitToHubSpot } from "../utils/tracking/hubspot";
 import {
 	getInvitationEmailContent,
 	getResetPasswordEmailContent,
 	getVerifyEmailContent,
 } from "../utils/i18n/backend";
+import { getHubSpotUTK, submitToHubSpot } from "../utils/tracking/hubspot";
 import { sendEmail } from "../verification/send-verification-email";
 import { getPublicIpWithFallback } from "../wss/utils";
 

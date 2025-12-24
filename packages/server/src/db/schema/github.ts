@@ -17,6 +17,8 @@ export const github = pgTable("github", {
 	githubInstallationId: text("githubInstallationId"),
 	githubPrivateKey: text("githubPrivateKey"),
 	githubWebhookSecret: text("githubWebhookSecret"),
+	githubMirrorPrefixUrl: text("githubMirrorPrefixUrl"),
+	githubApiProxyUrl: text("githubApiProxyUrl"),
 	gitProviderId: text("gitProviderId")
 		.notNull()
 		.references(() => gitProvider.gitProviderId, { onDelete: "cascade" }),
@@ -38,6 +40,8 @@ export const apiCreateGithub = createSchema.extend({
 	githubInstallationId: z.string().optional(),
 	githubPrivateKey: z.string().optional(),
 	githubWebhookSecret: z.string().nullable(),
+	githubMirrorPrefixUrl: z.string().url().nullable().optional(),
+	githubApiProxyUrl: z.string().url().nullable().optional(),
 	gitProviderId: z.string().optional(),
 	name: z.string().min(1),
 });
@@ -59,4 +63,6 @@ export const apiUpdateGithub = createSchema.extend({
 	name: z.string().min(1),
 	gitProviderId: z.string().min(1),
 	githubAppName: z.string().min(1),
+	githubMirrorPrefixUrl: z.string().url().nullable().optional(),
+	githubApiProxyUrl: z.string().url().nullable().optional(),
 });

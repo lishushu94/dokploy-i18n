@@ -17,9 +17,7 @@ export default Page;
 
 Page.getLayout = (page: ReactElement) => {
 	return (
-		<DashboardLayout metaName="settings.nav.billing">
-			{page}
-		</DashboardLayout>
+		<DashboardLayout metaName="settings.nav.billing">{page}</DashboardLayout>
 	);
 };
 export async function getServerSideProps(

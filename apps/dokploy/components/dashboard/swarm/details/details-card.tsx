@@ -92,9 +92,7 @@ export function NodeCard({ node, serverId }: Props) {
 	return (
 		<Card className="w-full bg-background">
 			<CardHeader>
-				<CardTitle className="text-lg">
-					{t("swarm.nodes.card.title")}
-				</CardTitle>
+				<CardTitle className="text-lg">{t("swarm.nodes.card.title")}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div className="space-y-6">

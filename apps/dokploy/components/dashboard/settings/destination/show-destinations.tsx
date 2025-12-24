@@ -61,7 +61,7 @@ export const ShowDestinations = () => {
 																{index + 1}. {destination.name}
 															</span>
 															<span className="text-xs text-muted-foreground">
-																{t("settings.destinations.page.createdAtLabel")} {" "}
+																{t("settings.destinations.page.createdAtLabel")}{" "}
 																{new Date(
 																	destination.createdAt,
 																).toLocaleDateString()}
@@ -73,7 +73,9 @@ export const ShowDestinations = () => {
 															/>
 															<DialogAction
 																title={t("settings.destinations.delete.title")}
-																description={t("settings.destinations.delete.description")}
+																description={t(
+																	"settings.destinations.delete.description",
+																)}
 																type="destructive"
 																onClick={async () => {
 																	await mutateAsync({
@@ -81,12 +83,16 @@ export const ShowDestinations = () => {
 																	})
 																		.then(() => {
 																			toast.success(
-																				t("settings.destinations.delete.success"),
+																				t(
+																					"settings.destinations.delete.success",
+																				),
 																			);
 																			refetch();
 																		})
 																		.catch(() => {
-																			toast.error(t("settings.destinations.delete.error"));
+																			toast.error(
+																				t("settings.destinations.delete.error"),
+																			);
 																		});
 																}}
 															>

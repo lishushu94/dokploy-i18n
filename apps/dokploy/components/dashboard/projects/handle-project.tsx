@@ -102,9 +102,7 @@ export const HandleProject = ({ projectId }: Props) => {
 			.then(async (data) => {
 				await utils.project.all.invalidate();
 				toast.success(
-					projectId
-						? t("project.update.success")
-						: t("project.create.success"),
+					projectId ? t("project.update.success") : t("project.create.success"),
 				);
 				setIsOpen(false);
 				if (!projectId) {
@@ -126,9 +124,7 @@ export const HandleProject = ({ projectId }: Props) => {
 			})
 			.catch(() => {
 				toast.error(
-					projectId
-						? t("project.update.error")
-						: t("project.create.error"),
+					projectId ? t("project.update.error") : t("project.create.error"),
 				);
 			});
 	};

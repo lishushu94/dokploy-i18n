@@ -41,14 +41,10 @@ export const ShowDokployActions = () => {
 						onClick={async () => {
 							await reloadServer()
 								.then(async () => {
-									toast.success(
-										t("settings.server.webServer.server.reloaded"),
-									);
+									toast.success(t("settings.server.webServer.server.reloaded"));
 								})
 								.catch(() => {
-									toast.success(
-										t("settings.server.webServer.server.reloaded"),
-									);
+									toast.success(t("settings.server.webServer.server.reloaded"));
 								});
 						}}
 						className="cursor-pointer"
@@ -86,9 +82,7 @@ export const ShowDokployActions = () => {
 									);
 								})
 								.catch(() => {
-									toast.error(
-										t("settings.server.webServer.redis.cleanError"),
-									);
+									toast.error(t("settings.server.webServer.redis.cleanError"));
 								});
 						}}
 					>
@@ -105,9 +99,7 @@ export const ShowDokployActions = () => {
 									);
 								})
 								.catch(() => {
-									toast.error(
-										t("settings.server.webServer.redis.reloadError"),
-									);
+									toast.error(t("settings.server.webServer.redis.reloadError"));
 								});
 						}}
 					>

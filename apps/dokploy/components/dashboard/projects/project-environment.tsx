@@ -114,9 +114,7 @@ export const ProjectEnvironment = ({ projectId, children }: Props) => {
 			<DialogContent className="sm:max-w-6xl">
 				<DialogHeader>
 					<DialogTitle>{t("project.env.title")}</DialogTitle>
-					<DialogDescription>
-						{t("project.env.description")}
-					</DialogDescription>
+					<DialogDescription>{t("project.env.description")}</DialogDescription>
 				</DialogHeader>
 				{isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
 				<AlertBlock type="info">

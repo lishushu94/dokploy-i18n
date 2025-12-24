@@ -93,7 +93,7 @@ export const ShowServers = () => {
 									<div className="flex flex-col items-center gap-3 min-h-[25vh] justify-center">
 										<KeyIcon className="size-8" />
 										<span className="text-base text-muted-foreground">
-											{t("settings.servers.page.emptyNoSSHKeys")} {" "}
+											{t("settings.servers.page.emptyNoSSHKeys")}{" "}
 											<Link
 												href="/dashboard/settings/ssh-keys"
 												className="text-primary"
@@ -263,19 +263,29 @@ export const ShowServers = () => {
 																					disabled={!canDelete}
 																					title={
 																						canDelete
-																							? t("settings.servers.delete.title")
-																							: t("settings.servers.delete.blockedTitle")
+																							? t(
+																									"settings.servers.delete.title",
+																								)
+																							: t(
+																									"settings.servers.delete.blockedTitle",
+																								)
 																					}
 																					description={
 																						canDelete ? (
-																									t("settings.servers.delete.description")
+																							t(
+																								"settings.servers.delete.description",
+																							)
 																						) : (
-																									<div className="flex flex-col gap-2">
-																										{t("settings.servers.delete.blockedDescription")}
-																										<AlertBlock type="warning">
-																											{t("settings.servers.delete.blockedAlert")}
-																										</AlertBlock>
-																									</div>
+																							<div className="flex flex-col gap-2">
+																								{t(
+																									"settings.servers.delete.blockedDescription",
+																								)}
+																								<AlertBlock type="warning">
+																									{t(
+																										"settings.servers.delete.blockedAlert",
+																									)}
+																								</AlertBlock>
+																							</div>
 																						)
 																					}
 																					onClick={async () => {
@@ -285,13 +295,20 @@ export const ShowServers = () => {
 																							.then(() => {
 																								refetch();
 																								toast.success(
-																									t("settings.servers.delete.success", {
-																										name: server.name,
-																									}),
+																									t(
+																										"settings.servers.delete.success",
+																										{
+																											name: server.name,
+																										},
+																									),
 																								);
 																							})
 																							.catch(() => {
-																								toast.error(t("settings.servers.delete.error"));
+																								toast.error(
+																									t(
+																										"settings.servers.delete.error",
+																									),
+																								);
 																							});
 																					}}
 																				>
@@ -309,7 +326,9 @@ export const ShowServers = () => {
 																						<>
 																							<DropdownMenuSeparator />
 																							<DropdownMenuLabel>
-																								{t("settings.servers.menu.extra")}
+																								{t(
+																									"settings.servers.menu.extra",
+																								)}
 																							</DropdownMenuLabel>
 
 																							<ShowTraefikFileSystemModal

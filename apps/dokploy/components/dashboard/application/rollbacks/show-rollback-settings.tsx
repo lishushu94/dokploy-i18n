@@ -78,15 +78,11 @@ export const ShowRollbackSettings = ({ applicationId, children }: Props) => {
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>
-						{t("application.rollbacks.dialog.title")}
-					</DialogTitle>
+					<DialogTitle>{t("application.rollbacks.dialog.title")}</DialogTitle>
 					<DialogDescription>
 						{t("application.rollbacks.dialog.description")}
 					</DialogDescription>
-					<AlertBlock>
-						{t("application.rollbacks.dialog.warning")}
-					</AlertBlock>
+					<AlertBlock>{t("application.rollbacks.dialog.warning")}</AlertBlock>
 				</DialogHeader>
 
 				<Form {...form}>

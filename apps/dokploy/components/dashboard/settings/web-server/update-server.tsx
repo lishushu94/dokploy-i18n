@@ -27,10 +27,7 @@ import {
 } from "@/components/ui/tooltip";
 import { api } from "@/utils/api";
 import { ToggleAutoCheckUpdates } from "./toggle-auto-check-updates";
-import {
-	readUpdateTagsUrlFromStorage,
-	UpdateSourceConfig,
-} from "./update-source-config";
+import { UpdateSourceConfig } from "./update-source-config";
 import { UpdateWebServer } from "./update-webserver";
 
 interface Props {
@@ -62,8 +59,7 @@ export const UpdateServer = ({
 
 	const handleCheckUpdates = async () => {
 		try {
-			const tagsUrl = readUpdateTagsUrlFromStorage();
-			const updateData = await getUpdateData({ tagsUrl });
+			const updateData = await getUpdateData(undefined);
 			const versionToUpdate = updateData.latestVersion || "";
 			setHasCheckedUpdate(true);
 			setIsUpdateAvailable(updateData.updateAvailable);

@@ -4,7 +4,6 @@ import { useTranslation } from "next-i18next";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/utils/api";
 import UpdateServer from "../dashboard/settings/web-server/update-server";
-import { readUpdateTagsUrlFromStorage } from "../dashboard/settings/web-server/update-source-config";
 import { Button } from "../ui/button";
 import {
 	Tooltip,
@@ -51,8 +50,7 @@ export const UpdateServerButton = () => {
 					return;
 				}
 
-				const tagsUrl = readUpdateTagsUrlFromStorage();
-				const fetchedUpdateData = await getUpdateData({ tagsUrl });
+				const fetchedUpdateData = await getUpdateData(undefined);
 
 				if (fetchedUpdateData?.updateAvailable) {
 					// 一旦发现有更新，停止轮询并在侧边栏显示按钮
@@ -98,9 +96,7 @@ export const UpdateServerButton = () => {
 							>
 								<Download className="h-4 w-4 flex-shrink-0" />
 								<span className="font-medium truncate group-data-[collapsible=icon]:hidden">
-									{t(
-										"settings.server.webServer.update.buttonAvailable",
-									)}
+									{t("settings.server.webServer.update.buttonAvailable")}
 								</span>
 								<span className="absolute right-2 flex h-2 w-2 group-data-[collapsible=icon]:hidden">
 									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -109,11 +105,7 @@ export const UpdateServerButton = () => {
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent side="right" sideOffset={10}>
-							<p>
-								{t(
-									"settings.server.webServer.update.buttonAvailable",
-								)}
-							</p>
+							<p>{t("settings.server.webServer.update.buttonAvailable")}</p>
 						</TooltipContent>
 					</Tooltip>
 				</TooltipProvider>

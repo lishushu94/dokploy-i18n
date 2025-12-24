@@ -62,7 +62,9 @@ const createAddApplicationSchema = (t: (key: string) => string) =>
 		serverId: z.string().optional(),
 	});
 
-type AddApplicationForm = z.infer<ReturnType<typeof createAddApplicationSchema>>;
+type AddApplicationForm = z.infer<
+	ReturnType<typeof createAddApplicationSchema>
+>;
 
 interface Props {
 	environmentId: string;
@@ -185,9 +187,7 @@ export const AddApplication = ({ environmentId, projectName }: Props) => {
 													align="start"
 													side="top"
 												>
-													<span>
-														{t("service.serverDropdown.description")}
-													</span>
+													<span>{t("service.serverDropdown.description")}</span>
 												</TooltipContent>
 											</Tooltip>
 										</TooltipProvider>
@@ -212,7 +212,9 @@ export const AddApplication = ({ environmentId, projectName }: Props) => {
 													{!isCloud && (
 														<SelectItem value="dokploy">
 															<span className="flex items-center gap-2 justify-between w-full">
-																<span>{t("services.filter.server.dokploy")}</span>
+																<span>
+																	{t("services.filter.server.dokploy")}
+																</span>
 																<span className="text-muted-foreground text-xs self-center">
 																	{t("service.form.defaultServerSuffix")}
 																</span>

@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import { ToggleVisibilityInput } from "@/components/shared/toggle-visibility-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,26 +9,31 @@ interface Props {
 	mysqlId: string;
 }
 export const ShowInternalMysqlCredentials = ({ mysqlId }: Props) => {
+	const { t } = useTranslation("common");
 	const { data } = api.mysql.one.useQuery({ mysqlId });
 	return (
 		<>
 			<div className="flex w-full flex-col gap-5 ">
 				<Card className="bg-background">
 					<CardHeader>
-						<CardTitle className="text-xl">Internal Credentials</CardTitle>
+						<CardTitle className="text-xl">
+							{t("database.mysql.internalCredentials.title")}
+						</CardTitle>
 					</CardHeader>
 					<CardContent className="flex w-full flex-row gap-4">
 						<div className="grid w-full md:grid-cols-2 gap-4 md:gap-8">
 							<div className="flex flex-col gap-2">
-								<Label>User</Label>
+								<Label>
+									{t("database.redis.internalCredentials.userLabel")}
+								</Label>
 								<Input disabled value={data?.databaseUser} />
 							</div>
 							<div className="flex flex-col gap-2">
-								<Label>Database Name</Label>
+								<Label>{t("database.form.databaseNameLabel")}</Label>
 								<Input disabled value={data?.databaseName} />
 							</div>
 							<div className="flex flex-col gap-2">
-								<Label>Password</Label>
+								<Label>{t("database.form.databasePasswordLabel")}</Label>
 								<div className="flex flex-row gap-4">
 									<ToggleVisibilityInput
 										disabled
@@ -36,7 +42,7 @@ export const ShowInternalMysqlCredentials = ({ mysqlId }: Props) => {
 								</div>
 							</div>
 							<div className="flex flex-col gap-2">
-								<Label>Root Password</Label>
+								<Label>{t("database.form.databaseRootPasswordLabel")}</Label>
 								<div className="flex flex-row gap-4">
 									<ToggleVisibilityInput
 										disabled
@@ -45,17 +51,25 @@ export const ShowInternalMysqlCredentials = ({ mysqlId }: Props) => {
 								</div>
 							</div>
 							<div className="flex flex-col gap-2">
-								<Label>Internal Port (Container)</Label>
+								<Label>
+									{t("database.redis.internalCredentials.internalPortLabel")}
+								</Label>
 								<Input disabled value="3306" />
 							</div>
 
 							<div className="flex flex-col gap-2">
-								<Label>Internal Host</Label>
+								<Label>
+									{t("database.redis.internalCredentials.internalHostLabel")}
+								</Label>
 								<Input disabled value={data?.appName} />
 							</div>
 
 							<div className="flex flex-col gap-2 md:col-span-2">
-								<Label>Internal Connection URL </Label>
+								<Label>
+									{t(
+										"database.redis.internalCredentials.internalConnectionUrlLabel",
+									)}
+								</Label>
 								<ToggleVisibilityInput
 									disabled
 									value={`mysql://${data?.databaseUser}:${data?.databasePassword}@${data?.appName}:3306/${data?.databaseName}`}

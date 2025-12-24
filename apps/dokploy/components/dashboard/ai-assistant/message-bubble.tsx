@@ -121,9 +121,9 @@ export function MessageBubble({
 							isUser
 								? "bg-primary text-primary-foreground rounded-tr-sm"
 								: "bg-muted/50 text-foreground border border-border/50 rounded-tl-sm",
-								isError &&
-									"bg-destructive/10 text-destructive border-destructive/20 shadow-none",
-								isSending && "animate-pulse",
+							isError &&
+								"bg-destructive/10 text-destructive border-destructive/20 shadow-none",
+							isSending && "animate-pulse",
 						)}
 					>
 						<p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] leading-relaxed">
@@ -131,7 +131,15 @@ export function MessageBubble({
 								? t("common.unknownError")
 								: bubbleText}
 							{!isUser && isSending && (
-								<span className="inline-block w-1.5 h-4 ml-1 bg-current align-middle animate-pulse rounded-full" />
+								bubbleText.length === 0 ? (
+									<span className="inline-flex items-center gap-1 h-4 ml-1 align-middle">
+										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.3s]" />
+										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.15s]" />
+										<span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" />
+									</span>
+								) : (
+									<span className="inline-block w-[2px] h-4 ml-1 bg-current align-middle animate-pulse" />
+								)
 							)}
 						</p>
 						{isError && message.error && (
@@ -145,7 +153,7 @@ export function MessageBubble({
 
 				{hasToolCalls && (
 					<div className="w-full space-y-1">
-	\t				{message.toolCalls!.length > 1 ? (
+						{message.toolCalls!.length > 1 ? (
 							<ToolGroup
 								toolCalls={message.toolCalls!}
 								onApproveToolCall={onApproveToolCall}
@@ -185,6 +193,8 @@ export function MessageBubble({
 						)}
 					</div>
 				)}
+
+				<div className="flex items-center gap-2">
 					{isSending && isUser && (
 						<Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
 					)}

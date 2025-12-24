@@ -50,11 +50,7 @@ export const sendDockerCleanupNotifications = async (
 					DockerCleanupEmail({ message, date: date.toLocaleString() }),
 				).catch();
 
-				await sendEmailNotification(
-					email,
-					emailContent.subject,
-					template,
-				);
+				await sendEmailNotification(email, emailContent.subject, template);
 			}
 
 			if (discord) {

@@ -139,7 +139,9 @@ export const ShowCustomCommand = ({ id, type }: Props) => {
 												</FormLabel>
 												<FormControl>
 													<Input
-														placeholder={t("database.customCommand.dockerImagePlaceholder")}
+														placeholder={t(
+															"database.customCommand.dockerImagePlaceholder",
+														)}
 														{...field}
 													/>
 												</FormControl>
@@ -159,7 +161,9 @@ export const ShowCustomCommand = ({ id, type }: Props) => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("database.customCommand.commandPlaceholder")}
+													placeholder={t(
+														"database.customCommand.commandPlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -203,8 +207,12 @@ export const ShowCustomCommand = ({ id, type }: Props) => {
 															<Input
 																placeholder={
 																	index === 0
-																		? t("database.customCommand.firstArgumentPlaceholder")
-																		: t("database.customCommand.otherArgumentPlaceholder")
+																		? t(
+																				"database.customCommand.firstArgumentPlaceholder",
+																			)
+																		: t(
+																				"database.customCommand.otherArgumentPlaceholder",
+																			)
 																}
 																{...field}
 															/>

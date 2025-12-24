@@ -29,9 +29,7 @@ export const ShowTraefikConfig = ({ applicationId }: Props) => {
 			<CardHeader className="flex flex-row justify-between">
 				<div>
 					<CardTitle className="text-xl">{t("traefik.card.title")}</CardTitle>
-					<CardDescription>
-						{t("traefik.card.description")}
-					</CardDescription>
+					<CardDescription>{t("traefik.card.description")}</CardDescription>
 				</div>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">

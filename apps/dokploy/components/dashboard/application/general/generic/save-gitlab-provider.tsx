@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, ChevronsUpDown, HelpCircle, Plus, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -267,9 +267,7 @@ export const SaveGitlabProvider = ({ applicationId }: Props) => {
 											>
 												<GitlabIcon className="h-4 w-4" />
 												<span>
-													{t(
-														"application.git.gitlab.form.viewRepositoryLink",
-													)}
+													{t("application.git.gitlab.form.viewRepositoryLink")}
 												</span>
 											</Link>
 										)}
@@ -285,14 +283,16 @@ export const SaveGitlabProvider = ({ applicationId }: Props) => {
 													)}
 												>
 													{isLoadingRepositories
-														? t("application.git.gitlab.state.loadingRepositories")
+														? t(
+																"application.git.gitlab.state.loadingRepositories",
+															)
 														: field.value.owner
 															? repositories?.find(
 																	(repo) => repo.name === field.value.repo,
 																)?.name
 															: t(
-																"application.git.gitlab.form.repositorySelectPlaceholder",
-															)}
+																	"application.git.gitlab.form.repositorySelectPlaceholder",
+																)}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -307,7 +307,9 @@ export const SaveGitlabProvider = ({ applicationId }: Props) => {
 												/>
 												{isLoadingRepositories && (
 													<span className="py-6 text-center text-sm">
-														{t("application.git.gitlab.state.loadingRepositories")}
+														{t(
+															"application.git.gitlab.state.loadingRepositories",
+														)}
 													</span>
 												)}
 												<CommandEmpty>
@@ -317,7 +319,9 @@ export const SaveGitlabProvider = ({ applicationId }: Props) => {
 													<CommandGroup>
 														{repositories && repositories.length === 0 && (
 															<CommandEmpty>
-																{t("application.git.gitlab.state.noRepositories")}
+																{t(
+																	"application.git.gitlab.state.noRepositories",
+																)}
 															</CommandEmpty>
 														)}
 														{repositories?.map((repo) => {
@@ -360,7 +364,9 @@ export const SaveGitlabProvider = ({ applicationId }: Props) => {
 									</Popover>
 									{form.formState.errors.repository && (
 										<p className={cn("text-sm font-medium text-destructive")}>
-											{t("application.git.gitlab.validation.repositoryRequired")}
+											{t(
+												"application.git.gitlab.validation.repositoryRequired",
+											)}
 										</p>
 									)}
 								</FormItem>
@@ -391,8 +397,8 @@ export const SaveGitlabProvider = ({ applicationId }: Props) => {
 																	(branch) => branch.name === field.value,
 																)?.name
 															: t(
-																"application.git.gitlab.form.branchSelectPlaceholder",
-															)}
+																	"application.git.gitlab.form.branchSelectPlaceholder",
+																)}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -486,9 +492,7 @@ export const SaveGitlabProvider = ({ applicationId }: Props) => {
 												</TooltipTrigger>
 												<TooltipContent>
 													<p>
-														{t(
-															"application.git.gitlab.form.watchPathsTooltip",
-														)}
+														{t("application.git.gitlab.form.watchPathsTooltip")}
 													</p>
 												</TooltipContent>
 											</Tooltip>

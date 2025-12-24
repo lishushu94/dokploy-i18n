@@ -44,7 +44,9 @@ import { api } from "@/utils/api";
 
 export type CacheType = "fetch" | "cache";
 
-export const domain = (t: (key: string, opts?: Record<string, unknown>) => string) =>
+export const domain = (
+	t: (key: string, opts?: Record<string, unknown>) => string,
+) =>
 	z
 		.object({
 			host: z
@@ -104,9 +106,7 @@ export const domain = (t: (key: string, opts?: Record<string, unknown>) => strin
 				ctx.addIssue({
 					code: z.ZodIssueCode.custom,
 					path: ["stripPath"],
-					message: t(
-						"application.domains.validation.stripPathWithValidPath",
-					),
+					message: t("application.domains.validation.stripPathWithValidPath"),
 				});
 			}
 
@@ -179,7 +179,7 @@ export const AddDomain = ({ id, type, domainId = "", children }: Props) => {
 	const { mutateAsync: generateDomain, isLoading: isLoadingGenerate } =
 		api.domain.generateDomain.useMutation();
 
-	const { data: canGenerateTraefikMeDomains } =
+	const { data: traefikMeServerIp } =
 		api.domain.canGenerateTraefikMeDomains.useQuery({
 			serverId: application?.serverId || "",
 		});
@@ -359,7 +359,7 @@ export const AddDomain = ({ id, type, domainId = "", children }: Props) => {
 															{...field}
 														/>
 													</FormControl>
-													{canGenerateTraefikMeDomains?.canGenerate && (
+													{Boolean(traefikMeServerIp) && (
 														<TooltipProvider delayDuration={0}>
 															<Tooltip>
 																<TooltipTrigger asChild>
@@ -434,7 +434,9 @@ export const AddDomain = ({ id, type, domainId = "", children }: Props) => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>
-												{t("application.domains.handle.field.internalPath.label")}
+												{t(
+													"application.domains.handle.field.internalPath.label",
+												)}
 											</FormLabel>
 											<FormDescription>
 												{t(
@@ -487,7 +489,9 @@ export const AddDomain = ({ id, type, domainId = "", children }: Props) => {
 										<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
 											<div className="space-y-0.5">
 												<FormLabel>
-													{t("application.domains.handle.field.stripPath.label")}
+													{t(
+														"application.domains.handle.field.stripPath.label",
+													)}
 												</FormLabel>
 												<FormDescription>
 													{t(
@@ -609,7 +613,9 @@ export const AddDomain = ({ id, type, domainId = "", children }: Props) => {
 									<div className="flex items-center justify-between gap-2">
 										<div className="space-y-1">
 											<FormLabel>
-												{t("application.domains.handle.field.serviceName.label")}
+												{t(
+													"application.domains.handle.field.serviceName.label",
+												)}
 											</FormLabel>
 											<FormDescription>
 												{t("application.domains.handle.tooltip.switchToManual")}
@@ -679,7 +685,9 @@ export const AddDomain = ({ id, type, domainId = "", children }: Props) => {
 									</div>
 
 									{errorServices && (
-										<AlertBlock type="error">{errorServices.message}</AlertBlock>
+										<AlertBlock type="error">
+											{errorServices.message}
+										</AlertBlock>
 									)}
 
 									<FormField

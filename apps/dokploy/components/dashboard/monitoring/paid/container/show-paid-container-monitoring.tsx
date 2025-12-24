@@ -1,6 +1,6 @@
 import { Cpu, HardDrive, Loader2, MemoryStick, Network } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
 	Select,
@@ -121,8 +121,8 @@ export const ContainerPaidMonitoring = ({ appName, baseUrl, token }: Props) => {
 					</p>
 					<p className="whitespace-pre-line text-sm text-destructive">
 						{queryError instanceof Error
-								? queryError.message
-								: t("monitoring.error.fetchMetricsDescription")}
+							? queryError.message
+							: t("monitoring.error.fetchMetricsDescription")}
 					</p>
 					<p className="text-sm text-muted-foreground">
 						{t("monitoring.error.urlLabel")} {baseUrl}
@@ -151,9 +151,7 @@ export const ContainerPaidMonitoring = ({ appName, baseUrl, token }: Props) => {
 						>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue
-									placeholder={t(
-										"monitoring.container.dataPoints.placeholder",
-									)}
+									placeholder={t("monitoring.container.dataPoints.placeholder")}
 								/>
 							</SelectTrigger>
 							<SelectContent>
@@ -180,19 +178,15 @@ export const ContainerPaidMonitoring = ({ appName, baseUrl, token }: Props) => {
 						>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue
-									placeholder={t(
-										"monitoring.container.refresh.placeholder",
-									)}
+									placeholder={t("monitoring.container.refresh.placeholder")}
 								/>
 							</SelectTrigger>
 							<SelectContent>
-								{Object.entries(REFRESH_INTERVALS).map(
-									([value, labelKey]) => (
-										<SelectItem key={value} value={value}>
-											{t(labelKey as string)}
-										</SelectItem>
-									),
-								)}
+								{Object.entries(REFRESH_INTERVALS).map(([value, labelKey]) => (
+									<SelectItem key={value} value={value}>
+										{t(labelKey as string)}
+									</SelectItem>
+								))}
 							</SelectContent>
 						</Select>
 					</div>
@@ -204,9 +198,7 @@ export const ContainerPaidMonitoring = ({ appName, baseUrl, token }: Props) => {
 				<Card className="p-6 bg-transparent">
 					<div className="flex items-center gap-2">
 						<Cpu className="h-4 w-4 text-muted-foreground" />
-						<h3 className="text-sm font-medium">
-							{t("monitoring.card.cpu")}
-						</h3>
+						<h3 className="text-sm font-medium">{t("monitoring.card.cpu")}</h3>
 					</div>
 					<p className="mt-2 text-2xl font-bold">{metrics.CPU}%</p>
 				</Card>

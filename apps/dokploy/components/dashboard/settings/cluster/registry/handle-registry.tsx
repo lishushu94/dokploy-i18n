@@ -228,7 +228,9 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="username"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{t("settings.registry.form.username")}</FormLabel>
+										<FormLabel>
+											{t("settings.registry.form.username")}
+										</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t(
@@ -250,7 +252,9 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="password"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{t("settings.registry.form.password")}</FormLabel>
+										<FormLabel>
+											{t("settings.registry.form.password")}
+										</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t(
@@ -273,7 +277,9 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="imagePrefix"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{t("settings.registry.form.imagePrefix")}</FormLabel>
+										<FormLabel>
+											{t("settings.registry.form.imagePrefix")}
+										</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
@@ -294,7 +300,9 @@ export const HandleRegistry = ({ registryId }: Props) => {
 								name="registryUrl"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{t("settings.registry.form.registryUrl")}</FormLabel>
+										<FormLabel>
+											{t("settings.registry.form.registryUrl")}
+										</FormLabel>
 										<FormControl>
 											<Input
 												placeholder={t(
@@ -374,7 +382,7 @@ export const HandleRegistry = ({ registryId }: Props) => {
 											username,
 											password,
 											registryUrl,
-										registryName: registryName || defaultRegistryName,
+											registryName: registryName || defaultRegistryName,
 											imagePrefix,
 											serverId,
 										});
@@ -410,9 +418,7 @@ export const HandleRegistry = ({ registryId }: Props) => {
 												}
 											})
 											.catch(() => {
-												toast.error(
-													"" + t("settings.registry.form.testError"),
-												);
+												toast.error("" + t("settings.registry.form.testError"));
 											});
 									}}
 								>

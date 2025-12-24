@@ -128,12 +128,8 @@ export const ShowResources = ({ id, type }: Props) => {
 	return (
 		<Card className="bg-background">
 			<CardHeader>
-				<CardTitle className="text-xl">
-					{t("resources.card.title")}
-				</CardTitle>
-				<CardDescription>
-					{t("resources.card.description")}
-				</CardDescription>
+				<CardTitle className="text-xl">{t("resources.card.title")}</CardTitle>
+				<CardDescription>{t("resources.card.description")}</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">
 				<AlertBlock type="info">
@@ -245,9 +241,7 @@ export const ShowResources = ({ id, type }: Props) => {
 											</div>
 											<FormControl>
 												<Input
-													placeholder={t(
-														"resources.form.cpuLimitPlaceholder",
-													)}
+													placeholder={t("resources.form.cpuLimitPlaceholder")}
 													{...field}
 													value={field.value?.toString() || ""}
 												/>

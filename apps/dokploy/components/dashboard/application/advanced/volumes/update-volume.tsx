@@ -30,9 +30,7 @@ import { api } from "@/utils/api";
 
 const mountSchema = (t: (key: string) => string) =>
 	z.object({
-		mountPath: z
-			.string()
-			.min(1, t("volumes.validation.mountPathRequired")),
+		mountPath: z.string().min(1, t("volumes.validation.mountPathRequired")),
 	});
 
 const createSchema = (t: (key: string) => string) =>
@@ -40,9 +38,7 @@ const createSchema = (t: (key: string) => string) =>
 		z
 			.object({
 				type: z.literal("bind"),
-				hostPath: z
-					.string()
-					.min(1, t("volumes.validation.hostPathRequired")),
+				hostPath: z.string().min(1, t("volumes.validation.hostPathRequired")),
 			})
 			.merge(mountSchema(t)),
 		z
@@ -61,9 +57,7 @@ const createSchema = (t: (key: string) => string) =>
 			.object({
 				type: z.literal("file"),
 				content: z.string().optional(),
-				filePath: z
-					.string()
-					.min(1, t("volumes.validation.filePathRequired")),
+				filePath: z.string().min(1, t("volumes.validation.filePathRequired")),
 			})
 			.merge(mountSchema(t)),
 	]);
@@ -231,7 +225,9 @@ export const UpdateVolume = ({
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>{t("volumes.form.hostPathLabel")}</FormLabel>
-											<FormLabel>{t("volumes.form.hostPathDescription")}</FormLabel>
+											<FormLabel>
+												{t("volumes.form.hostPathDescription")}
+											</FormLabel>
 											<FormControl>
 												<Input
 													placeholder={t("volumes.form.hostPathPlaceholder")}

@@ -96,7 +96,8 @@ export const ShowConvertedCompose = ({ composeId }: Props) => {
 										});
 								}}
 							>
-								{t("compose.converted.refreshButton")} <RefreshCw className="ml-2 h-4 w-4" />
+								{t("compose.converted.refreshButton")}{" "}
+								<RefreshCw className="ml-2 h-4 w-4" />
 							</Button>
 						</div>
 

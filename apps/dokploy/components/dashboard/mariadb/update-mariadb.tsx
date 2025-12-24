@@ -103,7 +103,9 @@ export const UpdateMariadb = ({ mariadbId }: Props) => {
 			<DialogContent className="sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>{t("database.mariadb.update.dialogTitle")}</DialogTitle>
-					<DialogDescription>{t("database.mariadb.update.dialogDescription")}</DialogDescription>
+					<DialogDescription>
+						{t("database.mariadb.update.dialogDescription")}
+					</DialogDescription>
 				</DialogHeader>
 				{isError && <AlertBlock type="error">{error?.message}</AlertBlock>}
 

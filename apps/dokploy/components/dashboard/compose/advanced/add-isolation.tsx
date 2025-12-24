@@ -113,13 +113,13 @@ export const IsolatedDeploymentTab = ({ composeId }: Props) => {
 	return (
 		<Card className="bg-background">
 			<CardHeader>
-				<CardTitle className="text-xl">{t("compose.isolation.cardTitle")}</CardTitle>
+				<CardTitle className="text-xl">
+					{t("compose.isolation.cardTitle")}
+				</CardTitle>
 				<CardDescription>
 					{t("compose.isolation.cardDescription")}
 					<div className="text-sm text-muted-foreground flex flex-col gap-2">
-						<span>
-							{t("compose.isolation.description")}
-						</span>
+						<span>{t("compose.isolation.description")}</span>
 						<div className="space-y-4">
 							<div>
 								<h4 className="font-medium mb-2">
@@ -160,7 +160,9 @@ export const IsolatedDeploymentTab = ({ composeId }: Props) => {
 											<FormItem className="mt-4 flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
 												<div className="space-y-0.5">
 													<FormLabel>
-														{t("compose.isolation.enableLabel", { appName: data?.appName })}
+														{t("compose.isolation.enableLabel", {
+															appName: data?.appName,
+														})}
 													</FormLabel>
 													<FormDescription>
 														{t("compose.isolation.enableDescription")}
@@ -201,7 +203,9 @@ export const IsolatedDeploymentTab = ({ composeId }: Props) => {
 								<Dialog open={isOpenPreview} onOpenChange={setIsOpenPreview}>
 									<DialogContent className="sm:max-w-6xl max-h-[80vh]">
 										<DialogHeader>
-											<DialogTitle>{t("compose.isolation.previewDialogTitle")}</DialogTitle>
+											<DialogTitle>
+												{t("compose.isolation.previewDialogTitle")}
+											</DialogTitle>
 											<DialogDescription>
 												{t("compose.isolation.previewDialogDescription")}
 											</DialogDescription>

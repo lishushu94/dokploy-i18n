@@ -1,6 +1,6 @@
 import { LockKeyhole, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { useTranslation } from "next-i18next";
+import { toast } from "sonner";
 import { DialogAction } from "@/components/shared/dialog-action";
 import { ToggleVisibilityInput } from "@/components/shared/toggle-visibility-input";
 import { Button } from "@/components/ui/button";
@@ -37,12 +37,8 @@ export const ShowSecurity = ({ applicationId }: Props) => {
 		<Card className="bg-background">
 			<CardHeader className="flex flex-row justify-between flex-wrap gap-4">
 				<div>
-					<CardTitle className="text-xl">
-						{t("security.card.title")}
-					</CardTitle>
-					<CardDescription>
-						{t("security.card.description")}
-					</CardDescription>
+					<CardTitle className="text-xl">{t("security.card.title")}</CardTitle>
+					<CardDescription>{t("security.card.description")}</CardDescription>
 				</div>
 
 				{data && data?.security.length > 0 && (

@@ -115,7 +115,7 @@ export const CreateServer = ({ stepper }: Props) => {
 			<div className="flex flex-col gap-2 pt-5 px-4">
 				{!canCreateMoreServers && (
 					<AlertBlock type="warning" className="mt-2">
-						{t("settings.remoteServers.limitReached")} {" "}
+						{t("settings.remoteServers.limitReached")}{" "}
 						<Link href="/dashboard/settings/billing" className="text-primary">
 							{t("settings.remoteServers.upgradePlan")}
 						</Link>
@@ -185,7 +185,7 @@ export const CreateServer = ({ stepper }: Props) => {
 									</FormLabel>
 									{!cloudSSHKey && (
 										<AlertBlock>
-											{t("settings.remoteServers.sshKey.missing")} {" "}
+											{t("settings.remoteServers.sshKey.missing")}{" "}
 											<Link
 												href="/dashboard/settings/ssh-keys"
 												className="text-primary"

@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { Clock, ExternalLinkIcon, KeyIcon, Tag, Trash2 } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
 import { DialogAction } from "@/components/shared/dialog-action";
 import { Badge } from "@/components/ui/badge";
@@ -103,7 +103,9 @@ export const ShowApiKeys = () => {
 												</div>
 												<DialogAction
 													title={t("settings.api.keys.delete.title")}
-													description={t("settings.api.keys.delete.description")}
+													description={t(
+														"settings.api.keys.delete.description",
+													)}
 													type="destructive"
 													onClick={async () => {
 														try {

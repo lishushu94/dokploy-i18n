@@ -2,6 +2,7 @@
 
 import { BookIcon, CircuitBoard, GlobeIcon } from "lucide-react";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 import React from "react";
 import {
 	extractServices,
@@ -26,7 +27,6 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/utils/api";
 import { StatusTooltip } from "../shared/status-tooltip";
-import { useTranslation } from "next-i18next";
 
 // Extended Services type to include environmentId and environmentName for search navigation
 type SearchServices = Services & {
@@ -111,7 +111,8 @@ export const SearchCommand = () => {
 										}}
 									>
 										<BookIcon className="size-4 text-muted-foreground mr-2" />
-										{project.name} / {formatEnvName(productionEnvironment!.name)}
+										{project.name} /{" "}
+										{formatEnvName(productionEnvironment!.name)}
 									</CommandItem>
 								);
 							})}

@@ -73,7 +73,9 @@ export const DnsHelperModal = ({ domain, serverIp }: Props) => {
 											</p>
 											<p className="text-sm">
 												{t("application.domains.dns.step1.value", {
-													ip: serverIp || t("application.domains.dns.step1.valueFallback"),
+													ip:
+														serverIp ||
+														t("application.domains.dns.step1.valueFallback"),
 												})}
 											</p>
 										</div>
@@ -99,17 +101,13 @@ export const DnsHelperModal = ({ domain, serverIp }: Props) => {
 									{t("application.domains.dns.step2.description")}
 								</p>
 								<ul className="list-disc list-inside space-y-1 text-sm">
-									<li>
-										{t("application.domains.dns.step2.item1")}
-									</li>
+									<li>{t("application.domains.dns.step2.item1")}</li>
 									<li>
 										{t("application.domains.dns.step2.item2", {
 											url: `${domain.https ? "https://" : "http://"}${domain.host}${domain.path || "/"}`,
 										})}
 									</li>
-									<li>
-										{t("application.domains.dns.step2.item3")}
-									</li>
+									<li>{t("application.domains.dns.step2.item3")}</li>
 								</ul>
 							</div>
 						</div>

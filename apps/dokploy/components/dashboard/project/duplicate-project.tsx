@@ -228,9 +228,7 @@ export const DuplicateProject = ({
 							</div>
 
 							<div className="grid gap-2">
-								<Label htmlFor="description">
-									{t("project.description")}
-								</Label>
+								<Label htmlFor="description">{t("project.description")}</Label>
 								<Input
 									id="description"
 									value={description}
@@ -264,7 +262,9 @@ export const DuplicateProject = ({
 										>
 											<SelectTrigger>
 												<SelectValue
-													placeholder={t("project.duplicate.selectTargetProject")}
+													placeholder={t(
+														"project.duplicate.selectTargetProject",
+													)}
 												/>
 											</SelectTrigger>
 											<SelectContent>
@@ -292,7 +292,9 @@ export const DuplicateProject = ({
 											>
 												<SelectTrigger>
 													<SelectValue
-														placeholder={t("project.duplicate.selectTargetEnvironment")}
+														placeholder={t(
+															"project.duplicate.selectTargetEnvironment",
+														)}
 													/>
 												</SelectTrigger>
 												<SelectContent>
@@ -351,10 +353,10 @@ export const DuplicateProject = ({
 									? t("project.duplicate.loadingNewProject")
 									: t("project.duplicate.loadingEnvironment")}
 							</>
+						) : duplicateType === "new-project" ? (
+							t("project.duplicate.actionNewProject")
 						) : (
-							duplicateType === "new-project"
-								? t("project.duplicate.actionNewProject")
-								: t("project.duplicate.actionEnvironment")
+							t("project.duplicate.actionEnvironment")
 						)}
 					</Button>
 				</DialogFooter>

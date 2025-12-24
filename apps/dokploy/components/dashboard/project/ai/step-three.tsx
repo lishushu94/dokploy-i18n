@@ -9,9 +9,7 @@ export const StepThree = ({ templateInfo }: StepProps) => {
 		<div className="flex flex-col h-full">
 			<div className="flex-grow">
 				<div className="space-y-6">
-					<h2 className="text-lg font-semibold">
-						{t("ai.stepThree.title")}
-					</h2>
+					<h2 className="text-lg font-semibold">{t("ai.stepThree.title")}</h2>
 					<div className="space-y-4">
 						<div>
 							<h3 className="text-sm font-semibold">

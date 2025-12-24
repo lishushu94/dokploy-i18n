@@ -197,7 +197,7 @@ export const AddTemplate = ({ environmentId, baseUrl }: Props) => {
 												: selectedTags.length > 0
 													? t("template.tags.button.selected", {
 															count: selectedTags.length,
-													  })
+														})
 													: t("template.tags.button.placeholder")}
 
 											<ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
@@ -214,9 +214,7 @@ export const AddTemplate = ({ environmentId, baseUrl }: Props) => {
 													{t("template.tags.loading")}
 												</span>
 											)}
-											<CommandEmpty>
-												{t("template.tags.empty")}
-											</CommandEmpty>
+											<CommandEmpty>{t("template.tags.empty")}</CommandEmpty>
 											<ScrollArea className="h-96">
 												<CommandGroup>
 													{tags?.map((tag) => (
@@ -447,7 +445,11 @@ export const AddTemplate = ({ environmentId, baseUrl }: Props) => {
 																		<TooltipTrigger asChild>
 																			<Label className="break-all w-fit flex flex-row gap-1 items-center pb-2 pt-3.5">
 																				{t("service.form.serverLabel")}{" "}
-																				{!isCloud ? t("service.form.serverOptionalSuffix") : ""}
+																				{!isCloud
+																					? t(
+																							"service.form.serverOptionalSuffix",
+																						)
+																					: ""}
 																				<HelpCircle className="size-4 text-muted-foreground" />
 																			</Label>
 																		</TooltipTrigger>
@@ -457,7 +459,9 @@ export const AddTemplate = ({ environmentId, baseUrl }: Props) => {
 																			side="top"
 																		>
 																			<span>
-																				{t("service.serverDropdown.description")}
+																				{t(
+																					"service.serverDropdown.description",
+																				)}
 																			</span>
 																		</TooltipContent>
 																	</Tooltip>
@@ -485,9 +489,15 @@ export const AddTemplate = ({ environmentId, baseUrl }: Props) => {
 																			{!isCloud && (
 																				<SelectItem value="dokploy">
 																					<span className="flex items-center gap-2 justify-between w-full">
-																						<span>{t("services.filter.server.dokploy")}</span>
+																						<span>
+																							{t(
+																								"services.filter.server.dokploy",
+																							)}
+																						</span>
 																						<span className="text-muted-foreground text-xs self-center">
-																							{t("service.form.defaultServerSuffix")}
+																							{t(
+																								"service.form.defaultServerSuffix",
+																							)}
 																						</span>
 																					</span>
 																				</SelectItem>
@@ -507,7 +517,9 @@ export const AddTemplate = ({ environmentId, baseUrl }: Props) => {
 																			))}
 																			<SelectLabel>
 																				{t("service.form.serversLabel", {
-																					count: servers?.length + (!isCloud ? 1 : 0),
+																					count:
+																						servers?.length +
+																						(!isCloud ? 1 : 0),
 																				})}
 																			</SelectLabel>
 																		</SelectGroup>

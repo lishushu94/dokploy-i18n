@@ -107,9 +107,7 @@ export const Enable2FA = () => {
 
 			if (result.error) {
 				if (result.error.code === "INVALID_TWO_FACTOR_AUTHENTICATION") {
-					toast.error(
-																t("settings.profile.twoFactor.enable.toast.invalidCode"),
-					);
+					toast.error(t("settings.profile.twoFactor.enable.toast.invalidCode"));
 					return;
 				}
 
@@ -182,7 +180,7 @@ export const Enable2FA = () => {
 
 			if (!enableData) {
 				throw new Error(
-					error?.message || t("settings.profile.twoFactor.enable.error.enable")
+					error?.message || t("settings.profile.twoFactor.enable.error.enable"),
 				);
 			}
 
@@ -208,7 +206,7 @@ export const Enable2FA = () => {
 			toast.error(
 				error instanceof Error
 					? error.message
-					: t("settings.profile.twoFactor.enable.error.setup")
+					: t("settings.profile.twoFactor.enable.error.setup"),
 			);
 			passwordForm.setError("password", {
 				message:
@@ -284,7 +282,9 @@ export const Enable2FA = () => {
 					</DialogTitle>
 					<DialogDescription>
 						{step === "password"
-							? t("settings.profile.twoFactor.enable.dialog.descriptionPassword")
+							? t(
+									"settings.profile.twoFactor.enable.dialog.descriptionPassword",
+								)
 							: t("settings.profile.twoFactor.enable.dialog.descriptionVerify")}
 					</DialogDescription>
 				</DialogHeader>
@@ -307,12 +307,16 @@ export const Enable2FA = () => {
 										<FormControl>
 											<Input
 												type="password"
-												placeholder={t("settings.profile.twoFactor.enable.password.placeholder")}
+												placeholder={t(
+													"settings.profile.twoFactor.enable.password.placeholder",
+												)}
 												{...field}
 											/>
 										</FormControl>
 										<FormDescription>
-											{t("settings.profile.twoFactor.enable.password.description")}
+											{t(
+												"settings.profile.twoFactor.enable.password.description",
+											)}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -329,12 +333,16 @@ export const Enable2FA = () => {
 										<FormControl>
 											<Input
 												type="text"
-												placeholder={t("settings.profile.twoFactor.enable.issuer.placeholder")}
+												placeholder={t(
+													"settings.profile.twoFactor.enable.issuer.placeholder",
+												)}
 												{...field}
 											/>
 										</FormControl>
 										<FormDescription>
-											{t("settings.profile.twoFactor.enable.issuer.description")}
+											{t(
+												"settings.profile.twoFactor.enable.issuer.description",
+											)}
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
@@ -358,17 +366,23 @@ export const Enable2FA = () => {
 										<div className="flex flex-col items-center gap-4 p-6 border rounded-lg">
 											<QrCode className="size-5 text-muted-foreground" />
 											<span className="text-sm font-medium">
-												{t("settings.profile.twoFactor.enable.verify.scanTitle")}
+												{t(
+													"settings.profile.twoFactor.enable.verify.scanTitle",
+												)}
 											</span>
 											{/** biome-ignore lint/performance/noImgElement: This is a valid use case for an img element */}
 											<img
 												src={data.qrCodeUrl}
-												alt={t("settings.profile.twoFactor.enable.verify.qrAlt")}
+												alt={t(
+													"settings.profile.twoFactor.enable.verify.qrAlt",
+												)}
 												className="rounded-lg w-48 h-48"
 											/>
 											<div className="flex flex-col gap-2 text-center">
 												<span className="text-sm text-muted-foreground">
-													{t("settings.profile.twoFactor.enable.verify.cantScan")}
+													{t(
+														"settings.profile.twoFactor.enable.verify.cantScan",
+													)}
 												</span>
 												<span className="text-xs font-mono bg-muted p-2 rounded">
 													{data.secret}
@@ -380,7 +394,9 @@ export const Enable2FA = () => {
 											<div className="w-full space-y-3 border rounded-lg p-4">
 												<div className="flex items-center justify-between">
 													<h4 className="font-medium">
-														{t("settings.profile.twoFactor.enable.backup.title")}
+														{t(
+															"settings.profile.twoFactor.enable.backup.title",
+														)}
 													</h4>
 													<div className="flex items-center gap-2">
 														<TooltipProvider>
@@ -397,7 +413,9 @@ export const Enable2FA = () => {
 																</TooltipTrigger>
 																<TooltipContent>
 																	<p>
-																		{t("settings.profile.twoFactor.enable.backup.copy")}
+																		{t(
+																			"settings.profile.twoFactor.enable.backup.copy",
+																		)}
 																	</p>
 																</TooltipContent>
 															</Tooltip>
@@ -417,7 +435,9 @@ export const Enable2FA = () => {
 																</TooltipTrigger>
 																<TooltipContent>
 																	<p>
-																		{t("settings.profile.twoFactor.enable.backup.download")}
+																		{t(
+																			"settings.profile.twoFactor.enable.backup.download",
+																		)}
 																	</p>
 																</TooltipContent>
 															</Tooltip>
@@ -435,7 +455,9 @@ export const Enable2FA = () => {
 													))}
 												</div>
 												<p className="text-sm text-muted-foreground">
-													{t("settings.profile.twoFactor.enable.backup.description")}
+													{t(
+														"settings.profile.twoFactor.enable.backup.description",
+													)}
 												</p>
 											</div>
 										)}
@@ -467,7 +489,9 @@ export const Enable2FA = () => {
 									</InputOTPGroup>
 								</InputOTP>
 								<FormDescription>
-									{t("settings.profile.twoFactor.enable.verify.codeDescription")}
+									{t(
+										"settings.profile.twoFactor.enable.verify.codeDescription",
+									)}
 								</FormDescription>
 							</div>
 

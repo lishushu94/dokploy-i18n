@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, ChevronsUpDown, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -51,11 +51,9 @@ import { api } from "@/utils/api";
 
 const createBitbucketProviderSchema = (t: (key: string) => string) =>
 	z.object({
-		composePath: z
-			.string()
-			.min(1, {
-				message: t("compose.git.validation.composePathRequired"),
-			}),
+		composePath: z.string().min(1, {
+			message: t("compose.git.validation.composePathRequired"),
+		}),
 		repository: z
 			.object({
 				repo: z.string().min(1, {
@@ -76,7 +74,9 @@ const createBitbucketProviderSchema = (t: (key: string) => string) =>
 		enableSubmodules: z.boolean().default(false),
 	});
 
-type BitbucketProvider = z.infer<ReturnType<typeof createBitbucketProviderSchema>>;
+type BitbucketProvider = z.infer<
+	ReturnType<typeof createBitbucketProviderSchema>
+>;
 
 interface Props {
 	composeId: string;
@@ -186,7 +186,7 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 				>
 					{error && (
 						<AlertBlock type="error">
-							{t("application.git.bitbucket.state.repositoriesError")}: {" "}
+							{t("application.git.bitbucket.state.repositoriesError")}:{" "}
 							{error.message}
 						</AlertBlock>
 					)}
@@ -254,7 +254,9 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 											>
 												<BitbucketIcon className="h-4 w-4" />
 												<span>
-													{t("application.git.bitbucket.form.viewRepositoryLink")}
+													{t(
+														"application.git.bitbucket.form.viewRepositoryLink",
+													)}
 												</span>
 											</Link>
 										)}
@@ -270,14 +272,16 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 													)}
 												>
 													{isLoadingRepositories
-														? t("application.git.bitbucket.state.loadingRepositories")
+														? t(
+																"application.git.bitbucket.state.loadingRepositories",
+															)
 														: field.value.owner
 															? repositories?.find(
 																	(repo) => repo.name === field.value.repo,
 																)?.name
 															: t(
-																"application.git.bitbucket.form.repositorySelectPlaceholder",
-															)}
+																	"application.git.bitbucket.form.repositorySelectPlaceholder",
+																)}
 
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
@@ -293,7 +297,9 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 												/>
 												{isLoadingRepositories && (
 													<span className="py-6 text-center text-sm">
-														{t("application.git.bitbucket.state.loadingRepositories")}
+														{t(
+															"application.git.bitbucket.state.loadingRepositories",
+														)}
 													</span>
 												)}
 												<CommandEmpty>
@@ -335,7 +341,9 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 										</PopoverContent>
 										{form.formState.errors.repository && (
 											<p className={cn("text-sm font-medium text-destructive")}>
-												{t("application.git.bitbucket.validation.repositoryRequired")}
+												{t(
+													"application.git.bitbucket.validation.repositoryRequired",
+												)}
 											</p>
 										)}
 									</Popover>
@@ -361,14 +369,16 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 													)}
 												>
 													{status === "loading" && fetchStatus === "fetching"
-														? t("application.git.bitbucket.state.loadingBranches")
+														? t(
+																"application.git.bitbucket.state.loadingBranches",
+															)
 														: field.value
 															? branches?.find(
 																	(branch) => branch.name === field.value,
 																)?.name
 															: t(
-																"application.git.bitbucket.form.branchSelectPlaceholder",
-															)}
+																	"application.git.bitbucket.form.branchSelectPlaceholder",
+																)}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -383,12 +393,16 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 												/>
 												{status === "loading" && fetchStatus === "fetching" && (
 													<span className="py-6 text-center text-sm text-muted-foreground">
-														{t("application.git.bitbucket.state.loadingBranches")}
+														{t(
+															"application.git.bitbucket.state.loadingBranches",
+														)}
 													</span>
 												)}
 												{!repository?.owner && (
 													<span className="py-6 text-center text-sm text-muted-foreground">
-														{t("application.git.bitbucket.form.repositorySelectFirst")}
+														{t(
+															"application.git.bitbucket.form.repositorySelectFirst",
+														)}
 													</span>
 												)}
 												<ScrollArea className="h-96">
@@ -464,7 +478,9 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 													</TooltipTrigger>
 													<TooltipContent>
 														<p>
-															{t("application.git.bitbucket.form.watchPathsTooltip")}
+															{t(
+																"application.git.bitbucket.form.watchPathsTooltip",
+															)}
 														</p>
 													</TooltipContent>
 												</Tooltip>
@@ -499,7 +515,10 @@ export const SaveBitbucketProviderCompose = ({ composeId }: Props) => {
 															if (!input) return;
 															const value = input.value.trim();
 															if (value) {
-																const newPaths = [...(field.value || []), value];
+																const newPaths = [
+																	...(field.value || []),
+																	value,
+																];
 																form.setValue("watchPaths", newPaths);
 																input.value = "";
 															}

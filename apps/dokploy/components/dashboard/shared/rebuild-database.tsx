@@ -49,9 +49,7 @@ export const RebuildDatabase = ({ id, type }: Props) => {
 		} catch (error) {
 			toast.error(t("database.rebuild.error"), {
 				description:
-					error instanceof Error
-							? error.message
-							: t("common.unknownError"),
+					error instanceof Error ? error.message : t("common.unknownError"),
 			});
 		}
 	};

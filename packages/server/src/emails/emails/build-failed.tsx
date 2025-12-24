@@ -87,10 +87,12 @@ export const BuildFailedEmail = ({
 								{content.projectNameLabel} <strong>{projectName}</strong>
 							</Text>
 							<Text className="!leading-3">
-								{content.applicationNameLabel} <strong>{applicationName}</strong>
+								{content.applicationNameLabel}{" "}
+								<strong>{applicationName}</strong>
 							</Text>
 							<Text className="!leading-3">
-								{content.applicationTypeLabel} <strong>{applicationType}</strong>
+								{content.applicationTypeLabel}{" "}
+								<strong>{applicationType}</strong>
 							</Text>
 							<Text className="!leading-3">
 								{content.dateLabel} <strong>{date}</strong>

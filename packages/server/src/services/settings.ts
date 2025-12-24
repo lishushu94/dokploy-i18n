@@ -32,7 +32,10 @@ const getUpdateFetchTimeoutMs = () => {
 
 const fetchJsonWithTimeout = async <T>(url: string): Promise<T> => {
 	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), getUpdateFetchTimeoutMs());
+	const timeout = setTimeout(
+		() => controller.abort(),
+		getUpdateFetchTimeoutMs(),
+	);
 	try {
 		const response = await fetch(url, {
 			method: "GET",
@@ -55,7 +58,9 @@ const normalizeUpdateTagsUrl = (tagsUrl?: string | null) => {
 	if (!raw) return DEFAULT_UPDATE_TAGS_URL;
 	try {
 		const u = new URL(raw);
-		if (u.protocol !== "https:") return DEFAULT_UPDATE_TAGS_URL;
+		if (u.protocol !== "https:" && u.protocol !== "http:") {
+			return DEFAULT_UPDATE_TAGS_URL;
+		}
 		return u.toString().replace(/\?$/, "");
 	} catch {
 		return DEFAULT_UPDATE_TAGS_URL;
@@ -96,7 +101,9 @@ export const getServiceImageDigest = async () => {
 };
 
 /** Returns latest version number and information whether server update is available by comparing current image's digest against digest for provided image tag via Docker hub API. */
-export const getUpdateData = async (tagsUrl?: string | null): Promise<IUpdateData> => {
+export const getUpdateData = async (
+	tagsUrl?: string | null,
+): Promise<IUpdateData> => {
 	let currentDigest: string;
 	try {
 		currentDigest = await getServiceImageDigest();

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, ChevronsUpDown, HelpCircle, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -50,11 +50,9 @@ import { api } from "@/utils/api";
 
 const createGithubProviderSchema = (t: (key: string) => string) =>
 	z.object({
-		composePath: z
-			.string()
-			.min(1, {
-				message: t("compose.git.validation.composePathRequired"),
-			}),
+		composePath: z.string().min(1, {
+			message: t("compose.git.validation.composePathRequired"),
+		}),
 		repository: z
 			.object({
 				repo: z.string().min(1, {
@@ -189,7 +187,9 @@ export const SaveGithubProviderCompose = ({ composeId }: Props) => {
 							name="githubId"
 							render={({ field }) => (
 								<FormItem className="md:col-span-2 flex flex-col">
-									<FormLabel>{t("compose.git.github.form.githubAccountLabel")}</FormLabel>
+									<FormLabel>
+										{t("compose.git.github.form.githubAccountLabel")}
+									</FormLabel>
 									<Select
 										onValueChange={(value) => {
 											field.onChange(value);
@@ -232,7 +232,9 @@ export const SaveGithubProviderCompose = ({ composeId }: Props) => {
 							render={({ field }) => (
 								<FormItem className="md:col-span-2 flex flex-col">
 									<div className="flex items-center justify-between">
-										<FormLabel>{t("compose.git.github.form.repositoryLabel")}</FormLabel>
+										<FormLabel>
+											{t("compose.git.github.form.repositoryLabel")}
+										</FormLabel>
 										{field.value.owner && field.value.repo && (
 											<Link
 												href={`https://github.com/${field.value.owner}/${field.value.repo}`}
@@ -241,7 +243,9 @@ export const SaveGithubProviderCompose = ({ composeId }: Props) => {
 												className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
 											>
 												<GithubIcon className="h-4 w-4" />
-												<span>{t("compose.git.github.form.viewRepositoryLink")}</span>
+												<span>
+													{t("compose.git.github.form.viewRepositoryLink")}
+												</span>
 											</Link>
 										)}
 									</div>
@@ -333,7 +337,9 @@ export const SaveGithubProviderCompose = ({ composeId }: Props) => {
 							name="branch"
 							render={({ field }) => (
 								<FormItem className="block w-full">
-									<FormLabel>{t("compose.git.github.form.branchLabel")}</FormLabel>
+									<FormLabel>
+										{t("compose.git.github.form.branchLabel")}
+									</FormLabel>
 									<Popover>
 										<PopoverTrigger asChild>
 											<FormControl>
@@ -413,7 +419,9 @@ export const SaveGithubProviderCompose = ({ composeId }: Props) => {
 							name="composePath"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>{t("compose.git.form.composePathLabel")}</FormLabel>
+									<FormLabel>
+										{t("compose.git.form.composePathLabel")}
+									</FormLabel>
 									<FormControl>
 										<Input
 											placeholder={t("compose.git.form.composePathPlaceholder")}
@@ -431,14 +439,18 @@ export const SaveGithubProviderCompose = ({ composeId }: Props) => {
 							render={({ field }) => (
 								<FormItem className="md:col-span-2">
 									<div className="flex items-center gap-2">
-										<FormLabel>{t("compose.git.github.form.triggerTypeLabel")}</FormLabel>
+										<FormLabel>
+											{t("compose.git.github.form.triggerTypeLabel")}
+										</FormLabel>
 										<TooltipProvider>
 											<Tooltip>
 												<TooltipTrigger asChild>
 													<HelpCircle className="size-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
 												</TooltipTrigger>
 												<TooltipContent>
-													<p>{t("compose.git.github.form.triggerTypeTooltip")}</p>
+													<p>
+														{t("compose.git.github.form.triggerTypeTooltip")}
+													</p>
 												</TooltipContent>
 											</Tooltip>
 										</TooltipProvider>
@@ -511,7 +523,9 @@ export const SaveGithubProviderCompose = ({ composeId }: Props) => {
 										<FormControl>
 											<div className="flex gap-2">
 												<Input
-													placeholder={t("application.git.watchPathsPlaceholder")}
+													placeholder={t(
+														"application.git.watchPathsPlaceholder",
+													)}
 													ref={watchPathInputRef}
 													onKeyDown={(e) => {
 														if (e.key === "Enter") {

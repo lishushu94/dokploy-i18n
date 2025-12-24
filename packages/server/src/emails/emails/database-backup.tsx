@@ -91,7 +91,8 @@ export const DatabaseBackupEmail = ({
 								{content.projectNameLabel} <strong>{projectName}</strong>
 							</Text>
 							<Text className="!leading-3">
-								{content.applicationNameLabel} <strong>{applicationName}</strong>
+								{content.applicationNameLabel}{" "}
+								<strong>{applicationName}</strong>
 							</Text>
 							<Text className="!leading-3">
 								{content.databaseTypeLabel} <strong>{databaseType}</strong>

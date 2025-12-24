@@ -30,7 +30,9 @@ export const AiForm = () => {
 								<BotIcon className="size-6 text-muted-foreground self-center" />
 								{t("settings.ai.page.title")}
 							</CardTitle>
-							<CardDescription>{t("settings.ai.page.description")}</CardDescription>
+							<CardDescription>
+								{t("settings.ai.page.description")}
+							</CardDescription>
 						</div>
 						{aiConfigs && aiConfigs?.length > 0 && <HandleAi />}
 					</CardHeader>
@@ -75,7 +77,9 @@ export const AiForm = () => {
 																	aiId: config.aiId,
 																})
 																	.then(() => {
-																		toast.success(t("settings.ai.delete.success"));
+																		toast.success(
+																			t("settings.ai.delete.success"),
+																		);
 																		refetch();
 																	})
 																	.catch(() => {

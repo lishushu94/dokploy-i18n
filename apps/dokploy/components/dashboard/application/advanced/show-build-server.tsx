@@ -147,9 +147,7 @@ export const ShowBuildServer = ({ applicationId }: Props) => {
 							name="buildServerId"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>
-										{t("buildServer.form.serverLabel")}
-									</FormLabel>
+									<FormLabel>{t("buildServer.form.serverLabel")}</FormLabel>
 									<Select
 										onValueChange={field.onChange}
 										value={field.value || "none"}
@@ -202,9 +200,7 @@ export const ShowBuildServer = ({ applicationId }: Props) => {
 							name="buildRegistryId"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>
-										{t("buildServer.form.registryLabel")}
-									</FormLabel>
+									<FormLabel>{t("buildServer.form.registryLabel")}</FormLabel>
 									<Select
 										onValueChange={field.onChange}
 										value={field.value || "none"}
@@ -212,7 +208,9 @@ export const ShowBuildServer = ({ applicationId }: Props) => {
 										<FormControl>
 											<SelectTrigger>
 												<SelectValue
-													placeholder={t("buildServer.form.registryPlaceholder")}
+													placeholder={t(
+														"buildServer.form.registryPlaceholder",
+													)}
 												/>
 											</SelectTrigger>
 										</FormControl>

@@ -324,15 +324,11 @@ export const AddSwarmSettings = ({ id, type }: Props) => {
 			endpointSpecSwarm: data.endpointSpecSwarm,
 		})
 			.then(async () => {
-				toast.success(
-						 t("settings.cluster.swarm.toast.updateSuccess"),
-				);
+				toast.success(t("settings.cluster.swarm.toast.updateSuccess"));
 				refetch();
 			})
 			.catch(() => {
-				toast.error(
-						 t("settings.cluster.swarm.toast.updateError"),
-				);
+				toast.error(t("settings.cluster.swarm.toast.updateError"));
 			});
 	};
 	return (
@@ -345,9 +341,7 @@ export const AddSwarmSettings = ({ id, type }: Props) => {
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-5xl">
 				<DialogHeader>
-					<DialogTitle>
-						{t("settings.cluster.swarm.dialog.title")}
-					</DialogTitle>
+					<DialogTitle>{t("settings.cluster.swarm.dialog.title")}</DialogTitle>
 					<DialogDescription>
 						{t("settings.cluster.swarm.dialog.description")}
 					</DialogDescription>
@@ -613,9 +607,7 @@ export const AddSwarmSettings = ({ id, type }: Props) => {
 							render={({ field }) => (
 								<FormItem className="relative ">
 									<FormLabel>
-										{t(
-											"settings.cluster.swarm.form.rollbackConfig.label",
-										)}
+										{t("settings.cluster.swarm.form.rollbackConfig.label")}
 									</FormLabel>
 									<TooltipProvider delayDuration={0}>
 										<Tooltip>
@@ -852,9 +844,7 @@ export const AddSwarmSettings = ({ id, type }: Props) => {
 							render={({ field }) => (
 								<FormItem className="relative max-lg:px-4 lg:pl-6 ">
 									<FormLabel>
-										{t(
-											"settings.cluster.swarm.form.stopGracePeriod.label",
-										)}
+										{t("settings.cluster.swarm.form.stopGracePeriod.label")}
 									</FormLabel>
 									<TooltipProvider delayDuration={0}>
 										<Tooltip>

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, ChevronsUpDown, HelpCircle, Plus, X } from "lucide-react";
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -285,7 +285,9 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 													)}
 												>
 													{isLoadingRepositories
-														? t("application.git.gitea.state.loadingRepositories")
+														? t(
+																"application.git.gitea.state.loadingRepositories",
+															)
 														: field.value.owner
 															? repositories?.find(
 																	(repo: GiteaRepository) =>
@@ -309,7 +311,9 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 												/>
 												{isLoadingRepositories && (
 													<span className="py-6 text-center text-sm text-muted-foreground">
-														{t("application.git.gitea.state.loadingRepositories")}
+														{t(
+															"application.git.gitea.state.loadingRepositories",
+														)}
 													</span>
 												)}
 												<CommandEmpty>
@@ -319,7 +323,9 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 													<CommandGroup>
 														{repositories && repositories.length === 0 && (
 															<CommandEmpty>
-																{t("application.git.gitea.state.noRepositories")}
+																{t(
+																	"application.git.gitea.state.noRepositories",
+																)}
 															</CommandEmpty>
 														)}
 														{repositories?.map((repo: GiteaRepository) => {

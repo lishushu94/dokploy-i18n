@@ -74,6 +74,20 @@ export const ShowDeployments = ({
 
 	const { data: isCloud } = api.settings.isCloud.useQuery();
 
+	const { data: queuedJobs } = api.deployment.queueByType.useQuery(
+		{
+			id,
+			type,
+		},
+		{
+			enabled:
+				!!id &&
+				isCloud !== true &&
+				(type === "application" || type === "compose"),
+			refetchInterval: 1000,
+		},
+	);
+
 	const { mutateAsync: rollback, isLoading: isRollingBack } =
 		api.rollback.rollback.useMutation();
 	const { mutateAsync: killProcess, isLoading: isKillingProcess } =
@@ -204,6 +218,40 @@ export const ShowDeployments = ({
 				</div>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">
+				{!!queuedJobs?.length && (
+					<div className="flex flex-col gap-2">
+						{queuedJobs.map((job) => {
+							const isActive = job.state === "active";
+							const label = isActive
+								? t("deployments.status.running")
+								: t("deployments.status.queued");
+							const tooltipStatus = isActive ? "running" : "queued";
+
+							return (
+								<div
+									key={job.jobId}
+									className="flex items-center justify-between rounded-lg border p-4 gap-2"
+								>
+									<div className="flex flex-col">
+										<span className="flex items-center gap-4 font-medium capitalize text-foreground">
+											{label}
+											<StatusTooltip
+												status={tooltipStatus}
+												className="size-2.5"
+											/>
+										</span>
+										<span className="break-words text-sm text-muted-foreground whitespace-pre-wrap">
+											{job?.data?.titleLog || t("deployments.title.manual")}
+										</span>
+									</div>
+									<div className="text-sm capitalize text-muted-foreground flex items-center gap-2">
+										<DateTooltip date={job.createdAt} />
+									</div>
+								</div>
+							);
+						})}
+					</div>
+				)}
 				{stuckDeployment && (type === "application" || type === "compose") && (
 					<AlertBlock
 						type="warning"

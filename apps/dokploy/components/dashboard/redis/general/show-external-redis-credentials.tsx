@@ -113,18 +113,14 @@ export const ShowExternalRedisCredentials = ({ redisId }: Props) => {
 					<CardContent className="flex w-full flex-col gap-4">
 						{!getIp && (
 							<AlertBlock type="warning">
-								{t("database.redis.externalCredentials.setIpPrefix")} {" "}
+								{t("database.redis.externalCredentials.setIpPrefix")}{" "}
 								<Link
 									href="/dashboard/settings/server"
 									className="text-primary"
 								>
 									{data?.serverId
-										? t(
-												"database.redis.externalCredentials.remoteServersLink",
-										  )
-										: t(
-												"database.redis.externalCredentials.webServerLink",
-										  )}
+										? t("database.redis.externalCredentials.remoteServersLink")
+										: t("database.redis.externalCredentials.webServerLink")}
 								</Link>{" "}
 								{t("database.redis.externalCredentials.setIpSuffix")}
 							</AlertBlock>
@@ -149,7 +145,9 @@ export const ShowExternalRedisCredentials = ({ redisId }: Props) => {
 														</FormLabel>
 														<FormControl>
 															<Input
-																placeholder={t("database.redis.externalCredentials.externalPortPlaceholder")}
+																placeholder={t(
+																	"database.redis.externalCredentials.externalPortPlaceholder",
+																)}
 																{...field}
 																value={field.value || ""}
 															/>

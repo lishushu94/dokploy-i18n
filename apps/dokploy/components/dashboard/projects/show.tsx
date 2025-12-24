@@ -10,8 +10,8 @@ import {
 	TrashIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { BreadcrumbSidebar } from "@/components/shared/breadcrumb-sidebar";
 import { DateTooltip } from "@/components/shared/date-tooltip";
@@ -137,9 +137,7 @@ export const ShowProjects = () => {
 	return (
 		<>
 			<BreadcrumbSidebar
-				list={[
-					{ name: t("dashboard.projects"), href: "/dashboard/projects" },
-				]}
+				list={[{ name: t("dashboard.projects"), href: "/dashboard/projects" }]}
 			/>
 			{!isCloud && (
 				<div className="absolute top-4 right-4">
@@ -447,48 +445,65 @@ export const ShowProjects = () => {
 																									}
 																								>
 																									<TrashIcon className="size-4" />
-																									<span>{t("button.delete")}</span>
+																									<span>
+																										{t("button.delete")}
+																									</span>
 																								</DropdownMenuItem>
 																							</AlertDialogTrigger>
 																							<AlertDialogContent>
 																								<AlertDialogHeader>
 																									<AlertDialogTitle>
-																		{t("project.delete.confirmTitle")}
-																	</AlertDialogTitle>
+																										{t(
+																											"project.delete.confirmTitle",
+																										)}
+																									</AlertDialogTitle>
 																									{!emptyServices ? (
 																										<div className="flex flex-row gap-4 rounded-lg bg-yellow-50 p-2 dark:bg-yellow-950">
 																											<AlertTriangle className="text-yellow-600 dark:text-yellow-400" />
 																											<span className="text-sm text-yellow-600 dark:text-yellow-400">
-																			{t("project.delete.activeServicesWarning")}
-																		</span>
+																												{t(
+																													"project.delete.activeServicesWarning",
+																												)}
+																											</span>
 																										</div>
 																									) : (
 																										<AlertDialogDescription>
-																			{t("common.actionCannotBeUndone")}
-																		</AlertDialogDescription>
+																											{t(
+																												"common.actionCannotBeUndone",
+																											)}
+																										</AlertDialogDescription>
 																									)}
 																								</AlertDialogHeader>
 																								<AlertDialogFooter>
-																<AlertDialogCancel>
-																	{t("button.cancel")}
-																</AlertDialogCancel>
-																<AlertDialogAction
-																	disabled={!emptyServices}
-																	onClick={async () => {
-																		try {
-																			await mutateAsync({
-																				projectId: project.projectId,
-																			});
-																			toast.success(t("project.delete.success"));
-																		} catch {
-																			toast.error(t("project.delete.error"));
-																		} finally {
-																			utils.project.all.invalidate();
-																		}
-																	}}
-																>
-																	{t("button.delete")}
-																</AlertDialogAction>
+																									<AlertDialogCancel>
+																										{t("button.cancel")}
+																									</AlertDialogCancel>
+																									<AlertDialogAction
+																										disabled={!emptyServices}
+																										onClick={async () => {
+																											try {
+																												await mutateAsync({
+																													projectId:
+																														project.projectId,
+																												});
+																												toast.success(
+																													t(
+																														"project.delete.success",
+																													),
+																												);
+																											} catch {
+																												toast.error(
+																													t(
+																														"project.delete.error",
+																													),
+																												);
+																											} finally {
+																												utils.project.all.invalidate();
+																											}
+																										}}
+																									>
+																										{t("button.delete")}
+																									</AlertDialogAction>
 																								</AlertDialogFooter>
 																							</AlertDialogContent>
 																						</AlertDialog>

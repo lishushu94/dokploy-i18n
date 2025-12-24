@@ -1,0 +1,465 @@
+import { db } from "@dokploy/server/db";
+import { aiRuns, aiToolExecutions } from "@dokploy/server/db/schema";
+import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
+import {
+	initializeTools,
+	type ToolContext,
+	type ToolResult,
+	toolRegistry,
+} from "../../ai-tools";
+
+export type AgentOrchestratorState =
+	| "IDLE"
+	| "PLANNING"
+	| "WAIT_APPROVAL"
+	| "EXECUTING"
+	| "VERIFYING"
+	| "COMPLETED"
+	| "FAILED"
+	| "CANCELLED";
+
+export type AiRunDbStatus =
+	| "pending"
+	| "planning"
+	| "waiting_approval"
+	| "executing"
+	| "verifying"
+	| "completed"
+	| "failed"
+	| "cancelled";
+
+export type AiToolExecutionDbStatus =
+	| "pending"
+	| "approved"
+	| "rejected"
+	| "executing"
+	| "completed"
+	| "failed";
+
+export type AgentPlanStep = {
+	id: string;
+	toolName: string;
+	description: string;
+	parameters: Record<string, unknown>;
+	requiresApproval: boolean;
+};
+
+export type AgentPlan = {
+	steps: AgentPlanStep[];
+};
+
+export type OrchestratorOutcome =
+	| {
+			state: "WAIT_APPROVAL";
+			runId: string;
+			executionId: string;
+			toolName: string;
+	  }
+	| { state: "EXECUTING"; runId: string }
+	| { state: "VERIFYING"; runId: string }
+	| { state: "COMPLETED"; runId: string }
+	| { state: "FAILED"; runId: string; error: string }
+	| { state: "CANCELLED"; runId: string };
+
+function nowIso() {
+	return new Date().toISOString();
+}
+
+function mapRunStatusToState(status: AiRunDbStatus): AgentOrchestratorState {
+	switch (status) {
+		case "pending":
+			return "IDLE";
+		case "planning":
+			return "PLANNING";
+		case "waiting_approval":
+			return "WAIT_APPROVAL";
+		case "executing":
+			return "EXECUTING";
+		case "verifying":
+			return "VERIFYING";
+		case "completed":
+			return "COMPLETED";
+		case "failed":
+			return "FAILED";
+		case "cancelled":
+			return "CANCELLED";
+	}
+}
+
+const allowedTransitions: Record<AiRunDbStatus, AiRunDbStatus[]> = {
+	pending: ["planning", "cancelled", "failed"],
+	planning: ["executing", "waiting_approval", "cancelled", "failed"],
+	waiting_approval: ["executing", "cancelled", "failed"],
+	executing: ["verifying", "waiting_approval", "cancelled", "failed"],
+	verifying: ["completed", "cancelled", "failed"],
+	completed: [],
+	failed: [],
+	cancelled: [],
+};
+
+function assertValidTransition(from: AiRunDbStatus, to: AiRunDbStatus) {
+	if (from === to) return;
+	if (!allowedTransitions[from]?.includes(to)) {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: `Invalid run status transition: ${from} -> ${to}`,
+		});
+	}
+}
+
+async function updateRun(
+	runId: string,
+	data: Partial<{
+		status: AiRunDbStatus;
+		plan: AgentPlan;
+		result: { success: boolean; summary: string; data?: unknown };
+		error: string;
+		startedAt: string;
+		completedAt: string;
+	}>,
+) {
+	const [updated] = await db
+		.update(aiRuns)
+		.set(data)
+		.where(eq(aiRuns.runId, runId))
+		.returning();
+	return updated;
+}
+
+async function updateExecution(
+	executionId: string,
+	data: Partial<{
+		status: AiToolExecutionDbStatus;
+		result: {
+			success: boolean;
+			message?: string;
+			data?: unknown;
+			error?: string;
+		};
+		error: string;
+		startedAt: string;
+		completedAt: string;
+	}>,
+) {
+	const [updated] = await db
+		.update(aiToolExecutions)
+		.set(data)
+		.where(eq(aiToolExecutions.executionId, executionId))
+		.returning();
+	return updated;
+}
+
+async function createExecutionForStep(runId: string, step: AgentPlanStep) {
+	const [execution] = await db
+		.insert(aiToolExecutions)
+		.values({
+			executionId: step.id,
+			runId,
+			toolName: step.toolName,
+			parameters: step.parameters,
+			requiresApproval: step.requiresApproval,
+			status: step.requiresApproval ? "pending" : "approved",
+			startedAt: undefined,
+		})
+		.returning();
+	if (!execution) {
+		throw new TRPCError({
+			code: "INTERNAL_SERVER_ERROR",
+			message: "Failed to create tool execution",
+		});
+	}
+	return execution;
+}
+
+function isTerminalRunStatus(status: AiRunDbStatus) {
+	return (
+		status === "completed" || status === "failed" || status === "cancelled"
+	);
+}
+
+export async function orchestrateRun(
+	runId: string,
+	ctx: ToolContext,
+	options: { abortSignal?: AbortSignal } = {},
+): Promise<OrchestratorOutcome> {
+	initializeTools();
+
+	const run = await db.query.aiRuns.findFirst({
+		where: eq(aiRuns.runId, runId),
+		with: { toolExecutions: true },
+	});
+	if (!run) {
+		throw new TRPCError({ code: "NOT_FOUND", message: "Run not found" });
+	}
+
+	const currentStatus = run.status as AiRunDbStatus;
+	if (isTerminalRunStatus(currentStatus)) {
+		return {
+			state: mapRunStatusToState(currentStatus),
+			runId,
+		} as OrchestratorOutcome;
+	}
+
+	const plan = run.plan as AgentPlan | null | undefined;
+	if (!plan?.steps || plan.steps.length === 0) {
+		await updateRun(runId, {
+			status: "failed",
+			error: "Run plan is missing or empty",
+			completedAt: nowIso(),
+		});
+		return { state: "FAILED", runId, error: "Run plan is missing or empty" };
+	}
+
+	if (options.abortSignal?.aborted) {
+		await updateRun(runId, { status: "cancelled", completedAt: nowIso() });
+		return { state: "CANCELLED", runId };
+	}
+
+	const startStatus: AiRunDbStatus =
+		currentStatus === "pending" ? "planning" : currentStatus;
+
+	if (startStatus !== currentStatus) {
+		assertValidTransition(currentStatus, startStatus);
+		await updateRun(runId, { status: startStatus });
+	}
+
+	if (startStatus === "planning" || startStatus === "waiting_approval") {
+		assertValidTransition(startStatus, "executing");
+		await updateRun(runId, {
+			status: "executing",
+			startedAt: run.startedAt || nowIso(),
+		});
+	}
+
+	const executionsById = new Map<string, (typeof run.toolExecutions)[number]>();
+	for (const exec of run.toolExecutions || []) {
+		executionsById.set(exec.executionId, exec);
+	}
+
+	for (const step of plan.steps) {
+		if (options.abortSignal?.aborted) {
+			await updateRun(runId, { status: "cancelled", completedAt: nowIso() });
+			return { state: "CANCELLED", runId };
+		}
+
+		if (!step.id || !step.toolName) {
+			await updateRun(runId, {
+				status: "failed",
+				error: "Invalid plan step: missing id or toolName",
+				completedAt: nowIso(),
+			});
+			return {
+				state: "FAILED",
+				runId,
+				error: "Invalid plan step: missing id or toolName",
+			};
+		}
+
+		let exec = executionsById.get(step.id);
+		if (!exec) {
+			exec = await createExecutionForStep(runId, step);
+			executionsById.set(exec.executionId, exec);
+		}
+
+		const execStatus = exec.status as AiToolExecutionDbStatus;
+
+		if (execStatus === "pending") {
+			assertValidTransition("executing", "waiting_approval");
+			await updateRun(runId, { status: "waiting_approval" });
+			return {
+				state: "WAIT_APPROVAL",
+				runId,
+				executionId: exec.executionId,
+				toolName: exec.toolName,
+			};
+		}
+
+		if (execStatus === "rejected") {
+			await updateRun(runId, {
+				status: "cancelled",
+				error: `Execution rejected: ${exec.executionId}`,
+				completedAt: nowIso(),
+			});
+			return { state: "CANCELLED", runId };
+		}
+
+		if (execStatus === "failed") {
+			await updateRun(runId, {
+				status: "failed",
+				error: exec.error || `Execution failed: ${exec.executionId}`,
+				completedAt: nowIso(),
+			});
+			return {
+				state: "FAILED",
+				runId,
+				error: exec.error || `Execution failed: ${exec.executionId}`,
+			};
+		}
+
+		if (execStatus === "completed") {
+			continue;
+		}
+
+		if (execStatus === "executing") {
+			return { state: "EXECUTING", runId };
+		}
+
+		if (execStatus === "approved") {
+			await updateExecution(exec.executionId, {
+				status: "executing",
+				startedAt: exec.startedAt || nowIso(),
+			});
+
+			let result: ToolResult;
+			try {
+				result = (await toolRegistry.execute(
+					exec.toolName,
+					exec.parameters || {},
+					ctx,
+				)) as ToolResult;
+			} catch (error) {
+				const errorMessage =
+					error instanceof Error ? error.message : String(error);
+				await updateExecution(exec.executionId, {
+					status: "failed",
+					error: errorMessage,
+					completedAt: nowIso(),
+				});
+				await updateRun(runId, {
+					status: "failed",
+					error: errorMessage,
+					completedAt: nowIso(),
+				});
+				return { state: "FAILED", runId, error: errorMessage };
+			}
+
+			if (result.success) {
+				await updateExecution(exec.executionId, {
+					status: "completed",
+					result,
+					completedAt: nowIso(),
+				});
+				continue;
+			}
+
+			await updateExecution(exec.executionId, {
+				status: "failed",
+				result,
+				error: result.error || result.message,
+				completedAt: nowIso(),
+			});
+			await updateRun(runId, {
+				status: "failed",
+				error: result.error || result.message,
+				completedAt: nowIso(),
+			});
+			return {
+				state: "FAILED",
+				runId,
+				error: result.error || result.message || "Tool execution failed",
+			};
+		}
+	}
+
+	assertValidTransition("executing", "verifying");
+	await updateRun(runId, { status: "verifying" });
+
+	const verifyingRun = await db.query.aiRuns.findFirst({
+		where: eq(aiRuns.runId, runId),
+	});
+	if (verifyingRun?.status === "cancelled") {
+		return { state: "CANCELLED", runId };
+	}
+	if (verifyingRun) {
+		assertValidTransition("verifying", "completed");
+		await updateRun(runId, {
+			status: "completed",
+			result: {
+				success: true,
+				summary: `Completed ${plan.steps.length} step(s)`,
+			},
+			completedAt: nowIso(),
+		});
+	}
+
+	return { state: "COMPLETED", runId };
+}
+
+export async function cancelRun(runId: string): Promise<void> {
+	const run = await db.query.aiRuns.findFirst({
+		where: eq(aiRuns.runId, runId),
+	});
+	if (!run) {
+		throw new TRPCError({ code: "NOT_FOUND", message: "Run not found" });
+	}
+
+	const currentStatus = run.status as AiRunDbStatus;
+	if (isTerminalRunStatus(currentStatus)) {
+		return;
+	}
+
+	await updateRun(runId, {
+		status: "cancelled",
+		completedAt: nowIso(),
+	});
+}
+
+export async function approveExecution(executionId: string): Promise<void> {
+	const execution = await db.query.aiToolExecutions.findFirst({
+		where: eq(aiToolExecutions.executionId, executionId),
+	});
+	if (!execution) {
+		throw new TRPCError({ code: "NOT_FOUND", message: "Execution not found" });
+	}
+
+	if (execution.status !== "pending") {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: `Cannot approve execution in status: ${execution.status}`,
+		});
+	}
+
+	await updateExecution(executionId, {
+		status: "approved",
+	});
+}
+
+export async function rejectExecution(executionId: string): Promise<void> {
+	const execution = await db.query.aiToolExecutions.findFirst({
+		where: eq(aiToolExecutions.executionId, executionId),
+	});
+	if (!execution) {
+		throw new TRPCError({ code: "NOT_FOUND", message: "Execution not found" });
+	}
+
+	if (execution.status !== "pending") {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: `Cannot reject execution in status: ${execution.status}`,
+		});
+	}
+
+	await updateExecution(executionId, {
+		status: "rejected",
+		completedAt: nowIso(),
+	});
+}
+
+export async function getRunStatus(runId: string): Promise<{
+	state: AgentOrchestratorState;
+	run: Awaited<ReturnType<typeof db.query.aiRuns.findFirst>>;
+}> {
+	const run = await db.query.aiRuns.findFirst({
+		where: eq(aiRuns.runId, runId),
+		with: { toolExecutions: true },
+	});
+	if (!run) {
+		throw new TRPCError({ code: "NOT_FOUND", message: "Run not found" });
+	}
+
+	return {
+		state: mapRunStatusToState(run.status as AiRunDbStatus),
+		run,
+	};
+}

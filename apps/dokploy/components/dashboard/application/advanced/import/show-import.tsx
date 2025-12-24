@@ -171,9 +171,7 @@ export const ShowImport = ({ composeId }: Props) => {
 										</FormLabel>
 										<FormControl>
 											<Textarea
-												placeholder={t(
-													"importTemplate.form.base64Placeholder",
-												)}
+												placeholder={t("importTemplate.form.base64Placeholder")}
 												className="font-mono min-h-[200px]"
 												{...field}
 											/>
@@ -200,9 +198,7 @@ export const ShowImport = ({ composeId }: Props) => {
 											{t("importTemplate.dialog.previewTitle")}
 										</DialogTitle>
 										<DialogDescription className="space-y-2">
-											<p>
-												{t("importTemplate.dialog.previewDescription")}
-											</p>
+											<p>{t("importTemplate.dialog.previewDescription")}</p>
 											<AlertBlock type="warning">
 												{t("importTemplate.alert.importWarning")}
 											</AlertBlock>
@@ -248,16 +244,19 @@ export const ShowImport = ({ composeId }: Props) => {
 																	</div>
 																	<div className="text-sm text-muted-foreground space-y-1">
 																		<div>
-																			{t("importTemplate.fields.port")}: {domain.port}
+																			{t("importTemplate.fields.port")}:{" "}
+																			{domain.port}
 																		</div>
 																		{domain.host && (
 																			<div>
-																				{t("importTemplate.fields.host")}: {domain.host}
+																				{t("importTemplate.fields.host")}:{" "}
+																				{domain.host}
 																			</div>
 																		)}
 																		{domain.path && (
 																			<div>
-																				{t("importTemplate.fields.path")}: {domain.path}
+																				{t("importTemplate.fields.path")}:{" "}
+																				{domain.path}
 																			</div>
 																		)}
 																	</div>

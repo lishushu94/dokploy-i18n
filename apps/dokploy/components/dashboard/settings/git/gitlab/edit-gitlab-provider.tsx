@@ -90,15 +90,13 @@ export const EditGitlabProvider = ({ gitlabId }: Props) => {
 			.then(async () => {
 				await utils.gitProvider.getAll.invalidate();
 				toast.success(
-								t("settings.gitProviders.gitlab.edit.toast.updatedSuccess"),
-						);
+					t("settings.gitProviders.gitlab.edit.toast.updatedSuccess"),
+				);
 				setIsOpen(false);
 				refetch();
 			})
 			.catch(() => {
-				toast.error(
-								t("settings.gitProviders.gitlab.edit.toast.updatedError"),
-						);
+				toast.error(t("settings.gitProviders.gitlab.edit.toast.updatedError"));
 			});
 	};
 
@@ -116,7 +114,8 @@ export const EditGitlabProvider = ({ gitlabId }: Props) => {
 			<DialogContent className="sm:max-w-2xl ">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						{t("settings.gitProviders.gitlab.edit.title")} <GitlabIcon className="size-5" />
+						{t("settings.gitProviders.gitlab.edit.title")}{" "}
+						<GitlabIcon className="size-5" />
 					</DialogTitle>
 				</DialogHeader>
 
@@ -139,7 +138,9 @@ export const EditGitlabProvider = ({ gitlabId }: Props) => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("settings.gitProviders.gitlab.edit.namePlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.edit.namePlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -157,7 +158,9 @@ export const EditGitlabProvider = ({ gitlabId }: Props) => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("settings.gitProviders.gitlab.edit.gitlabUrlPlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.edit.gitlabUrlPlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -176,7 +179,9 @@ export const EditGitlabProvider = ({ gitlabId }: Props) => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													placeholder={t("settings.gitProviders.gitlab.edit.groupNamePlaceholder")}
+													placeholder={t(
+														"settings.gitProviders.gitlab.edit.groupNamePlaceholder",
+													)}
 													{...field}
 												/>
 											</FormControl>
@@ -197,16 +202,22 @@ export const EditGitlabProvider = ({ gitlabId }: Props) => {
 											})
 												.then(async (message) => {
 													toast.info(
-														t("settings.gitProviders.gitlab.edit.toast.testSuccessMessage", {
-															message,
-														}),
+														t(
+															"settings.gitProviders.gitlab.edit.toast.testSuccessMessage",
+															{
+																message,
+															},
+														),
 													);
 												})
 												.catch((error: any) => {
 													toast.error(
-														t("settings.gitProviders.gitlab.edit.toast.testErrorMessage", {
-															error: error.message,
-														}),
+														t(
+															"settings.gitProviders.gitlab.edit.toast.testErrorMessage",
+															{
+																error: error.message,
+															},
+														),
 													);
 												});
 										}}

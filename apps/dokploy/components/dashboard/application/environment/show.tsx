@@ -164,7 +164,9 @@ export const ShowEnvironment = ({ applicationId }: Props) => {
 									.
 								</span>
 							}
-							placeholder={t("application.environment.placeholder.buildSecrets")}
+							placeholder={t(
+								"application.environment.placeholder.buildSecrets",
+							)}
 						/>
 					)}
 					<div className="flex flex-row justify-end gap-2">

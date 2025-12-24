@@ -61,16 +61,14 @@ export const createColumns = (
 					</div>
 					<div className="flex flex-row gap-3 w-full">
 						<Badge variant={getStatusColor(log.OriginStatus)}>
-							{t("requests.columns.statusLabel")}:{" "}
-							{log.OriginStatus}
+							{t("requests.columns.statusLabel")}: {log.OriginStatus}
 						</Badge>
 						<Badge variant={"secondary"}>
 							{t("requests.columns.execTimeLabel")}:{" "}
 							{`${log.Duration / 1000000000}s`}
 						</Badge>
 						<Badge variant={"secondary"}>
-							{t("requests.columns.ipLabel")}:{" "}
-							{log.ClientAddr}
+							{t("requests.columns.ipLabel")}: {log.ClientAddr}
 						</Badge>
 					</div>
 				</div>

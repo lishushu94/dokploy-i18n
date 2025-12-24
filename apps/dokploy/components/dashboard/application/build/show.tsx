@@ -43,41 +43,43 @@ const buildTypeDisplayMap: Record<BuildType, string> = {
 
 const createSchema = (t: (key: string) => string) =>
 	z.discriminatedUnion("buildType", [
-	z.object({
-		buildType: z.literal(BuildType.dockerfile),
-		dockerfile: z
-			.string({
-				required_error: t("application.build.validation.dockerfilePathRequired"),
-				invalid_type_error: t(
-					"application.build.validation.dockerfilePathRequired",
-				),
-			})
-			.min(1, {
-				message: t("application.build.validation.dockerfileRequired"),
-			}),
-		dockerContextPath: z.string().nullable().default(""),
-		dockerBuildStage: z.string().nullable().default(""),
-	}),
-	z.object({
-		buildType: z.literal(BuildType.heroku_buildpacks),
-		herokuVersion: z.string().nullable().default(""),
-	}),
-	z.object({
-		buildType: z.literal(BuildType.paketo_buildpacks),
-	}),
-	z.object({
-		buildType: z.literal(BuildType.nixpacks),
-		publishDirectory: z.string().optional(),
-	}),
-	z.object({
-		buildType: z.literal(BuildType.railpack),
-		railpackVersion: z.string().nullable().default("0.2.2"),
-	}),
-	z.object({
-		buildType: z.literal(BuildType.static),
-		isStaticSpa: z.boolean().default(false),
-	}),
-]);
+		z.object({
+			buildType: z.literal(BuildType.dockerfile),
+			dockerfile: z
+				.string({
+					required_error: t(
+						"application.build.validation.dockerfilePathRequired",
+					),
+					invalid_type_error: t(
+						"application.build.validation.dockerfilePathRequired",
+					),
+				})
+				.min(1, {
+					message: t("application.build.validation.dockerfileRequired"),
+				}),
+			dockerContextPath: z.string().nullable().default(""),
+			dockerBuildStage: z.string().nullable().default(""),
+		}),
+		z.object({
+			buildType: z.literal(BuildType.heroku_buildpacks),
+			herokuVersion: z.string().nullable().default(""),
+		}),
+		z.object({
+			buildType: z.literal(BuildType.paketo_buildpacks),
+		}),
+		z.object({
+			buildType: z.literal(BuildType.nixpacks),
+			publishDirectory: z.string().optional(),
+		}),
+		z.object({
+			buildType: z.literal(BuildType.railpack),
+			railpackVersion: z.string().nullable().default("0.2.2"),
+		}),
+		z.object({
+			buildType: z.literal(BuildType.static),
+			isStaticSpa: z.boolean().default(false),
+		}),
+	]);
 
 type AddTemplate = z.infer<ReturnType<typeof createSchema>>;
 

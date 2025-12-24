@@ -30,9 +30,7 @@ export default Page;
 
 Page.getLayout = (page: ReactElement) => {
 	return (
-		<DashboardLayout metaName="settings.profile.title">
-			{page}
-		</DashboardLayout>
+		<DashboardLayout metaName="settings.profile.title">{page}</DashboardLayout>
 	);
 };
 export async function getServerSideProps(

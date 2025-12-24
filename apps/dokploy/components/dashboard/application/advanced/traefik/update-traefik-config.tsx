@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
 import { parse, stringify, YAMLParseError } from "yaml";
 import { z } from "zod";
@@ -91,8 +91,7 @@ export const UpdateTraefikConfig = ({ applicationId }: Props) => {
 		if (!valid) {
 			form.setError("traefikConfig", {
 				type: "manual",
-				message:
-					(error as string) || t("traefik.config.error.invalidYaml"),
+				message: (error as string) || t("traefik.config.error.invalidYaml"),
 			});
 			return;
 		}
@@ -129,9 +128,7 @@ export const UpdateTraefikConfig = ({ applicationId }: Props) => {
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-4xl">
 				<DialogHeader>
-					<DialogTitle>
-						{t("traefik.config.dialog.updateTitle")}
-					</DialogTitle>
+					<DialogTitle>{t("traefik.config.dialog.updateTitle")}</DialogTitle>
 					<DialogDescription>
 						{t("traefik.config.dialog.updateDescription")}
 					</DialogDescription>
@@ -150,9 +147,7 @@ export const UpdateTraefikConfig = ({ applicationId }: Props) => {
 								name="traefikConfig"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>
-											{t("traefik.config.label")}
-										</FormLabel>
+										<FormLabel>{t("traefik.config.label")}</FormLabel>
 										<FormControl>
 											<CodeEditor
 												lineWrapping

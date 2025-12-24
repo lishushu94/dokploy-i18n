@@ -81,6 +81,28 @@ export const settingsRouter = createTRPCRouter({
 		await reloadDockerResource("dokploy");
 		return true;
 	}),
+	getUpdateTagsUrl: protectedProcedure.query(async ({ ctx }) => {
+		if (IS_CLOUD) {
+			return null;
+		}
+		const user = await findUserById(ctx.user.id);
+		return user.updateTagsUrl ?? null;
+	}),
+	setUpdateTagsUrl: protectedProcedure
+		.input(
+			z.object({
+				tagsUrl: z.string().trim().url().nullable(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			if (IS_CLOUD) {
+				return true;
+			}
+			await updateUser(ctx.user.id, {
+				updateTagsUrl: input.tagsUrl,
+			});
+			return true;
+		}),
 	cleanRedis: adminProcedure.mutation(async () => {
 		if (IS_CLOUD) {
 			return true;
@@ -379,12 +401,12 @@ export const settingsRouter = createTRPCRouter({
 		}),
 	getUpdateData: protectedProcedure
 		.input(z.object({ tagsUrl: z.string().nullish() }).optional())
-		.mutation(async ({ input }) => {
+		.mutation(async ({ input, ctx }) => {
 			if (IS_CLOUD) {
 				return DEFAULT_UPDATE_DATA;
 			}
-
-			return await getUpdateData(input?.tagsUrl);
+			const user = await findUserById(ctx.user.id);
+			return await getUpdateData(input?.tagsUrl ?? user.updateTagsUrl);
 		}),
 	updateServer: adminProcedure.mutation(async () => {
 		if (IS_CLOUD) {
@@ -585,8 +607,18 @@ export const settingsRouter = createTRPCRouter({
 	haveTraefikDashboardPortEnabled: adminProcedure
 		.input(apiServerSchema)
 		.query(async ({ input }) => {
-			const ports = await readPorts("dokploy-traefik", input?.serverId);
-			return ports.some((port) => port.targetPort === 8080);
+			try {
+				const ports = await readPorts("dokploy-traefik", input?.serverId);
+				return ports.some((port) => port.targetPort === 8080);
+			} catch (error) {
+				if (
+					error instanceof Error &&
+					error.message === "Resource type not found"
+				) {
+					return false;
+				}
+				throw error;
+			}
 		}),
 
 	readStatsLogs: protectedProcedure
@@ -834,8 +866,18 @@ export const settingsRouter = createTRPCRouter({
 	getTraefikPorts: adminProcedure
 		.input(apiServerSchema)
 		.query(async ({ input }) => {
-			const ports = await readPorts("dokploy-traefik", input?.serverId);
-			return ports;
+			try {
+				const ports = await readPorts("dokploy-traefik", input?.serverId);
+				return ports;
+			} catch (error) {
+				if (
+					error instanceof Error &&
+					error.message === "Resource type not found"
+				) {
+					return [];
+				}
+				throw error;
+			}
 		}),
 	updateLogCleanup: protectedProcedure
 		.input(

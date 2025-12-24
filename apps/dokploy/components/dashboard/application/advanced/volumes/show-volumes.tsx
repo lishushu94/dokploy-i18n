@@ -4,13 +4,7 @@ import { toast } from "sonner";
 import { AlertBlock } from "@/components/shared/alert-block";
 import { DialogAction } from "@/components/shared/dialog-action";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/utils/api";
 import type { ServiceType } from "../show-resources";
 import { AddVolumes } from "./add-volumes";
@@ -45,9 +39,7 @@ export const ShowVolumes = ({ id, type }: Props) => {
 		<Card className="bg-background">
 			<CardHeader className="flex flex-row justify-between flex-wrap gap-4">
 				<div>
-					<CardTitle className="text-xl">
-						{t("volumes.card.title")}
-					</CardTitle>
+					<CardTitle className="text-xl">{t("volumes.card.title")}</CardTitle>
 				</div>
 
 				{data && data?.mounts.length > 0 && (
