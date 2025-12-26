@@ -62,6 +62,7 @@ export const sendDatabaseBackupNotifications = async ({
 					type,
 					errorMessage,
 					date: date.toLocaleString(),
+					notificationName: notification.name,
 				});
 				const template = await renderAsync(
 					DatabaseBackupEmail({
@@ -71,6 +72,7 @@ export const sendDatabaseBackupNotifications = async ({
 						type,
 						errorMessage,
 						date: date.toLocaleString(),
+						notificationName: notification.name,
 					}),
 				).catch();
 				await sendEmailNotification(email, emailContent.subject, template);

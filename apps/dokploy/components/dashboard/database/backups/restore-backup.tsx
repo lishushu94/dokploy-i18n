@@ -613,10 +613,18 @@ export const RestoreBackup = ({
 													/>
 												</SelectTrigger>
 												<SelectContent>
-													<SelectItem value="postgres">PostgreSQL</SelectItem>
-													<SelectItem value="mariadb">MariaDB</SelectItem>
-													<SelectItem value="mongo">MongoDB</SelectItem>
-													<SelectItem value="mysql">MySQL</SelectItem>
+													<SelectItem value="postgres">
+														{t("service.type.postgres")}
+													</SelectItem>
+													<SelectItem value="mariadb">
+														{t("service.type.mariadb")}
+													</SelectItem>
+													<SelectItem value="mongo">
+														{t("service.type.mongo")}
+													</SelectItem>
+													<SelectItem value="mysql">
+														{t("service.type.mysql")}
+													</SelectItem>
 												</SelectContent>
 											</Select>
 											<FormMessage />

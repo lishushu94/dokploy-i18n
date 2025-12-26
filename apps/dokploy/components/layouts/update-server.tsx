@@ -15,7 +15,7 @@ import {
 const AUTO_CHECK_UPDATES_INTERVAL_MINUTES = 7;
 
 export const UpdateServerButton = () => {
-	const { t } = useTranslation("settings");
+	const { t, ready } = useTranslation("settings");
 	const [updateData, setUpdateData] = useState<IUpdateData>({
 		latestVersion: null,
 		updateAvailable: false,
@@ -76,6 +76,11 @@ export const UpdateServerButton = () => {
 	}, [getUpdateData, isCloud]);
 
 	if (isCloud || !updateData.updateAvailable) {
+		return null;
+	}
+
+	// 等待 I18N 资源加载完成，避免显示键值
+	if (!ready) {
 		return null;
 	}
 

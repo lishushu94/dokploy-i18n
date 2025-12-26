@@ -753,6 +753,9 @@ importers:
       ssh2:
         specifier: 1.15.0
         version: 1.15.0
+      stripe:
+        specifier: 17.2.0
+        version: 17.2.0
       toml:
         specifier: 3.0.0
         version: 3.0.0

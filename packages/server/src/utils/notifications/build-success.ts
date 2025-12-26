@@ -65,6 +65,7 @@ export const sendBuildSuccessNotifications = async ({
 					buildLink,
 					date: date.toLocaleString(),
 					environmentName,
+					notificationName: notification.name,
 				});
 				const template = await renderAsync(
 					BuildSuccessEmail({
@@ -74,6 +75,7 @@ export const sendBuildSuccessNotifications = async ({
 						buildLink,
 						date: date.toLocaleString(),
 						environmentName,
+						notificationName: notification.name,
 					}),
 				).catch();
 				await sendEmailNotification(email, emailContent.subject, template);

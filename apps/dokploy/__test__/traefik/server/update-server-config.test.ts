@@ -67,6 +67,7 @@ const baseAdmin: User = {
 	image: "",
 	updatedAt: new Date(),
 	twoFactorEnabled: false,
+	updateTagsUrl: "",
 };
 
 beforeEach(() => {

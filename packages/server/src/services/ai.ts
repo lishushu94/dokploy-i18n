@@ -16,11 +16,19 @@ import {
 	streamText,
 	tool,
 } from "ai";
-import { and, desc, eq, lt } from "drizzle-orm";
+import { and, desc, eq, inArray, lt } from "drizzle-orm";
+import { nanoid } from "nanoid";
 import { z } from "zod";
 import { IS_CLOUD } from "../constants";
 import { findOrganizationById } from "./admin";
-import { initializeTools, type ToolContext, toolRegistry } from "./ai-tools";
+import { orchestrateRun } from "./ai/agent/orchestrator";
+import {
+	initializeTools,
+	type Tool,
+	type ToolContext,
+	toolRegistry,
+} from "./ai-tools";
+import { selectRelevantTools } from "./ai-tools/selector";
 import { findServerById } from "./server";
 
 type ToolPromptInfo = {
@@ -29,6 +37,79 @@ type ToolPromptInfo = {
 	riskLevel: string;
 	requiresApproval: boolean;
 };
+
+const RISK_RANK = {
+	low: 1,
+	medium: 2,
+	high: 3,
+} as const;
+
+const TOOL_SEARCH_DOMAINS = [
+	"database",
+	"project",
+	"server",
+	"application",
+	"domain",
+	"certificate",
+	"proxy",
+	"backup",
+	"mount",
+	"registry",
+	"ssh",
+	"cluster",
+	"rollback",
+	"schedule",
+	"security",
+	"git",
+	"user",
+	"settings",
+	"billing",
+	"logs",
+	"deploy",
+	"common",
+] as const;
+
+const TOOL_SEARCH_DOMAIN_CATEGORY_HINTS: Record<string, string[]> = {
+	database: ["database", "postgres", "mysql", "mariadb", "mongo", "redis"],
+	project: ["project", "environment"],
+	server: ["server"],
+	application: ["application", "compose"],
+	domain: ["domain"],
+	certificate: ["certificate", "server"],
+	proxy: ["server", "settings"],
+	backup: ["backup"],
+	mount: ["server"],
+	registry: ["deployment"],
+	ssh: ["server"],
+	cluster: ["server"],
+	rollback: ["deployment"],
+	schedule: ["server"],
+	security: ["server"],
+	git: ["github", "application", "compose"],
+	user: ["user"],
+	settings: ["settings"],
+	billing: ["stripe"],
+	logs: ["deployment", "server"],
+	deploy: ["deployment", "application", "compose"],
+};
+
+function normalizeRiskLevel(value: unknown): string {
+	return typeof value === "string" ? value.toLowerCase() : "high";
+}
+
+function getRiskRank(value: unknown): number {
+	const normalized = normalizeRiskLevel(value);
+	switch (normalized) {
+		case "low":
+			return RISK_RANK.low;
+		case "medium":
+			return RISK_RANK.medium;
+		case "high":
+			return RISK_RANK.high;
+		default:
+			return RISK_RANK.high;
+	}
+}
 
 function getZodTypeLabel(schema: z.ZodTypeAny): string {
 	const typeName = (schema as unknown as { _def?: { typeName?: string } })._def
@@ -114,6 +195,13 @@ function describeZodParameters(schema: z.ZodTypeAny): string {
 
 function buildMetaToolPromptInfo(): ToolPromptInfo[] {
 	return [
+		{
+			name: "tool_suggest",
+			description:
+				"Suggest a small set of likely relevant tools for the user's request. Use this first when you need a shortlist; fall back to tool_search if needed.",
+			riskLevel: "low",
+			requiresApproval: false,
+		},
 		{
 			name: "tool_search",
 			description:
@@ -201,33 +289,425 @@ function tokenizeToolSearchQuery(query: string): string[] {
 	return Array.from(new Set(tokens));
 }
 
-function searchToolCatalog(params: { query: string; limit?: number }): {
+function deriveDefaultToolTags(t: {
+	name: string;
+	category: string;
+}): string[] {
+	const parts = t.name.split(/[_-]/g).filter(Boolean);
+	const isNonEmptyString = (v: unknown): v is string =>
+		typeof v === "string" && v.trim().length > 0;
+	return Array.from(new Set([t.category, ...parts].filter(isNonEmptyString)));
+}
+
+function deriveToolSearchTerms(t: {
+	name: string;
+	description: string;
+	category: string;
+	aliases?: string[];
+	tags?: string[];
+}): string[] {
+	const derivedTags = deriveDefaultToolTags({
+		name: t.name,
+		category: t.category,
+	});
+	const nameParts = t.name.split(/[_-]/g).filter(Boolean);
+	const actionSynonyms: Record<string, string[]> = {
+		create: ["create", "add", "new"],
+		add: ["create", "add", "new"],
+		new: ["create", "add", "new"],
+		update: ["update", "edit", "set"],
+		edit: ["update", "edit", "set"],
+		set: ["update", "edit", "set"],
+		delete: ["delete", "remove", "destroy"],
+		remove: ["delete", "remove", "destroy"],
+		destroy: ["delete", "remove", "destroy"],
+		list: ["list", "get", "show", "all"],
+		get: ["list", "get", "show", "all"],
+		show: ["list", "get", "show", "all"],
+		all: ["list", "get", "show", "all"],
+		info: ["info", "detail", "inspect"],
+		detail: ["info", "detail", "inspect"],
+		inspect: ["info", "detail", "inspect"],
+	};
+	const actionTerms = nameParts.flatMap((p) => actionSynonyms[p] ?? []);
+	return Array.from(
+		new Set(
+			[
+				...(t.aliases ?? []),
+				...(t.tags ?? []),
+				...derivedTags,
+				...nameParts,
+				...actionTerms,
+			].filter(Boolean),
+		),
+	);
+}
+
+type ToolSearchIndexItem = {
+	t: ReturnType<typeof toolRegistry.getAll>[number];
+	nameLower: string;
+	extraTermsLower: string[];
+	hayLower: string;
+};
+
+let toolSearchIndexCache:
+	| {
+			revision: number;
+			items: ToolSearchIndexItem[];
+	  }
+	| undefined;
+
+function getToolSearchIndex(): ToolSearchIndexItem[] {
+	const revision = toolRegistry.getRevision();
+	if (toolSearchIndexCache?.revision === revision) {
+		return toolSearchIndexCache.items;
+	}
+
+	const all = toolRegistry.getAll();
+
+	const items: ToolSearchIndexItem[] = all.map((t) => {
+		const extraTerms = deriveToolSearchTerms(t);
+		return {
+			t,
+			nameLower: t.name.toLowerCase(),
+			extraTermsLower: extraTerms.map((x) => x.toLowerCase()),
+			hayLower:
+				`${t.name} ${t.description} ${t.category} ${extraTerms.join(" ")}`.toLowerCase(),
+		};
+	});
+
+	toolSearchIndexCache = { revision, items };
+	return items;
+}
+
+type ToolDescribeData = {
+	name: string;
+	description: string;
+	category: string;
+	riskLevel: string;
+	requiresApproval: boolean;
+	aliases: string[];
+	tags: string[];
+	confirmLiterals: string[];
+	exampleParams: Record<string, unknown>;
+	exampleToolCall: {
+		toolName: string;
+		params: Record<string, unknown>;
+	};
+	parameters: string;
+};
+
+let toolDescribeCache:
+	| {
+			revision: number;
+			items: Map<string, ToolDescribeData>;
+	  }
+	| undefined;
+
+function getToolDescribeData(t: Tool): ToolDescribeData {
+	const revision = toolRegistry.getRevision();
+	if (!toolDescribeCache || toolDescribeCache.revision !== revision) {
+		toolDescribeCache = { revision, items: new Map() };
+	}
+
+	const cached = toolDescribeCache.items.get(t.name);
+	if (cached) {
+		return {
+			...cached,
+			aliases: [...cached.aliases],
+			tags: [...cached.tags],
+			confirmLiterals: [...cached.confirmLiterals],
+			exampleParams: { ...cached.exampleParams },
+			exampleToolCall: {
+				...cached.exampleToolCall,
+				params: { ...cached.exampleToolCall.params },
+			},
+		};
+	}
+
+	const tags = t.tags && t.tags.length > 0 ? t.tags : deriveDefaultToolTags(t);
+	const confirmLiterals = extractConfirmLiterals(t.parameters);
+	const exampleParams = buildExampleParams(t.parameters);
+	const data: ToolDescribeData = {
+		name: t.name,
+		description: t.description,
+		category: t.category,
+		riskLevel: t.riskLevel,
+		requiresApproval: t.requiresApproval,
+		aliases: t.aliases ?? [],
+		tags,
+		confirmLiterals,
+		exampleParams,
+		exampleToolCall: {
+			toolName: t.name,
+			params: { ...exampleParams },
+		},
+		parameters: describeZodParameters(t.parameters),
+	};
+
+	toolDescribeCache.items.set(t.name, data);
+	return {
+		...data,
+		aliases: [...data.aliases],
+		tags: [...data.tags],
+		confirmLiterals: [...data.confirmLiterals],
+		exampleParams: { ...data.exampleParams },
+		exampleToolCall: {
+			...data.exampleToolCall,
+			params: { ...data.exampleToolCall.params },
+		},
+	};
+}
+
+function inferToolSearchDomains(query: string): string[] {
+	const tokens = tokenizeToolSearchQuery(query);
+	const domainSet = new Set<string>();
+	for (const d of TOOL_SEARCH_DOMAINS) {
+		if (tokens.includes(d)) domainSet.add(d);
+	}
+	return Array.from(domainSet);
+}
+
+function extractLiteralStringOptions(schema: z.ZodTypeAny): string[] {
+	const unwrapped = unwrapZodSchema(schema).schema;
+
+	if (unwrapped instanceof z.ZodLiteral) {
+		const v = unwrapped._def.value;
+		return typeof v === "string" ? [v] : [];
+	}
+	if (unwrapped instanceof z.ZodEnum) {
+		return Array.isArray(unwrapped._def.values)
+			? (unwrapped._def.values as unknown[]).filter(
+					(v): v is string => typeof v === "string",
+				)
+			: [];
+	}
+	if (unwrapped instanceof z.ZodNativeEnum) {
+		const values = Object.values(
+			(unwrapped._def.values ?? {}) as Record<string, unknown>,
+		);
+		return values.filter((v): v is string => typeof v === "string");
+	}
+	if (unwrapped instanceof z.ZodUnion) {
+		return Array.from(
+			new Set(
+				(unwrapped._def.options as z.ZodTypeAny[]).flatMap((opt) =>
+					extractLiteralStringOptions(opt),
+				),
+			),
+		);
+	}
+	if (unwrapped instanceof z.ZodIntersection) {
+		return Array.from(
+			new Set([
+				...extractLiteralStringOptions(unwrapped._def.left),
+				...extractLiteralStringOptions(unwrapped._def.right),
+			]),
+		);
+	}
+
+	return [];
+}
+
+function extractConfirmLiterals(schema: z.ZodTypeAny): string[] {
+	const unwrapped = unwrapZodSchema(schema).schema;
+	if (!(unwrapped instanceof z.ZodObject)) return [];
+
+	const rawShape =
+		typeof (unwrapped._def as unknown as { shape?: unknown }).shape ===
+		"function"
+			? (
+					unwrapped._def as unknown as {
+						shape: () => Record<string, z.ZodTypeAny>;
+					}
+				).shape()
+			: (unwrapped as unknown as { shape: Record<string, z.ZodTypeAny> }).shape;
+
+	const keys = Object.keys(rawShape || {});
+	const confirmKeys = keys
+		.filter((k) => k.toLowerCase().includes("confirm"))
+		.sort((a, b) => (a === "confirm" ? -1 : 0) - (b === "confirm" ? -1 : 0));
+
+	const collected = confirmKeys.flatMap((key) =>
+		extractLiteralStringOptions(rawShape[key] as z.ZodTypeAny),
+	);
+	return Array.from(new Set(collected));
+}
+
+function buildExampleParams(schema: z.ZodTypeAny): Record<string, unknown> {
+	const unwrapped = unwrapZodSchema(schema).schema;
+	if (!(unwrapped instanceof z.ZodObject)) return {};
+
+	const rawShape =
+		typeof (unwrapped._def as unknown as { shape?: unknown }).shape ===
+		"function"
+			? (
+					unwrapped._def as unknown as {
+						shape: () => Record<string, z.ZodTypeAny>;
+					}
+				).shape()
+			: (unwrapped as unknown as { shape: Record<string, z.ZodTypeAny> }).shape;
+
+	const out: Record<string, unknown> = {};
+	for (const [key, field] of Object.entries(rawShape ?? {})) {
+		const { schema: fieldSchema, flags } = unwrapZodSchema(
+			field as z.ZodTypeAny,
+		);
+		const required = !flags.optional && !flags.hasDefault;
+		if (!required) continue;
+
+		if (key.toLowerCase().includes("confirm")) {
+			const options = extractLiteralStringOptions(fieldSchema);
+			out[key] = options[0] ?? "<confirm>";
+			continue;
+		}
+
+		const typeLabel = getZodTypeLabel(fieldSchema);
+		if (typeLabel.includes("string")) out[key] = "<string>";
+		else if (typeLabel.includes("number")) out[key] = 1;
+		else if (typeLabel.includes("boolean")) out[key] = true;
+		else if (typeLabel.includes("enum")) {
+			const opts = extractLiteralStringOptions(fieldSchema);
+			out[key] = opts[0] ?? "<value>";
+		} else if (typeLabel.includes("array")) out[key] = [];
+		else if (typeLabel.includes("object")) out[key] = {};
+		else out[key] = "<value>";
+	}
+
+	return out;
+}
+
+function buildUnknownToolSuggestionResult(toolName: string): {
+	success: false;
+	message: string;
+	error: string;
+	data: {
+		query: string;
+		suggestions: Array<{
+			name: string;
+			description: string;
+			category: string;
+			riskLevel: string;
+			requiresApproval: boolean;
+		}>;
+		nextCall?: {
+			toolName: string;
+			params: Record<string, unknown>;
+			confirmLiterals: string[];
+		};
+	};
+} {
+	const normalized = toolName.trim();
+	const searched = searchToolCatalog({ query: normalized, limit: 5 });
+	return {
+		success: false,
+		message: `Tool "${normalized}" not found`,
+		error: `Unknown tool: ${normalized}`,
+		data: {
+			query: normalized,
+			suggestions: searched.data.map((t) => ({
+				name: t.name,
+				description: t.description,
+				category: t.category,
+				riskLevel: t.riskLevel,
+				requiresApproval: t.requiresApproval,
+			})),
+			nextCall: searched.meta.nextCall,
+		},
+	};
+}
+
+function searchToolCatalog(params: {
+	query: string;
+	limit?: number;
+	domain?: (typeof TOOL_SEARCH_DOMAINS)[number];
+	category?: string;
+	riskLevelMax?: "low" | "medium" | "high";
+	requiresApproval?: boolean;
+}): {
 	success: boolean;
 	message: string;
+	meta: {
+		query: string;
+		matchedDomains: string[];
+		nextCall?: {
+			toolName: string;
+			params: Record<string, unknown>;
+			confirmLiterals: string[];
+		};
+		appliedFilters: {
+			domain?: (typeof TOOL_SEARCH_DOMAINS)[number];
+			category?: string;
+			riskLevelMax?: "low" | "medium" | "high";
+			requiresApproval?: boolean;
+		};
+	};
 	data: Array<{
 		name: string;
 		description: string;
 		category: string;
 		riskLevel: string;
 		requiresApproval: boolean;
+		aliases?: string[];
+		tags?: string[];
 	}>;
 } {
 	const all = toolRegistry.getAll();
+	const index = getToolSearchIndex();
 	const tokens = tokenizeToolSearchQuery(params.query);
+	const tokensLower = tokens.map((t) => t.toLowerCase());
+	const matchedDomains = inferToolSearchDomains(params.query);
+	const hintedCategories = Array.from(
+		new Set(
+			matchedDomains.flatMap((d) => TOOL_SEARCH_DOMAIN_CATEGORY_HINTS[d] ?? []),
+		),
+	);
+	const requestedDomain =
+		typeof params.domain === "string" ? params.domain : undefined;
+	const requestedDomainCategories =
+		requestedDomain && TOOL_SEARCH_DOMAIN_CATEGORY_HINTS[requestedDomain]
+			? TOOL_SEARCH_DOMAIN_CATEGORY_HINTS[requestedDomain]
+			: [];
+	const hintedCategorySet = new Set([
+		...hintedCategories,
+		...requestedDomainCategories,
+	]);
+	const riskLevelMaxRank =
+		typeof params.riskLevelMax === "string"
+			? getRiskRank(params.riskLevelMax)
+			: undefined;
+	const normalizedCategory =
+		typeof params.category === "string" && params.category.trim().length > 0
+			? params.category.trim()
+			: undefined;
 
-	const scored = all
-		.map((t) => {
-			const hay = `${t.name} ${t.description} ${t.category}`.toLowerCase();
-			let score = 0;
-			for (const tok of tokens) {
-				if (t.name.toLowerCase().includes(tok)) score += 6;
-				if (hay.includes(tok)) score += 3;
-			}
-			if (t.riskLevel === "low") score += 1;
-			return { t, score };
-		})
-		.filter((x) => x.score > 0)
-		.sort((a, b) => b.score - a.score || a.t.name.localeCompare(b.t.name));
+	const scored: Array<{ t: (typeof all)[number]; score: number }> = [];
+	for (const x of index) {
+		const t = x.t;
+		if (requestedDomain && requestedDomainCategories.length > 0) {
+			if (!requestedDomainCategories.includes(t.category)) continue;
+		}
+		if (normalizedCategory && t.category !== normalizedCategory) continue;
+		if (typeof params.requiresApproval === "boolean") {
+			if (t.requiresApproval !== params.requiresApproval) continue;
+		}
+		if (typeof riskLevelMaxRank === "number") {
+			if (getRiskRank(t.riskLevel) > riskLevelMaxRank) continue;
+		}
+
+		let score = 0;
+		for (const tTok of tokensLower) {
+			if (x.nameLower.includes(tTok)) score += 6;
+			if (x.extraTermsLower.some((term) => term.includes(tTok))) score += 5;
+			if (x.hayLower.includes(tTok)) score += 3;
+		}
+		if (hintedCategorySet.size > 0 && hintedCategorySet.has(t.category)) {
+			score += 2;
+		}
+		if (t.riskLevel === "low") score += 1;
+		if (score > 0) scored.push({ t, score });
+	}
+	scored.sort((a, b) => b.score - a.score || a.t.name.localeCompare(b.t.name));
 
 	const limit = params.limit ?? 12;
 	const picked =
@@ -235,6 +715,10 @@ function searchToolCatalog(params: { query: string; limit?: number }): {
 			? scored.slice(0, limit).map((x) => x.t)
 			: all
 					.filter((t) => t.riskLevel === "low" && !t.requiresApproval)
+					.filter((t) => {
+						if (hintedCategorySet.size === 0) return true;
+						return hintedCategorySet.has(t.category);
+					})
 					.sort((a, b) => a.name.localeCompare(b.name))
 					.slice(0, limit);
 
@@ -243,15 +727,37 @@ function searchToolCatalog(params: { query: string; limit?: number }): {
 			? `Found ${picked.length} tool(s) matching "${params.query}"`
 			: `No direct matches for "${params.query}". Returning ${picked.length} safe tool(s) to help you explore.`;
 
+	const bestTool = scored.length > 0 ? scored[0]?.t : undefined;
+	const nextCall = bestTool
+		? {
+				toolName: bestTool.name,
+				params: buildExampleParams(bestTool.parameters),
+				confirmLiterals: extractConfirmLiterals(bestTool.parameters),
+			}
+		: undefined;
+
 	return {
 		success: true,
 		message,
+		meta: {
+			query: params.query,
+			matchedDomains,
+			nextCall,
+			appliedFilters: {
+				domain: params.domain,
+				category: normalizedCategory,
+				riskLevelMax: params.riskLevelMax,
+				requiresApproval: params.requiresApproval,
+			},
+		},
 		data: picked.map((t) => ({
 			name: t.name,
 			description: t.description,
 			category: t.category,
 			riskLevel: t.riskLevel,
 			requiresApproval: t.requiresApproval,
+			aliases: t.aliases ?? [],
+			tags: t.tags && t.tags.length > 0 ? t.tags : deriveDefaultToolTags(t),
 		})),
 	};
 }
@@ -569,6 +1075,47 @@ export const getConversationById = async (conversationId: string) => {
 	return conversation;
 };
 
+export const getConversationIdForToolExecution = async (
+	executionId: string,
+): Promise<string | null> => {
+	const normalizedExecutionId = executionId.trim();
+	if (normalizedExecutionId.length === 0) return null;
+
+	const execution = await db.query.aiToolExecutions.findFirst({
+		where: eq(aiToolExecutions.executionId, normalizedExecutionId),
+		columns: {
+			conversationId: true,
+			messageId: true,
+			runId: true,
+		},
+	});
+
+	if (!execution) return null;
+	if (execution.conversationId) return execution.conversationId;
+
+	if (execution.messageId) {
+		const message = await db.query.aiMessages.findFirst({
+			where: eq(aiMessages.messageId, execution.messageId),
+			columns: {
+				conversationId: true,
+			},
+		});
+		return message?.conversationId ?? null;
+	}
+
+	if (execution.runId) {
+		const run = await db.query.aiRuns.findFirst({
+			where: eq(aiRuns.runId, execution.runId),
+			columns: {
+				conversationId: true,
+			},
+		});
+		return run?.conversationId ?? null;
+	}
+
+	return null;
+};
+
 export const listConversations = async (params: {
 	organizationId: string;
 	userId: string;
@@ -722,6 +1269,7 @@ export const saveMessage = async (params: {
 	toolCalls?: Array<{
 		id: string;
 		type: "function";
+		executionId?: string;
 		function: { name: string; arguments: string };
 	}>;
 	toolCallId?: string;
@@ -956,7 +1504,7 @@ export const chat = async ({
 	const messages: CoreMessage[] = history
 		.map((msg) => {
 			if (msg.role === "tool") return null;
-			const content = (msg.content ?? "").trim();
+			const content = (msg.content || "").trim();
 			if (content.length > 0) {
 				return {
 					role: msg.role as "user" | "assistant" | "system",
@@ -996,6 +1544,46 @@ export const chat = async ({
 	};
 
 	const tools: Record<string, any> = {
+		tool_suggest: tool({
+			description:
+				"Suggest likely relevant tools for a request. Returns a short list; use tool_search if the list is empty or insufficient.",
+			inputSchema: z.object({
+				query: z
+					.string()
+					.min(1)
+					.describe("The user's request (natural language)"),
+				limit: z
+					.number()
+					.min(1)
+					.max(30)
+					.optional()
+					.default(15)
+					.describe("Max number of tools to return"),
+			}),
+			execute: async (params: { query: string; limit?: number }) => {
+				const limit = params.limit ?? 15;
+				const selected = selectRelevantTools(params.query, {
+					projectId: toolContext.projectId,
+					serverId: toolContext.serverId,
+					minTools: 0,
+					maxTools: limit,
+				});
+				return {
+					success: true,
+					message:
+						selected.length > 0
+							? `Suggested ${selected.length} tool(s) for "${params.query}"`
+							: `No direct suggestions for "${params.query}". Use tool_search to explore the full catalog.`,
+					data: selected.map((t) => ({
+						name: t.name,
+						description: t.description,
+						category: t.category,
+						riskLevel: t.riskLevel,
+						requiresApproval: t.requiresApproval,
+					})),
+				};
+			},
+		}),
 		tool_search: tool({
 			description:
 				"Search the full tool catalog and return matching tool names and summaries.",
@@ -1011,8 +1599,32 @@ export const chat = async ({
 					.optional()
 					.default(12)
 					.describe("Max number of tools to return"),
+				domain: z
+					.enum(TOOL_SEARCH_DOMAINS)
+					.optional()
+					.describe("Optional domain filter"),
+				category: z
+					.string()
+					.min(1)
+					.optional()
+					.describe("Optional tool category filter"),
+				riskLevelMax: z
+					.enum(["low", "medium", "high"])
+					.optional()
+					.describe("Optional max risk level filter"),
+				requiresApproval: z
+					.boolean()
+					.optional()
+					.describe("Optional approval requirement filter"),
 			}),
-			execute: async (params: { query: string; limit?: number }) => {
+			execute: async (params: {
+				query: string;
+				limit?: number;
+				domain?: (typeof TOOL_SEARCH_DOMAINS)[number];
+				category?: string;
+				riskLevelMax?: "low" | "medium" | "high";
+				requiresApproval?: boolean;
+			}) => {
 				return searchToolCatalog(params);
 			},
 		}),
@@ -1028,23 +1640,13 @@ export const chat = async ({
 			execute: async (params: { toolName: string }) => {
 				const t = toolRegistry.get(params.toolName);
 				if (!t) {
-					return {
-						success: false,
-						message: `Tool "${params.toolName}" not found`,
-						error: `Unknown tool: ${params.toolName}`,
-					};
+					return buildUnknownToolSuggestionResult(params.toolName);
 				}
+				const data = getToolDescribeData(t);
 				return {
 					success: true,
 					message: `Tool "${t.name}" description retrieved`,
-					data: {
-						name: t.name,
-						description: t.description,
-						category: t.category,
-						riskLevel: t.riskLevel,
-						requiresApproval: t.requiresApproval,
-						parameters: describeZodParameters(t.parameters),
-					},
+					data,
 				};
 			},
 		}),
@@ -1062,48 +1664,71 @@ export const chat = async ({
 			execute: async (params: { toolName: string; params?: unknown }) => {
 				const t = toolRegistry.get(params.toolName);
 				if (!t) {
+					return buildUnknownToolSuggestionResult(params.toolName);
+				}
+
+				const rawParams = (params.params ?? {}) as Record<string, unknown>;
+				const validation = t.parameters.safeParse(rawParams);
+				if (!validation.success) {
 					return {
 						success: false,
-						message: `Tool "${params.toolName}" not found`,
-						error: `Unknown tool: ${params.toolName}`,
+						message: "Invalid parameters",
+						error: validation.error.message,
+						data: {
+							toolName: t.name,
+							confirmLiterals: extractConfirmLiterals(t.parameters),
+							exampleParams: buildExampleParams(t.parameters),
+						},
 					};
 				}
 
+				const validatedParams = validation.data as unknown as Record<
+					string,
+					unknown
+				>;
+
 				const execution = await createToolExecution({
+					conversationId,
 					messageId: undefined,
 					toolName: t.name,
-					parameters: (params.params ?? {}) as Record<string, unknown>,
+					parameters: validatedParams,
 					requiresApproval: t.requiresApproval,
 				});
 
 				if (t.requiresApproval) {
 					return {
+						success: true,
 						status: "pending_approval",
 						executionId: execution.executionId,
 						toolName: t.name,
 						message: `This action requires approval. Tool: ${t.name}`,
+						data: {
+							executionId: execution.executionId,
+							toolName: t.name,
+							confirmLiterals: extractConfirmLiterals(t.parameters),
+							exampleParams: buildExampleParams(t.parameters),
+						},
 					};
 				}
 
 				try {
-					await updateToolExecution(execution.executionId, {
-						status: "executing",
-						startedAt: new Date().toISOString(),
-					});
+					const result = await t.execute(validation.data as never, toolContext);
 
-					const result = await toolRegistry.execute(
-						t.name,
-						(params.params ?? {}) as Record<string, unknown>,
-						toolContext,
-					);
-
-					await updateToolExecution(execution.executionId, {
-						status: "completed",
-						result: result,
+					const completionUpdate: Record<string, unknown> = {
+						status: result.success ? "completed" : "failed",
+						result,
 						completedAt: new Date().toISOString(),
-					});
+					};
+					if (!result.success) {
+						completionUpdate.error = result.error || result.message;
+					}
+					await updateToolExecution(execution.executionId, completionUpdate);
 
-					return { invokedTool: t.name, ...(result as object) };
+					return {
+						executionId: execution.executionId,
+						invokedTool: t.name,
+						...(result as object),
+					};
 				} catch (error) {
 					const errorMessage =
 						error instanceof Error ? error.message : String(error);
@@ -1113,6 +1738,7 @@ export const chat = async ({
 						completedAt: new Date().toISOString(),
 					});
 					return {
+						executionId: execution.executionId,
 						success: false,
 						message: "Tool execution failed",
 						error: errorMessage,
@@ -1184,22 +1810,72 @@ export const chat = async ({
 	}
 
 	// Save assistant response
+	const executionIdByToolCallId = new Map<string, string>();
+	if (Array.isArray(result.toolResults)) {
+		for (const tr of result.toolResults as unknown[]) {
+			if (!tr || typeof tr !== "object") continue;
+			const resultValue = (tr as { result?: unknown }).result;
+			if (resultValue && typeof resultValue === "object") {
+				const executionId = (resultValue as { executionId?: unknown })
+					.executionId;
+				const nestedExecutionId =
+					(resultValue as { data?: unknown }).data &&
+					typeof (resultValue as { data?: unknown }).data === "object"
+						? ((resultValue as { data?: { executionId?: unknown } }).data
+								?.executionId as unknown)
+						: undefined;
+				const picked =
+					typeof executionId === "string"
+						? executionId
+						: typeof nestedExecutionId === "string"
+							? nestedExecutionId
+							: "";
+				if (picked.trim().length > 0) {
+					const toolCallId =
+						(tr as { toolCallId?: unknown }).toolCallId ??
+						(tr as { id?: unknown }).id;
+					if (typeof toolCallId === "string" && toolCallId.trim().length > 0) {
+						executionIdByToolCallId.set(toolCallId, picked.trim());
+					}
+				}
+			}
+		}
+	}
+
+	const toolCallsToPersist = (result.toolCalls ?? [])
+		.filter((tc) => tc.toolName === "tool_call")
+		.map((tc) => {
+			const rawArgs =
+				(tc as unknown as { args?: unknown; input?: unknown }).args ??
+				(tc as unknown as { args?: unknown; input?: unknown }).input ??
+				{};
+			const toolName =
+				rawArgs &&
+				typeof rawArgs === "object" &&
+				"toolName" in (rawArgs as any) &&
+				typeof (rawArgs as any).toolName === "string"
+					? String((rawArgs as any).toolName)
+					: tc.toolName;
+			const toolParams =
+				rawArgs && typeof rawArgs === "object" && "params" in (rawArgs as any)
+					? (rawArgs as any).params
+					: rawArgs;
+			return {
+				id: tc.toolCallId,
+				type: "function" as const,
+				executionId: executionIdByToolCallId.get(tc.toolCallId),
+				function: {
+					name: toolName,
+					arguments: JSON.stringify(toolParams ?? {}),
+				},
+			};
+		});
+
 	const assistantMessage = await saveMessage({
 		conversationId,
 		role: "assistant",
 		content: finalText,
-		toolCalls: result.toolCalls?.map((tc) => ({
-			id: tc.toolCallId,
-			type: "function" as const,
-			function: {
-				name: tc.toolName,
-				arguments: JSON.stringify(
-					(tc as unknown as { args?: unknown; input?: unknown }).args ??
-						(tc as unknown as { args?: unknown; input?: unknown }).input ??
-						{},
-				),
-			},
-		})),
+		toolCalls: toolCallsToPersist.length > 0 ? toolCallsToPersist : undefined,
 		promptTokens: result.usage?.inputTokens,
 		completionTokens: result.usage?.outputTokens,
 	});
@@ -1331,6 +2007,46 @@ export const chatStream = async (
 	};
 
 	const tools: Record<string, any> = {
+		tool_suggest: tool({
+			description:
+				"Suggest likely relevant tools for a request. Returns a short list; use tool_search if the list is empty or insufficient.",
+			inputSchema: z.object({
+				query: z
+					.string()
+					.min(1)
+					.describe("The user's request (natural language)"),
+				limit: z
+					.number()
+					.min(1)
+					.max(30)
+					.optional()
+					.default(15)
+					.describe("Max number of tools to return"),
+			}),
+			execute: async (params: { query: string; limit?: number }) => {
+				const limit = params.limit ?? 15;
+				const selected = selectRelevantTools(params.query, {
+					projectId: toolContext.projectId,
+					serverId: toolContext.serverId,
+					minTools: 0,
+					maxTools: limit,
+				});
+				return {
+					success: true,
+					message:
+						selected.length > 0
+							? `Suggested ${selected.length} tool(s) for "${params.query}"`
+							: `No direct suggestions for "${params.query}". Use tool_search to explore the full catalog.`,
+					data: selected.map((t) => ({
+						name: t.name,
+						description: t.description,
+						category: t.category,
+						riskLevel: t.riskLevel,
+						requiresApproval: t.requiresApproval,
+					})),
+				};
+			},
+		}),
 		tool_search: tool({
 			description:
 				"Search the full tool catalog and return matching tool names and summaries.",
@@ -1346,8 +2062,32 @@ export const chatStream = async (
 					.optional()
 					.default(12)
 					.describe("Max number of tools to return"),
+				domain: z
+					.enum(TOOL_SEARCH_DOMAINS)
+					.optional()
+					.describe("Optional domain filter"),
+				category: z
+					.string()
+					.min(1)
+					.optional()
+					.describe("Optional tool category filter"),
+				riskLevelMax: z
+					.enum(["low", "medium", "high"])
+					.optional()
+					.describe("Optional max risk level filter"),
+				requiresApproval: z
+					.boolean()
+					.optional()
+					.describe("Optional approval requirement filter"),
 			}),
-			execute: async (params: { query: string; limit?: number }) => {
+			execute: async (params: {
+				query: string;
+				limit?: number;
+				domain?: (typeof TOOL_SEARCH_DOMAINS)[number];
+				category?: string;
+				riskLevelMax?: "low" | "medium" | "high";
+				requiresApproval?: boolean;
+			}) => {
 				return searchToolCatalog(params);
 			},
 		}),
@@ -1363,23 +2103,13 @@ export const chatStream = async (
 			execute: async (params: { toolName: string }) => {
 				const t = toolRegistry.get(params.toolName);
 				if (!t) {
-					return {
-						success: false,
-						message: `Tool "${params.toolName}" not found`,
-						error: `Unknown tool: ${params.toolName}`,
-					};
+					return buildUnknownToolSuggestionResult(params.toolName);
 				}
+				const data = getToolDescribeData(t);
 				return {
 					success: true,
 					message: `Tool "${t.name}" description retrieved`,
-					data: {
-						name: t.name,
-						description: t.description,
-						category: t.category,
-						riskLevel: t.riskLevel,
-						requiresApproval: t.requiresApproval,
-						parameters: describeZodParameters(t.parameters),
-					},
+					data,
 				};
 			},
 		}),
@@ -1397,48 +2127,71 @@ export const chatStream = async (
 			execute: async (params: { toolName: string; params?: unknown }) => {
 				const t = toolRegistry.get(params.toolName);
 				if (!t) {
+					return buildUnknownToolSuggestionResult(params.toolName);
+				}
+
+				const rawParams = (params.params ?? {}) as Record<string, unknown>;
+				const validation = t.parameters.safeParse(rawParams);
+				if (!validation.success) {
 					return {
 						success: false,
-						message: `Tool "${params.toolName}" not found`,
-						error: `Unknown tool: ${params.toolName}`,
+						message: "Invalid parameters",
+						error: validation.error.message,
+						data: {
+							toolName: t.name,
+							confirmLiterals: extractConfirmLiterals(t.parameters),
+							exampleParams: buildExampleParams(t.parameters),
+						},
 					};
 				}
 
+				const validatedParams = validation.data as unknown as Record<
+					string,
+					unknown
+				>;
+
 				const execution = await createToolExecution({
+					conversationId,
 					messageId: undefined,
 					toolName: t.name,
-					parameters: (params.params ?? {}) as Record<string, unknown>,
+					parameters: validatedParams,
 					requiresApproval: t.requiresApproval,
 				});
 
 				if (t.requiresApproval) {
 					return {
+						success: true,
 						status: "pending_approval",
 						executionId: execution.executionId,
 						toolName: t.name,
 						message: `This action requires approval. Tool: ${t.name}`,
+						data: {
+							executionId: execution.executionId,
+							toolName: t.name,
+							confirmLiterals: extractConfirmLiterals(t.parameters),
+							exampleParams: buildExampleParams(t.parameters),
+						},
 					};
 				}
 
 				try {
-					await updateToolExecution(execution.executionId, {
-						status: "executing",
-						startedAt: new Date().toISOString(),
-					});
+					const result = await t.execute(validation.data as never, toolContext);
 
-					const result = await toolRegistry.execute(
-						t.name,
-						(params.params ?? {}) as Record<string, unknown>,
-						toolContext,
-					);
-
-					await updateToolExecution(execution.executionId, {
-						status: "completed",
-						result: result,
+					const completionUpdate: Record<string, unknown> = {
+						status: result.success ? "completed" : "failed",
+						result,
 						completedAt: new Date().toISOString(),
-					});
+					};
+					if (!result.success) {
+						completionUpdate.error = result.error || result.message;
+					}
+					await updateToolExecution(execution.executionId, completionUpdate);
 
-					return { invokedTool: t.name, ...(result as object) };
+					return {
+						executionId: execution.executionId,
+						invokedTool: t.name,
+						...(result as object),
+					};
 				} catch (error) {
 					const errorMessage =
 						error instanceof Error ? error.message : String(error);
@@ -1448,6 +2201,7 @@ export const chatStream = async (
 						completedAt: new Date().toISOString(),
 					});
 					return {
+						executionId: execution.executionId,
 						success: false,
 						message: "Tool execution failed",
 						error: errorMessage,
@@ -1474,6 +2228,7 @@ export const chatStream = async (
 			type: "function";
 			function: { name: string; arguments: string };
 		}> = [];
+		const toolNameByToolCallId = new Map<string, string>();
 		let usage: { promptTokens?: number; completionTokens?: number } = {};
 		const toolResults: Array<{
 			toolCallId: string;
@@ -1499,33 +2254,59 @@ export const chatStream = async (
 				} else if (chunk.type === "tool-call") {
 					hasAnyOutput = true;
 					const args = (chunk as { input: unknown }).input;
+					const normalizedToolName = (() => {
+						if (chunk.toolName !== "tool_call") return chunk.toolName;
+						if (!args || typeof args !== "object" || Array.isArray(args)) {
+							return chunk.toolName;
+						}
+						const value = (args as { toolName?: unknown }).toolName;
+						return typeof value === "string" && value.trim().length > 0
+							? value.trim()
+							: chunk.toolName;
+					})();
+					const normalizedArgs = (() => {
+						if (chunk.toolName !== "tool_call") return args ?? {};
+						if (!args || typeof args !== "object" || Array.isArray(args)) {
+							return args ?? {};
+						}
+						const value = (args as { params?: unknown }).params;
+						return value ?? {};
+					})();
+					toolNameByToolCallId.set(chunk.toolCallId, normalizedToolName);
 					toolCalls.push({
 						id: chunk.toolCallId,
 						type: "function",
 						function: {
-							name: chunk.toolName,
-							arguments: JSON.stringify(args ?? {}),
+							name: normalizedToolName,
+							arguments: JSON.stringify(normalizedArgs ?? {}),
 						},
 					});
 					try {
-						options.onToolCall?.(chunk.toolCallId, chunk.toolName, args ?? {});
+						options.onToolCall?.(
+							chunk.toolCallId,
+							normalizedToolName,
+							normalizedArgs ?? {},
+						);
 					} catch {
 						// Ignore callback errors
 					}
 				} else if (chunk.type === "tool-result") {
 					hasAnyOutput = true;
+					const normalizedToolName =
+						toolNameByToolCallId.get(chunk.toolCallId) ?? chunk.toolName;
 					const toolResult =
 						(chunk as unknown as { result?: unknown }).result ??
-						(chunk as unknown as { output?: unknown }).output;
+						(chunk as unknown as { output?: unknown }).output ??
+						chunk;
 					toolResults.push({
 						toolCallId: chunk.toolCallId,
-						toolName: chunk.toolName,
+						toolName: normalizedToolName,
 						result: toolResult,
 					});
 					try {
 						options.onToolResult?.(
 							chunk.toolCallId,
-							chunk.toolName,
+							normalizedToolName,
 							toolResult,
 						);
 					} catch {
@@ -1613,11 +2394,43 @@ export const chatStream = async (
 		}
 	}
 
+	const executionIdByToolCallId = new Map<string, string>();
+	for (const tr of streamed.toolResults) {
+		if (!tr || typeof tr !== "object") continue;
+		const resultValue = (tr as { result?: unknown }).result;
+		if (resultValue && typeof resultValue === "object") {
+			const executionId = (resultValue as { executionId?: unknown })
+				.executionId;
+			const nestedExecutionId =
+				(resultValue as { data?: unknown }).data &&
+				typeof (resultValue as { data?: unknown }).data === "object"
+					? ((resultValue as { data?: { executionId?: unknown } }).data
+							?.executionId as unknown)
+					: undefined;
+			const picked =
+				typeof executionId === "string"
+					? executionId
+					: typeof nestedExecutionId === "string"
+						? nestedExecutionId
+						: "";
+			if (picked.trim().length > 0) {
+				executionIdByToolCallId.set(tr.toolCallId, picked.trim());
+			}
+		}
+	}
+
+	const toolCallsToPersist = streamed.toolCalls
+		.map((tc) => ({
+			...tc,
+			executionId: executionIdByToolCallId.get(tc.id),
+		}))
+		.filter((tc) => tc.function.name !== "tool_call");
+
 	const assistantMessage = await saveMessage({
 		conversationId,
 		role: "assistant",
 		content: streamed.fullText,
-		toolCalls: streamed.toolCalls.length > 0 ? streamed.toolCalls : undefined,
+		toolCalls: toolCallsToPersist.length > 0 ? toolCallsToPersist : undefined,
 		promptTokens: streamed.usage.promptTokens,
 		completionTokens: streamed.usage.completionTokens,
 	});
@@ -1688,22 +2501,11 @@ function buildSystemPrompt(
 		)
 		.join("\n");
 
-	return `You are Dokploy AI Assistant, an expert DevOps assistant for the Dokploy PaaS platform.
-
-You help users manage their applications, databases, and infrastructure through natural language.
-You have access to tools that can execute real operations on the platform.
-
-Current Context:${context || " General conversation"}
-
-Conversation Memory Summary:${memorySummary ? `\n${memorySummary}` : " (none)"}
-
-Available Tools (selected for this request):
-${toolList}
-
-Guidelines:
+	const guidelines = `Guidelines:
 - Be concise and helpful
 - You can access ALL platform capabilities through a tool catalog.
 - Workflow:
+  - Use tool_suggest to get a quick shortlist of likely relevant tools.
   - Use tool_search to find the best tool(s) for the user's intent.
   - Use tool_describe to see parameter hints for the chosen tool.
   - Use tool_call to execute the real tool by name.
@@ -1738,6 +2540,20 @@ Guidelines:
   - If user wants to deploy a database, first identify the target project/environment using tools (project_list/project_find, environment_list/environment_find).
   - If the user asks for PostgreSQL 17, prefer docker image "postgres:17".
   - Only call create/deploy tools after you have the environmentId and the user has explicitly confirmed the exact action.`;
+
+	return `You are Dokploy AI Assistant, an expert DevOps assistant for the Dokploy PaaS platform.
+
+You help users manage their applications, databases, and infrastructure through natural language.
+You have access to tools that can execute real operations on the platform.
+
+Current Context:${context || " General conversation"}
+
+Conversation Memory Summary:${memorySummary ? `\n${memorySummary}` : " (none)"}
+
+Available Tools (selected for this request):
+${toolList}
+
+${guidelines}`;
 }
 
 // ============================================
@@ -1817,11 +2633,167 @@ export const cancelRun = async (runId: string) => {
 	});
 };
 
+const saveAgentEventMessage = async (params: {
+	conversationId: string;
+	payload: Record<string, unknown>;
+}) => {
+	await db.insert(aiMessages).values({
+		conversationId: params.conversationId,
+		role: "system",
+		content: JSON.stringify(params.payload),
+	});
+};
+
+export const startAgentRun = async (params: {
+	conversationId: string;
+	goal: string;
+	aiId: string;
+	organizationId: string;
+	userId: string;
+}) => {
+	const aiSetting = await getAiSettingById(params.aiId);
+	if (aiSetting.organizationId !== params.organizationId) {
+		throw new TRPCError({
+			code: "UNAUTHORIZED",
+			message: "You don't have access to this AI configuration",
+		});
+	}
+
+	const conversation = await getConversationById(params.conversationId);
+	if (conversation.organizationId !== params.organizationId) {
+		throw new TRPCError({
+			code: "UNAUTHORIZED",
+			message: "You don't have access to this conversation",
+		});
+	}
+
+	initializeTools();
+	const picked = searchToolCatalog({ query: params.goal, limit: 1 });
+	const nextCall = picked.meta.nextCall;
+	if (!nextCall) {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: `Unable to derive an initial plan for goal: ${params.goal}`,
+		});
+	}
+
+	const tool = toolRegistry.get(nextCall.toolName);
+	if (!tool) {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: `Planned tool not found: ${nextCall.toolName}`,
+		});
+	}
+
+	const run = await createRun({
+		conversationId: params.conversationId,
+		goal: params.goal,
+	});
+	if (!run) {
+		throw new TRPCError({
+			code: "INTERNAL_SERVER_ERROR",
+			message: "Failed to create run",
+		});
+	}
+
+	const stepId = nanoid();
+	const plan = {
+		steps: [
+			{
+				id: stepId,
+				toolName: tool.name,
+				description: `Execute ${tool.name} for goal: ${params.goal}`,
+				parameters: nextCall.params,
+				requiresApproval: tool.requiresApproval,
+			},
+		],
+	};
+
+	await updateRun(run.runId, { plan });
+
+	await saveAgentEventMessage({
+		conversationId: params.conversationId,
+		payload: {
+			type: "agent.run.start",
+			runId: run.runId,
+			goal: params.goal,
+		},
+	});
+	await saveAgentEventMessage({
+		conversationId: params.conversationId,
+		payload: {
+			type: "agent.plan",
+			runId: run.runId,
+			plan,
+		},
+	});
+
+	const toolContext: ToolContext = {
+		organizationId: params.organizationId,
+		userId: params.userId,
+		projectId: conversation.projectId ?? undefined,
+		serverId: conversation.serverId ?? undefined,
+	};
+
+	void (async () => {
+		try {
+			await orchestrateRun(run.runId, toolContext);
+		} catch (e) {
+			const errorMessage = e instanceof Error ? e.message : String(e);
+			await updateRun(run.runId, {
+				status: "failed",
+				error: errorMessage,
+				completedAt: new Date().toISOString(),
+			});
+			await saveAgentEventMessage({
+				conversationId: params.conversationId,
+				payload: {
+					type: "agent.run.finish",
+					runId: run.runId,
+					status: "failed",
+					error: errorMessage,
+				},
+			});
+		}
+	})();
+
+	return run;
+};
+
+export const resumeAgentRun = async (params: {
+	runId: string;
+	organizationId: string;
+	userId: string;
+}) => {
+	const run = await getRunById(params.runId);
+	const conversation = await getConversationById(run.conversationId);
+	if (conversation.organizationId !== params.organizationId) {
+		throw new TRPCError({
+			code: "UNAUTHORIZED",
+			message: "You don't have access to this run",
+		});
+	}
+
+	const toolContext: ToolContext = {
+		organizationId: params.organizationId,
+		userId: params.userId,
+		projectId: conversation.projectId ?? undefined,
+		serverId: conversation.serverId ?? undefined,
+	};
+
+	void (async () => {
+		try {
+			await orchestrateRun(params.runId, toolContext);
+		} catch {}
+	})();
+};
+
 // ============================================
 // Tool Execution Management
 // ============================================
 
 export const createToolExecution = async (params: {
+	conversationId?: string;
 	runId?: string;
 	messageId?: string;
 	toolName: string;
@@ -1833,6 +2805,9 @@ export const createToolExecution = async (params: {
 		.values({
 			...params,
 			status: params.requiresApproval ? "pending" : "executing",
+			...(params.requiresApproval
+				? {}
+				: { startedAt: new Date().toISOString() }),
 		})
 		.returning();
 	if (!execution) {
@@ -1855,6 +2830,61 @@ export const getToolExecutionById = async (executionId: string) => {
 		});
 	}
 	return execution;
+};
+
+export const getToolExecutionsByIds = async (params: {
+	executionIds: string[];
+	organizationId: string;
+}) => {
+	const ids = Array.from(
+		new Set(
+			(params.executionIds || [])
+				.map((id) => (typeof id === "string" ? id.trim() : ""))
+				.filter((id) => id.length > 0),
+		),
+	).slice(0, 50);
+
+	if (ids.length === 0) return [];
+
+	const executions = await db.query.aiToolExecutions.findMany({
+		where: inArray(aiToolExecutions.executionId, ids),
+	});
+
+	const conversationIds = Array.from(
+		new Set(
+			executions
+				.map((e) =>
+					typeof e.conversationId === "string" ? e.conversationId : "",
+				)
+				.filter((id) => id.length > 0),
+		),
+	);
+
+	if (conversationIds.length > 0) {
+		const conversations = await db.query.aiConversations.findMany({
+			where: inArray(aiConversations.conversationId, conversationIds),
+			columns: {
+				conversationId: true,
+				organizationId: true,
+			},
+		});
+		const allowedConversationIds = new Set(
+			conversations
+				.filter((c) => c.organizationId === params.organizationId)
+				.map((c) => c.conversationId),
+		);
+
+		for (const e of executions) {
+			if (e.conversationId && !allowedConversationIds.has(e.conversationId)) {
+				throw new TRPCError({
+					code: "UNAUTHORIZED",
+					message: "You don't have access to one or more tool executions",
+				});
+			}
+		}
+	}
+
+	return executions;
 };
 
 export const approveToolExecution = async (
@@ -1923,22 +2953,39 @@ export const executeApprovedTool = async (
 	initializeTools();
 	const t = toolRegistry.get(execution.toolName);
 	if (!t) {
+		const errorMessage = `Tool "${execution.toolName}" not found`;
+		await updateToolExecution(executionId, {
+			status: "failed",
+			error: errorMessage,
+			result: {
+				success: false,
+				message: errorMessage,
+				error: errorMessage,
+			},
+			completedAt: new Date().toISOString(),
+		});
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: `Tool "${execution.toolName}" not found`,
+			message: errorMessage,
 		});
 	}
 
 	const validation = t.parameters.safeParse(execution.parameters);
 	if (!validation.success) {
+		const errorMessage = validation.error.message;
 		await updateToolExecution(executionId, {
 			status: "failed",
-			error: validation.error.message,
+			error: errorMessage,
+			result: {
+				success: false,
+				message: "Invalid parameters",
+				error: errorMessage,
+			},
 			completedAt: new Date().toISOString(),
 		});
 		throw new TRPCError({
 			code: "BAD_REQUEST",
-			message: `Invalid parameters for tool "${execution.toolName}": ${validation.error.message}`,
+			message: `Invalid parameters for tool "${execution.toolName}": ${errorMessage}`,
 		});
 	}
 
@@ -1950,9 +2997,19 @@ export const executeApprovedTool = async (
 
 		const result = await t.execute(validation.data, ctx);
 
+		if (result.success) {
+			await updateToolExecution(executionId, {
+				status: "completed",
+				result,
+				completedAt: new Date().toISOString(),
+			});
+			return result;
+		}
+
 		await updateToolExecution(executionId, {
-			status: "completed",
-			result: result,
+			status: "failed",
+			result,
+			error: result.error || result.message,
 			completedAt: new Date().toISOString(),
 		});
 
@@ -1962,6 +3019,11 @@ export const executeApprovedTool = async (
 		await updateToolExecution(executionId, {
 			status: "failed",
 			error: errorMessage,
+			result: {
+				success: false,
+				message: "Tool execution failed",
+				error: errorMessage,
+			},
 			completedAt: new Date().toISOString(),
 		});
 

@@ -48,6 +48,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { api } from "@/utils/api";
+import { translateErrorMessage } from "@/utils/error-translation";
 
 const providerTypeSchema = z.enum([
 	"openai",
@@ -207,11 +208,10 @@ export const HandleAi = ({ aiId }: Props) => {
 			refetch();
 			setOpen(false);
 		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : t("settings.ai.toast.unknownError");
 			toast.error(t("settings.ai.toast.saveError"), {
-				description:
-					error instanceof Error
-						? error.message
-						: t("settings.ai.toast.unknownError"),
+				description: translateErrorMessage(errorMessage, t),
 			});
 		}
 	};

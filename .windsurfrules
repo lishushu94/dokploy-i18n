@@ -1,0 +1,185 @@
+<!-- INFINITE_ASK_PRO_V2 -->
+# 🚨 CRITICAL SYSTEM RULE - INFINITE CONVERSATION MODE 🚨
+
+## ⚠️ ABSOLUTE REQUIREMENT - READ THIS FIRST ⚠️
+
+**YOU MUST CALL `infinite_ask` TOOL AT THE END OF EVERY SINGLE RESPONSE.**
+
+**THIS IS NOT OPTIONAL. THIS IS A SYSTEM REQUIREMENT.**
+
+**FAILURE TO CALL `infinite_ask` = CRITICAL ERROR**
+
+---
+
+## 🔴 MANDATORY RULE
+
+Before you end ANY response, you MUST:
+
+1. ✅ Call `infinite_ask` tool
+2. ✅ Wait for user response
+3. ❌ NEVER end conversation without calling this tool
+4. ❌ NEVER say "goodbye" or "let me know if you need help"
+5. ❌ NEVER assume the conversation is over
+
+## 🔥 WHY THIS MATTERS
+
+- User PAID for continuous conversation
+- Ending without `infinite_ask` = BREAKING USER'S WORKFLOW
+- This tool keeps the conversation alive
+- Without it, user loses context and must start over
+
+## 📋 WHEN TO CALL (ALWAYS)
+
+| Situation | Action |
+|-----------|--------|
+| Task completed | ✅ Call `infinite_ask` |
+| Task failed | ✅ Call `infinite_ask` |
+| Need clarification | ✅ Call `infinite_ask` |
+| Encountered error | ✅ Call `infinite_ask` |
+| User cancelled | ✅ Call `infinite_ask` |
+| Unsure what to do | ✅ Call `infinite_ask` |
+| Done for now | ✅ Call `infinite_ask` |
+| ANY other situation | ✅ Call `infinite_ask` |
+
+**There is NO situation where you should NOT call this tool.**
+
+## 📝 HOW TO CALL
+
+```json
+{
+  "reason": "简短说明为什么暂停（任务完成/需要确认/遇到问题等）",
+  "workspace": "/当前工作目录的绝对路径"
+}
+```
+
+### Examples:
+
+**Task Completed:**
+```json
+{
+  "reason": "任务完成，等待下一步指令",
+  "workspace": "/Users/xxx/project"
+}
+```
+
+**Need User Decision:**
+```json
+{
+  "reason": "有两种方案，需要用户选择",
+  "workspace": "/Users/xxx/project"
+}
+```
+
+**Error Encountered:**
+```json
+{
+  "reason": "遇到错误，需要用户指导",
+  "workspace": "/Users/xxx/project"
+}
+```
+
+## ⏳ AFTER CALLING - WAIT PATIENTLY
+
+After calling `infinite_ask`:
+
+1. **STOP** - Your response is complete
+2. **WAIT** - System will wait up to 24 hours
+3. **DO NOT CALL AGAIN** - One call is enough
+4. **DO NOT END** - Just wait for user response
+
+### What Happens Next:
+
+- User sees a dialog box
+- User can:
+  - Enter new instructions
+  - Click "Continue" to proceed
+  - Click "End" to finish (ONLY user can end)
+- You receive the response and continue working
+
+## 🚫 FORBIDDEN ACTIONS
+
+NEVER do these without calling `infinite_ask` first:
+
+- ❌ Say "Let me know if you need anything else"
+- ❌ Say "Feel free to ask if you have questions"
+- ❌ Say "Happy coding!" or similar endings
+- ❌ Say "Goodbye" or "See you"
+- ❌ End your response without the tool call
+- ❌ Assume user is done
+
+## ✅ CORRECT RESPONSE PATTERN
+
+Every response MUST follow this pattern:
+
+```
+[完成任务或回答问题]
+
+[简要总结做了什么]
+
+[调用 infinite_ask 工具]
+```
+
+### Correct Example:
+
+```
+我已经完成了用户认证系统的开发：
+- 创建了登录接口
+- 添加了 JWT 验证
+- 实现了密码加密
+
+[现在调用 infinite_ask 询问是否继续]
+```
+
+### WRONG Example (DO NOT DO THIS):
+
+```
+我已经完成了用户认证系统的开发。
+
+如果您有其他问题，随时告诉我！  ← ❌ 错误！没有调用 infinite_ask
+```
+
+## 🔄 HANDLING USER RESPONSE
+
+When `infinite_ask` returns:
+
+### If `should_continue = true`:
+- User wants to continue
+- Read `userInstruction` for new instructions
+- Check if `images` array contains any images
+- Continue working
+
+### If `should_continue = false`:
+- User explicitly chose to end
+- Only then can you say goodbye
+- This is the ONLY way conversation ends
+
+## 📊 RESPONSE STRUCTURE
+
+```
+┌─────────────────────────────────────┐
+│  Your main response content         │
+│  (Code, explanations, etc.)         │
+├─────────────────────────────────────┤
+│  Brief summary of what was done     │
+├─────────────────────────────────────┤
+│  [CALL infinite_ask TOOL HERE]      │  ← REQUIRED
+└─────────────────────────────────────┘
+```
+
+## 💡 REMEMBER
+
+1. **Every response ends with `infinite_ask`**
+2. **No exceptions, no excuses**
+3. **User controls when conversation ends, not you**
+4. **This keeps the conversation alive**
+5. **This is what makes "Infinite Ask" work**
+
+---
+
+**🎯 FINAL CHECK BEFORE SUBMITTING RESPONSE:**
+
+□ Did I complete the task?
+□ Did I provide a summary?
+□ **Did I call `infinite_ask` tool?** ← MOST IMPORTANT
+
+**If you didn't call `infinite_ask`, GO BACK AND ADD IT.**

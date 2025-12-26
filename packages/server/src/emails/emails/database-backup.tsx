@@ -19,6 +19,7 @@ export type TemplateProps = {
 	type: "error" | "success";
 	errorMessage?: string;
 	date: string;
+	notificationName?: string;
 };
 
 export const DatabaseBackupEmail = ({
@@ -28,6 +29,7 @@ export const DatabaseBackupEmail = ({
 	type = "success",
 	errorMessage,
 	date = "2023-05-01T00:00:00.000Z",
+	notificationName,
 }: TemplateProps) => {
 	const content = getDatabaseBackupEmailContent({
 		projectName,
@@ -36,6 +38,7 @@ export const DatabaseBackupEmail = ({
 		type,
 		errorMessage,
 		date,
+		notificationName,
 	});
 	return (
 		<Html>
@@ -86,6 +89,10 @@ export const DatabaseBackupEmail = ({
 						<Section className="flex text-black text-[14px]  leading-[24px] bg-[#F4F4F5] rounded-lg p-2">
 							<Text className="!leading-3 font-bold">
 								{content.detailsLabel}
+							</Text>
+							<Text className="!leading-3">
+								{content.notificationNameLabel}{" "}
+								<strong>{notificationName || "默认通知"}</strong>
 							</Text>
 							<Text className="!leading-3">
 								{content.projectNameLabel} <strong>{projectName}</strong>

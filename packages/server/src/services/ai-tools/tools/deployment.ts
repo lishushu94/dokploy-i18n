@@ -96,6 +96,15 @@ const listDeployments: Tool<
 	description:
 		"List deployments for an application or compose service (most recent first).",
 	category: "deployment",
+	aliases: [
+		"deployments",
+		"deployment history",
+		"deployment status list",
+		"部署列表",
+		"部署历史",
+		"查看部署",
+	],
+	tags: ["deploy", "deployment", "history", "list", "部署", "历史", "列表"],
 	parameters: z.object({
 		applicationId: z.string().optional().describe("Application ID"),
 		composeId: z.string().optional().describe("Compose service ID"),
@@ -185,6 +194,25 @@ const getDeploymentLog: Tool<
 	description:
 		"Read deployment log with byte limit (supports local and remote). Use direction=start to read from beginning, direction=end to read from end.",
 	category: "deployment",
+	aliases: [
+		"deployment log",
+		"deploy log",
+		"build log",
+		"deploy output",
+		"部署日志",
+		"构建日志",
+		"查看日志",
+	],
+	tags: [
+		"log",
+		"logs",
+		"deploy",
+		"deployment",
+		"output",
+		"日志",
+		"部署",
+		"构建",
+	],
 	parameters: z.object({
 		deploymentId: z.string().min(1).describe("Deployment ID"),
 		direction: z
@@ -347,6 +375,26 @@ const cancelDeploymentTool: Tool<
 	description:
 		"Cancel a deployment: remove queued BullMQ jobs (waiting/delayed) and/or kill running docker build/compose processes. Provide one of deploymentId/applicationId/composeId/previewDeploymentId.",
 	category: "deployment",
+	aliases: [
+		"cancel deploy",
+		"stop deploy",
+		"abort deploy",
+		"kill deployment",
+		"取消部署",
+		"停止部署",
+		"终止部署",
+	],
+	tags: [
+		"cancel",
+		"stop",
+		"deploy",
+		"deployment",
+		"queue",
+		"取消",
+		"停止",
+		"部署",
+		"队列",
+	],
 	parameters: z.object({
 		deploymentId: z.string().optional().describe("Deployment ID"),
 		applicationId: z.string().optional().describe("Application ID"),
@@ -634,6 +682,25 @@ const retryDeploymentTool: Tool<
 	description:
 		"Retry a deployment by enqueuing a new deploy/redeploy job for the underlying application/compose/preview deployment.",
 	category: "deployment",
+	aliases: [
+		"retry deploy",
+		"redeploy",
+		"rebuild",
+		"deploy again",
+		"重新部署",
+		"重试部署",
+		"再次部署",
+	],
+	tags: [
+		"retry",
+		"redeploy",
+		"deploy",
+		"deployment",
+		"queue",
+		"重试",
+		"重新部署",
+		"部署",
+	],
 	parameters: z.object({
 		deploymentId: z.string().min(1).describe("Deployment ID to retry"),
 		type: z
@@ -776,6 +843,15 @@ const tailDeploymentLog: Tool<
 	description:
 		"Read the last N lines from a deployment log (supports local and remote servers).",
 	category: "deployment",
+	aliases: [
+		"tail deploy log",
+		"tail deployment log",
+		"follow deploy log",
+		"追踪部署日志",
+		"尾部日志",
+		"实时日志",
+	],
+	tags: ["tail", "log", "logs", "deploy", "deployment", "追踪", "日志", "部署"],
 	parameters: z.object({
 		deploymentId: z.string().min(1).describe("Deployment ID"),
 		lines: z

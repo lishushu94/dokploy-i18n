@@ -69,6 +69,26 @@ const traefikAcmeLogTail: Tool<
 	description:
 		"Tail Traefik (dokploy-traefik) logs and return ACME/challenge-related lines (read-only, truncated)",
 	category: "server",
+	aliases: [
+		"traefik acme logs",
+		"acme log",
+		"letsencrypt log",
+		"certificate renew log",
+		"ACME日志",
+		"证书续签日志",
+		"Traefik日志",
+	],
+	tags: [
+		"traefik",
+		"acme",
+		"letsencrypt",
+		"log",
+		"tls",
+		"certificate",
+		"日志",
+		"证书",
+		"续签",
+	],
 	parameters: z.object({
 		serverId: z
 			.string()
@@ -189,6 +209,14 @@ const listTraefikFiles: Tool<
 	description:
 		"List Traefik configuration directory tree (restricted to Traefik folder)",
 	category: "server",
+	aliases: [
+		"traefik files",
+		"list traefik config",
+		"traefik directory",
+		"Traefik配置文件",
+		"Traefik目录",
+	],
+	tags: ["traefik", "config", "file", "list", "配置", "文件", "目录"],
 	parameters: z.object({
 		serverId: z
 			.string()
@@ -248,6 +276,14 @@ const writeMainTraefikConfig: Tool<
 	description:
 		"Replace the main Traefik configuration file (traefik.yml). Creates a backup before overwriting.",
 	category: "server",
+	aliases: [
+		"write traefik config",
+		"update traefik.yml",
+		"edit traefik config",
+		"写入Traefik配置",
+		"修改Traefik配置",
+	],
+	tags: ["traefik", "config", "write", "update", "配置", "写入", "修改"],
 	parameters: z.object({
 		serverId: z
 			.string()
@@ -328,6 +364,15 @@ const reloadTraefik: Tool<{ serverId?: string }, { reloaded: boolean }> = {
 	description:
 		"Reload Traefik (dokploy-traefik) to apply configuration changes.",
 	category: "server",
+	aliases: [
+		"restart traefik",
+		"reload reverse proxy",
+		"apply traefik config",
+		"重载Traefik",
+		"重启Traefik",
+		"应用配置",
+	],
+	tags: ["traefik", "reload", "proxy", "重载", "重启", "代理"],
 	parameters: z.object({
 		serverId: z
 			.string()
@@ -370,6 +415,14 @@ const readTraefikConfig: Tool<
 	description:
 		"Read a Traefik config/log file content (restricted, blocks acme.json, size-limited)",
 	category: "server",
+	aliases: [
+		"read traefik config",
+		"view traefik file",
+		"cat traefik file",
+		"读取Traefik配置",
+		"查看Traefik文件",
+	],
+	tags: ["traefik", "config", "read", "file", "log", "读取", "配置", "文件"],
 	parameters: z.object({
 		serverId: z
 			.string()
@@ -470,6 +523,24 @@ const traefikAcmeStatus: Tool<
 	description:
 		"Get a redacted summary of ACME certificates from Traefik acme.json (no private keys/accounts/raw certs)",
 	category: "server",
+	aliases: [
+		"acme status",
+		"traefik certificate status",
+		"letsencrypt status",
+		"证书状态",
+		"ACME状态",
+		"续签状态",
+	],
+	tags: [
+		"traefik",
+		"acme",
+		"certificate",
+		"status",
+		"letsencrypt",
+		"证书",
+		"状态",
+		"续签",
+	],
 	parameters: z.object({
 		serverId: z
 			.string()
@@ -637,6 +708,24 @@ const traefikAcmeRetry: Tool<
 	description:
 		"Force reload Traefik (dokploy-traefik) to trigger an ACME retry (requires approval)",
 	category: "server",
+	aliases: [
+		"retry acme",
+		"force renew certificate",
+		"acme retry",
+		"重试ACME",
+		"强制续签",
+		"重试续签",
+	],
+	tags: [
+		"traefik",
+		"acme",
+		"retry",
+		"renew",
+		"certificate",
+		"重试",
+		"续签",
+		"证书",
+	],
 	parameters: z.object({
 		serverId: z
 			.string()

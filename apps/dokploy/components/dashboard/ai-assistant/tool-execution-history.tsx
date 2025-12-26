@@ -124,7 +124,15 @@ export function ToolExecutionHistory({ messages }: ToolExecutionHistoryProps) {
 										</span>
 									</div>
 									<div className="pl-8">
-										<ToolCallBlock toolCall={toolCall} status="completed" />
+										<ToolCallBlock
+											toolCall={toolCall}
+											status={
+												toolCall.status ??
+												(toolCall.executionId ? "pending" : "completed")
+											}
+											result={toolCall.result}
+											executionId={toolCall.executionId}
+										/>
 									</div>
 								</div>
 							))

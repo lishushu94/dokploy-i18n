@@ -2042,5 +2042,11 @@
     "ai.tools.historyTitle": "Tool Execution History",
     "ai.tools.historyDescription": "View the history of all tools executed by the AI in this conversation.",
     "ai.tools.searchPlaceholder": "Search tools...",
-    "ai.tools.noExecutions": "No tool executions found."
+    "ai.tools.noExecutions": "No tool executions found.",
+    "ai.agent.start": "Start Agent",
+    "ai.agent.plan": "Plan",
+    "ai.agent.step": "Step",
+    "ai.agent.result": "Result",
+    "ai.agent.finished": "Finished",
+    "ai.agent.summary": "Summary"
 }

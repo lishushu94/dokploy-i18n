@@ -45,9 +45,14 @@ export const sendDockerCleanupNotifications = async (
 				const emailContent = getDockerCleanupEmailContent({
 					message,
 					date: date.toLocaleString(),
+					notificationName: notification.name,
 				});
 				const template = await renderAsync(
-					DockerCleanupEmail({ message, date: date.toLocaleString() }),
+					DockerCleanupEmail({
+						message,
+						date: date.toLocaleString(),
+						notificationName: notification.name,
+					}),
 				).catch();
 
 				await sendEmailNotification(email, emailContent.subject, template);

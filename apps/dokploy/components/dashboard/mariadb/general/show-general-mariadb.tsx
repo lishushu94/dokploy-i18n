@@ -99,7 +99,7 @@ export const ShowGeneralMariadb = ({ mariadbId }: Props) => {
 										</TooltipTrigger>
 										<TooltipPrimitive.Portal>
 											<TooltipContent sideOffset={5} className="z-[60]">
-												<p>Downloads and sets up the MariaDB database</p>
+												<p>{t("database.common.deployTooltip", { db: "MariaDB" })}</p>
 											</TooltipContent>
 										</TooltipPrimitive.Portal>
 									</Tooltip>
@@ -134,12 +134,12 @@ export const ShowGeneralMariadb = ({ mariadbId }: Props) => {
 										<TooltipTrigger asChild>
 											<div className="flex items-center">
 												<RefreshCcw className="size-4 mr-1" />
-												Reload
+												{t("button.reload")}
 											</div>
 										</TooltipTrigger>
 										<TooltipPrimitive.Portal>
 											<TooltipContent sideOffset={5} className="z-[60]">
-												<p>Restart the MariaDB service without rebuilding</p>
+												<p>{t("database.common.reloadTooltip", { db: "MariaDB" })}</p>
 											</TooltipContent>
 										</TooltipPrimitive.Portal>
 									</Tooltip>
@@ -174,14 +174,13 @@ export const ShowGeneralMariadb = ({ mariadbId }: Props) => {
 											<TooltipTrigger asChild>
 												<div className="flex items-center">
 													<CheckCircle2 className="size-4 mr-1" />
-													Start
+													{t("button.start")}
 												</div>
 											</TooltipTrigger>
 											<TooltipPrimitive.Portal>
 												<TooltipContent sideOffset={5} className="z-[60]">
 													<p>
-														Start the MariaDB database (requires a previous
-														successful setup)
+														{t("database.common.startTooltip", { db: "MariaDB" })}
 													</p>
 												</TooltipContent>
 											</TooltipPrimitive.Portal>
@@ -216,7 +215,7 @@ export const ShowGeneralMariadb = ({ mariadbId }: Props) => {
 											<TooltipTrigger asChild>
 												<div className="flex items-center">
 													<Ban className="size-4 mr-1" />
-													Stop
+													{t("button.stop")}
 												</div>
 											</TooltipTrigger>
 											<TooltipPrimitive.Portal>
@@ -241,12 +240,12 @@ export const ShowGeneralMariadb = ({ mariadbId }: Props) => {
 									<TooltipTrigger asChild>
 										<div className="flex items-center">
 											<Terminal className="size-4 mr-1" />
-											Open Terminal
+											{t("button.openTerminal")}
 										</div>
 									</TooltipTrigger>
 									<TooltipPrimitive.Portal>
 										<TooltipContent sideOffset={5} className="z-[60]">
-											<p>Open a terminal to the MariaDB container</p>
+											<p>{t("database.common.openTerminalTooltip", { db: "MariaDB" })}</p>
 										</TooltipContent>
 									</TooltipPrimitive.Portal>
 								</Tooltip>

@@ -225,6 +225,7 @@ export const aiMessages = pgTable("ai_message", {
 			Array<{
 				id: string;
 				type: "function";
+				executionId?: string;
 				function: { name: string; arguments: string };
 			}>
 		>(),
@@ -298,6 +299,10 @@ export const aiToolExecutions = pgTable("ai_tool_execution", {
 		.notNull()
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
+	conversationId: text("conversationId").references(
+		() => aiConversations.conversationId,
+		{ onDelete: "cascade" },
+	),
 	runId: text("runId").references(() => aiRuns.runId, { onDelete: "cascade" }),
 	messageId: text("messageId").references(() => aiMessages.messageId, {
 		onDelete: "cascade",
@@ -325,6 +330,10 @@ export const aiToolExecutions = pgTable("ai_tool_execution", {
 export const aiToolExecutionsRelations = relations(
 	aiToolExecutions,
 	({ one }) => ({
+		conversation: one(aiConversations, {
+			fields: [aiToolExecutions.conversationId],
+			references: [aiConversations.conversationId],
+		}),
 		run: one(aiRuns, {
 			fields: [aiToolExecutions.runId],
 			references: [aiRuns.runId],

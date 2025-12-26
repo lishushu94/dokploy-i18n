@@ -119,6 +119,27 @@ export const TOOL_CATEGORIES: Record<string, ToolCategory> = {
 		description: "Deployment history and logs",
 		displayOrder: 16,
 	},
+	settings: {
+		id: "settings",
+		name: "Settings",
+		icon: "settings",
+		description: "Dokploy settings and maintenance operations",
+		displayOrder: 17,
+	},
+	user: {
+		id: "user",
+		name: "Users",
+		icon: "user",
+		description: "User and membership management",
+		displayOrder: 18,
+	},
+	stripe: {
+		id: "stripe",
+		name: "Billing",
+		icon: "credit-card",
+		description: "Stripe billing and subscriptions",
+		displayOrder: 19,
+	},
 };
 
 export function getCategory(categoryId: string): ToolCategory | undefined {

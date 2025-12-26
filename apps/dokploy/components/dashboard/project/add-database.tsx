@@ -144,28 +144,28 @@ const createMySchema = (t: (key: string) => string) =>
 			.merge(createBaseDatabaseSchema(t)),
 	]);
 
-const databasesMap = {
+const createDatabasesMap = (t: (key: string) => string) => ({
 	postgres: {
 		icon: <PostgresqlIcon />,
-		label: "PostgreSQL",
+		label: t("service.type.postgres"),
 	},
 	mongo: {
 		icon: <MongodbIcon />,
-		label: "MongoDB",
+		label: t("service.type.mongo"),
 	},
 	mariadb: {
 		icon: <MariadbIcon />,
-		label: "MariaDB",
+		label: t("service.type.mariadb"),
 	},
 	mysql: {
 		icon: <MysqlIcon />,
-		label: "MySQL",
+		label: t("service.type.mysql"),
 	},
 	redis: {
 		icon: <RedisIcon />,
-		label: "Redis",
+		label: t("service.type.redis"),
 	},
-};
+});
 
 type AddDatabaseForm = z.infer<ReturnType<typeof createMySchema>>;
 

@@ -15,15 +15,18 @@ import { getDockerCleanupEmailContent } from "../../utils/i18n/backend";
 export type TemplateProps = {
 	message: string;
 	date: string;
+	notificationName?: string;
 };
 
 export const DockerCleanupEmail = ({
 	message = "Docker cleanup for dokploy",
 	date = "2023-05-01T00:00:00.000Z",
+	notificationName,
 }: TemplateProps) => {
 	const content = getDockerCleanupEmailContent({
 		message,
 		date,
+		notificationName,
 	});
 	return (
 		<Html>
@@ -67,6 +70,10 @@ export const DockerCleanupEmail = ({
 						<Section className="flex text-black text-[14px]  leading-[24px] bg-[#F4F4F5] rounded-lg p-2">
 							<Text className="!leading-3 font-bold">
 								{content.detailsLabel}
+							</Text>
+							<Text className="!leading-3">
+								{content.notificationNameLabel}{" "}
+								<strong>{notificationName || "默认通知"}</strong>
 							</Text>
 							<Text className="!leading-3">
 								{content.messageLabel} <strong>{message}</strong>

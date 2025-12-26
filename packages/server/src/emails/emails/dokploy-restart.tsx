@@ -14,13 +14,16 @@ import { getDokployRestartEmailContent } from "../../utils/i18n/backend";
 
 export type TemplateProps = {
 	date: string;
+	notificationName?: string;
 };
 
 export const DokployRestartEmail = ({
 	date = "2023-05-01T00:00:00.000Z",
+	notificationName,
 }: TemplateProps) => {
 	const content = getDokployRestartEmailContent({
 		date,
+		notificationName,
 	});
 	return (
 		<Html>
@@ -64,6 +67,10 @@ export const DokployRestartEmail = ({
 						<Section className="flex text-black text-[14px]  leading-[24px] bg-[#F4F4F5] rounded-lg p-2">
 							<Text className="!leading-3 font-bold">
 								{content.detailsLabel}
+							</Text>
+							<Text className="!leading-3">
+								{content.notificationNameLabel}{" "}
+								<strong>{notificationName || "默认通知"}</strong>
 							</Text>
 							<Text className="!leading-3">
 								{content.dateLabel} <strong>{date}</strong>

@@ -20,6 +20,8 @@ export interface Tool<TParams = unknown, TResult = unknown> {
 	name: string;
 	description: string;
 	category: string;
+	aliases?: string[];
+	tags?: string[];
 	parameters: z.ZodType<TParams, any, unknown>;
 	riskLevel: RiskLevel;
 	requiresApproval: boolean;

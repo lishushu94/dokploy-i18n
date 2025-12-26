@@ -61,6 +61,7 @@ export const sendBuildErrorNotifications = async ({
 					applicationType,
 					buildLink,
 					date: date.toLocaleString(),
+					notificationName: notification.name,
 				});
 				const template = await renderAsync(
 					BuildFailedEmail({
@@ -70,6 +71,7 @@ export const sendBuildErrorNotifications = async ({
 						errorMessage: errorMessage,
 						buildLink,
 						date: date.toLocaleString(),
+						notificationName: notification.name,
 					}),
 				).catch();
 				await sendEmailNotification(email, emailContent.subject, template);

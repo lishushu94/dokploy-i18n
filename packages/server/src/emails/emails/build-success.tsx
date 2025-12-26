@@ -21,6 +21,7 @@ export type TemplateProps = {
 	buildLink: string;
 	date: string;
 	environmentName: string;
+	notificationName?: string;
 };
 
 export const BuildSuccessEmail = ({
@@ -30,6 +31,7 @@ export const BuildSuccessEmail = ({
 	buildLink = "https://dokploy.com/projects/dokploy-test/applications/dokploy-test",
 	date = "2023-05-01T00:00:00.000Z",
 	environmentName = "production",
+	notificationName,
 }: TemplateProps) => {
 	const content = getBuildSuccessEmailContent({
 		projectName,
@@ -38,6 +40,7 @@ export const BuildSuccessEmail = ({
 		buildLink,
 		date,
 		environmentName,
+		notificationName,
 	});
 	return (
 		<Html>
@@ -83,6 +86,10 @@ export const BuildSuccessEmail = ({
 						<Section className="flex text-black text-[14px]  leading-[24px] bg-[#F4F4F5] rounded-lg p-2">
 							<Text className="!leading-3 font-bold">
 								{content.detailsLabel}
+							</Text>
+							<Text className="!leading-3">
+								{content.notificationNameLabel}{" "}
+								<strong>{notificationName || "默认通知"}</strong>
 							</Text>
 							<Text className="!leading-3">
 								{content.projectNameLabel} <strong>{projectName}</strong>

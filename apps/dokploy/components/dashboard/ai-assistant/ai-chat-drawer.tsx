@@ -23,6 +23,7 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { api } from "@/utils/api";
+import { translateErrorMessage } from "@/utils/error-translation";
 import { MessageBubble } from "./message-bubble";
 import { ToolExecutionHistory } from "./tool-execution-history";
 import { useChat } from "./use-chat";
@@ -41,6 +42,7 @@ export function AIChatDrawer({
 	const [isOpen, setIsOpen] = useState(false);
 	const [input, setInput] = useState("");
 	const [selectedAiId, setSelectedAiId] = useState<string>("");
+	const [agentGoal, setAgentGoal] = useState("");
 	const viewportRef = useRef<HTMLDivElement>(null);
 	const isNearBottomRef = useRef(true);
 
@@ -74,14 +76,29 @@ export function AIChatDrawer({
 		retryMessage,
 		approveToolCall,
 		rejectToolCall,
+		ensureConversation,
 		stopGeneration,
+		startAgent,
+		isAgentRunning,
+		agentRunId,
+		stopAgentStream,
 	} = useChat({
 		onError: (error) => {
-			toast.error(error.message || t("ai.chat.sendError"));
+			const errorMessage = error.message || t("ai.chat.sendError");
+			toast.error(translateErrorMessage(errorMessage, t));
 		},
 		projectId,
 		serverId,
 	});
+
+	const cancelAgent = api.ai.agent.cancel.useMutation();
+	const approveExecution = api.ai.agent.approve.useMutation();
+
+	const handleStartAgent = async () => {
+		if (!selectedAiId || !agentGoal.trim() || isLoading || isAgentRunning)
+			return;
+		await startAgent(agentGoal.trim(), selectedAiId);
+	};
 
 	// Auto-select first AI config
 	useEffect(() => {
@@ -119,7 +136,7 @@ export function AIChatDrawer({
 	}, [isOpen]);
 
 	const handleSend = async () => {
-		if (!input.trim() || !selectedAiId || isLoading) return;
+		if (!input.trim() || !selectedAiId || isLoading || isAgentRunning) return;
 
 		const message = input;
 		setInput("");
@@ -195,6 +212,39 @@ export function AIChatDrawer({
 					)}
 				</SheetHeader>
 
+				<div className="px-4 pt-4">
+					<div className="flex gap-2">
+						<Input
+							value={agentGoal}
+							onChange={(e) => setAgentGoal(e.target.value)}
+							placeholder={t("ai.agent.goalPlaceholder", "Agent goal")}
+							disabled={!hasAiConfigs || isLoading || isAgentRunning}
+							className="flex-1"
+						/>
+						{isAgentRunning ? (
+							<Button
+								variant="destructive"
+								onClick={async () => {
+									if (agentRunId) {
+										await cancelAgent.mutateAsync({ runId: agentRunId });
+										return;
+									}
+									stopAgentStream();
+								}}
+							>
+								{t("common.cancel", "Cancel")}
+							</Button>
+						) : (
+							<Button
+								onClick={handleStartAgent}
+								disabled={!hasAiConfigs || !agentGoal.trim() || isLoading}
+							>
+								{t("ai.agent.start", "Start Agent")}
+							</Button>
+						)}
+					</div>
+				</div>
+
 				<ScrollArea
 					className="flex-1 min-h-0"
 					viewPortClassName="p-4"
@@ -239,6 +289,12 @@ export function AIChatDrawer({
 										message={message}
 										onApproveToolCall={approveToolCall}
 										onRejectToolCall={rejectToolCall}
+										onApproveExecution={(executionId) =>
+											approveExecution.mutate({ executionId, approved: true })
+										}
+										onRejectExecution={(executionId) =>
+											approveExecution.mutate({ executionId, approved: false })
+										}
 										isLast={index === messages.length - 1}
 										onRetry={() => handleRetry(message.messageId)}
 									/>
@@ -259,7 +315,7 @@ export function AIChatDrawer({
 									? t("ai.chat.inputPlaceholder")
 									: t("ai.chat.configureFirst")
 							}
-							disabled={!hasAiConfigs || (isLoading && !stopGeneration)}
+							disabled={!hasAiConfigs || isAgentRunning || isLoading}
 							className="flex-1"
 							aria-label={t("ai.chat.inputLabel")}
 						/>

@@ -21,6 +21,7 @@ export type TemplateProps = {
 	errorMessage: string;
 	buildLink: string;
 	date: string;
+	notificationName?: string;
 };
 
 export const BuildFailedEmail = ({
@@ -30,6 +31,7 @@ export const BuildFailedEmail = ({
 	errorMessage = "Error array.length is not a function",
 	buildLink = "https://dokploy.com/projects/dokploy-test/applications/dokploy-test",
 	date = "2023-05-01T00:00:00.000Z",
+	notificationName,
 }: TemplateProps) => {
 	const content = getBuildFailedEmailContent({
 		projectName,
@@ -37,6 +39,7 @@ export const BuildFailedEmail = ({
 		applicationType,
 		buildLink,
 		date,
+		notificationName,
 	});
 	return (
 		<Html>
@@ -82,6 +85,10 @@ export const BuildFailedEmail = ({
 						<Section className="flex text-black text-[14px]  leading-[24px] bg-[#F4F4F5] rounded-lg p-2">
 							<Text className="!leading-3 font-bold">
 								{content.detailsLabel}
+							</Text>
+							<Text className="!leading-3">
+								{content.notificationNameLabel}{" "}
+								<strong>{notificationName || "默认通知"}</strong>
 							</Text>
 							<Text className="!leading-3">
 								{content.projectNameLabel} <strong>{projectName}</strong>

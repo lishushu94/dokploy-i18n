@@ -53,6 +53,15 @@ const listBackups: Tool<
 	name: "backup_list",
 	description: "List backup schedules for a database or compose service",
 	category: "backup",
+	aliases: [
+		"backup schedules",
+		"list backups",
+		"backup list",
+		"备份列表",
+		"备份计划",
+		"查看备份",
+	],
+	tags: ["backup", "schedule", "list", "备份", "计划", "列表"],
 	parameters: z.object({
 		databaseId: z.string().optional().describe("Filter by Database ID"),
 		composeId: z.string().optional().describe("Filter by Compose ID"),
@@ -108,6 +117,14 @@ const getBackupDetails: Tool<
 	name: "backup_get",
 	description: "Get details of a backup schedule",
 	category: "backup",
+	aliases: [
+		"backup details",
+		"get backup",
+		"show backup",
+		"备份详情",
+		"查看备份详情",
+	],
+	tags: ["backup", "schedule", "get", "detail", "备份", "详情"],
 	parameters: z.object({
 		backupId: z.string().describe("The Backup ID"),
 	}),
@@ -157,6 +174,15 @@ const createBackupSchedule: Tool<
 	name: "backup_create",
 	description: "Create a backup schedule for a database",
 	category: "backup",
+	aliases: [
+		"create backup",
+		"add backup schedule",
+		"schedule backup",
+		"创建备份",
+		"新建备份计划",
+		"设置备份",
+	],
+	tags: ["backup", "schedule", "create", "备份", "创建", "计划"],
 	parameters: z.object({
 		schedule: z.string().describe("Cron expression (e.g. '0 0 * * *')"),
 		destinationId: z.string().describe("Destination ID for storage"),
@@ -216,6 +242,13 @@ const deleteBackupSchedule: Tool<{ backupId: string }, { deleted: boolean }> = {
 	name: "backup_delete",
 	description: "Delete a backup schedule",
 	category: "backup",
+	aliases: [
+		"delete backup",
+		"remove backup schedule",
+		"删除备份",
+		"移除备份计划",
+	],
+	tags: ["backup", "schedule", "delete", "remove", "备份", "删除", "移除"],
 	parameters: z.object({
 		backupId: z.string().describe("The Backup ID"),
 	}),
@@ -367,6 +400,14 @@ const runBackupNow: Tool<{ backupId: string }, { triggered: boolean }> = {
 	name: "backup_run_now",
 	description: "Run a backup schedule immediately",
 	category: "backup",
+	aliases: [
+		"run backup",
+		"trigger backup",
+		"backup now",
+		"立即备份",
+		"手动备份",
+	],
+	tags: ["backup", "run", "trigger", "备份", "立即", "手动"],
 	parameters: z.object({
 		backupId: z.string().min(1).describe("Backup schedule ID"),
 	}),
@@ -433,6 +474,15 @@ const getBackupLastResult: Tool<
 	name: "backup_last_result",
 	description: "Get the latest backup execution result (deployment) and log",
 	category: "backup",
+	aliases: [
+		"backup last run",
+		"backup log",
+		"last backup result",
+		"最近备份",
+		"最后一次备份",
+		"备份日志",
+	],
+	tags: ["backup", "log", "result", "last", "备份", "日志", "结果"],
 	parameters: z.object({
 		backupId: z.string().min(1).describe("Backup schedule ID"),
 		direction: z.enum(["start", "end"]).optional().default("end"),
@@ -515,6 +565,15 @@ const restoreBackupTool: Tool<
 	description:
 		"Restore from a backup file stored in the destination. Destructive operation. Requires confirm=RESTORE.",
 	category: "backup",
+	aliases: [
+		"restore backup",
+		"recover backup",
+		"database restore",
+		"恢复备份",
+		"备份恢复",
+		"还原备份",
+	],
+	tags: ["backup", "restore", "recover", "备份", "恢复", "还原"],
 	parameters: z.object({
 		backupId: z.string().min(1).describe("Backup schedule ID"),
 		backupFile: z.string().min(1).describe("Backup file path in bucket"),

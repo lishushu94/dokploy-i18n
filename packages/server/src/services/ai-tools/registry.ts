@@ -1,5 +1,5 @@
 import { getCategory, type ToolCategory } from "./categories";
-import type { Tool, ToolContext, ToolDefinition, ToolResult } from "./types";
+import type { Tool, ToolContext, ToolResult } from "./types";
 
 export interface ToolWithCategory extends Tool {
 	categoryInfo?: ToolCategory;
@@ -7,13 +7,19 @@ export interface ToolWithCategory extends Tool {
 
 class ToolRegistry {
 	private tools: Map<string, Tool> = new Map();
+	private revision = 0;
 
 	register<TParams, TResult>(tool: Tool<TParams, TResult>): void {
 		this.tools.set(tool.name, tool as Tool);
+		this.revision += 1;
 	}
 
 	get(name: string): Tool | undefined {
 		return this.tools.get(name);
+	}
+
+	getRevision(): number {
+		return this.revision;
 	}
 
 	getAll(): Tool[] {

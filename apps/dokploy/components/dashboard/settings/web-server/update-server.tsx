@@ -43,7 +43,7 @@ export const UpdateServer = ({
 	isOpen: isOpenProp,
 	onOpenChange: onOpenChangeProp,
 }: Props) => {
-	const { t } = useTranslation("settings");
+	const { t, ready } = useTranslation("settings");
 	const [hasCheckedUpdate, setHasCheckedUpdate] = useState(!!updateData);
 	const [isUpdateAvailable, setIsUpdateAvailable] = useState(
 		!!updateData?.updateAvailable,
@@ -85,6 +85,20 @@ export const UpdateServer = ({
 		setIsOpenInternal(open);
 		onOpenChangeProp?.(open);
 	};
+
+	// 等待 I18N 资源加载完成，避免显示键值
+	if (!ready) {
+		return (
+			<Dialog open={isOpen} onOpenChange={onOpenChange}>
+				<DialogTrigger asChild>{children}</DialogTrigger>
+				<DialogContent className="max-w-lg">
+					<div className="flex items-center justify-center p-8">
+						<RefreshCcw className="h-6 w-6 animate-spin text-muted-foreground" />
+					</div>
+				</DialogContent>
+			</Dialog>
+		);
+	}
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>

@@ -4,9 +4,12 @@ import {
 	AlertCircle,
 	AppWindow,
 	Archive,
+	Bell,
 	CheckCircle2,
 	ChevronDown,
 	ChevronUp,
+	Clock,
+	CreditCard,
 	Database,
 	FileKey,
 	FolderKanban,
@@ -15,8 +18,12 @@ import {
 	Layers,
 	ListChecks,
 	Loader2,
+	Lock,
+	RotateCcw,
 	Server,
+	Settings,
 	ShieldAlert,
+	User,
 	Wrench,
 } from "lucide-react";
 import { useTranslation } from "next-i18next";
@@ -66,13 +73,27 @@ const toolIcons: Record<string, typeof Wrench> = {
 	domain: Globe,
 	backup: Archive,
 	deployment: ListChecks,
+	git: GitBranch,
+	gitea: GitBranch,
+	gitlab: GitBranch,
+	bitbucket: GitBranch,
 	github: GitBranch,
+	registry: Database,
 	traefik: Globe,
 	destination: Archive,
 	mount: Server,
 	certificate: FileKey,
 	project: FolderKanban,
 	environment: GitBranch,
+	notification: Bell,
+	port: Server,
+	preview: ListChecks,
+	schedule: Clock,
+	rollback: RotateCcw,
+	security: Lock,
+	settings: Settings,
+	stripe: CreditCard,
+	user: User,
 };
 
 function getToolIcon(toolName: string) {
@@ -82,7 +103,7 @@ function getToolIcon(toolName: string) {
 	if (normalized.startsWith("volume_backup_")) {
 		return toolIcons.backup ?? Wrench;
 	}
-	const category = normalized.split(/[._]/)[0] ?? normalized;
+	const category = normalized.split(/[._-]/)[0] ?? normalized;
 	return toolIcons[category] ?? Wrench;
 }
 
@@ -90,6 +111,12 @@ function getRiskColor(toolName: string) {
 	if (
 		toolName.includes("delete") ||
 		toolName.includes("remove") ||
+		toolName.includes("destroy") ||
+		toolName.includes("purge") ||
+		toolName.includes("uninstall") ||
+		toolName.includes("reset") ||
+		toolName.includes("rotate") ||
+		toolName.includes("revoke") ||
 		toolName.includes("restore")
 	) {
 		return "border-destructive bg-destructive/5";
@@ -97,11 +124,33 @@ function getRiskColor(toolName: string) {
 	if (
 		toolName.includes("deploy") ||
 		toolName.includes("create") ||
-		toolName.includes("restart")
+		toolName.includes("update") ||
+		toolName.includes("restart") ||
+		toolName.includes("rollback")
 	) {
 		return "border-amber-500/50 bg-amber-500/5";
 	}
 	return "border-border bg-card";
+}
+
+function getConfirmLiteral(parsedArgs: unknown): string {
+	if (
+		!parsedArgs ||
+		typeof parsedArgs !== "object" ||
+		Array.isArray(parsedArgs)
+	) {
+		return "";
+	}
+	const entries = Object.entries(parsedArgs as Record<string, unknown>);
+	const exact = entries.find(([k]) => k.toLowerCase() === "confirm");
+	if (exact && typeof exact[1] === "string" && exact[1].trim().length > 0) {
+		return exact[1].trim();
+	}
+	const loose = entries.find(([k]) => k.toLowerCase().includes("confirm"));
+	if (loose && typeof loose[1] === "string" && loose[1].trim().length > 0) {
+		return loose[1].trim();
+	}
+	return "";
 }
 
 export function ToolCallBlock({
@@ -164,7 +213,41 @@ export function ToolCallBlock({
 	const isDestructive =
 		toolCall.function.name.includes("delete") ||
 		toolCall.function.name.includes("remove") ||
+		toolCall.function.name.includes("destroy") ||
+		toolCall.function.name.includes("purge") ||
+		toolCall.function.name.includes("uninstall") ||
+		toolCall.function.name.includes("reset") ||
+		toolCall.function.name.includes("rotate") ||
+		toolCall.function.name.includes("revoke") ||
 		toolCall.function.name.includes("restore");
+	const confirmLiteral = getConfirmLiteral(parsedArgs);
+	const confirmLiteralsFromResult = (() => {
+		if (
+			!result?.data ||
+			typeof result.data !== "object" ||
+			Array.isArray(result.data)
+		) {
+			return [] as string[];
+		}
+		const v = (result.data as { confirmLiterals?: unknown }).confirmLiterals;
+		return Array.isArray(v)
+			? v.filter(
+					(x): x is string => typeof x === "string" && x.trim().length > 0,
+				)
+			: [];
+	})();
+	const exampleParamsFromResult = (() => {
+		if (
+			!result?.data ||
+			typeof result.data !== "object" ||
+			Array.isArray(result.data)
+		) {
+			return undefined;
+		}
+		const v = (result.data as { exampleParams?: unknown }).exampleParams;
+		return v;
+	})();
+	const confirmHint = confirmLiteral || confirmLiteralsFromResult[0] || "";
 
 	return (
 		<>
@@ -314,6 +397,39 @@ export function ToolCallBlock({
 								{JSON.stringify(parsedArgs, null, 2)}
 							</pre>
 						</div>
+						{confirmHint.length > 0 && (
+							<div className="rounded-lg border border-amber-500/50 bg-amber-500/5 p-3 text-sm text-amber-900 dark:text-amber-200">
+								<div className="flex items-start gap-2">
+									<ShieldAlert className="h-4 w-4 text-amber-500 mt-0.5" />
+									<div className="min-w-0">
+										<p className="font-medium">Confirm required</p>
+										<p className="text-xs opacity-90">
+											Set <span className="font-mono">confirm</span> to{" "}
+											<span className="font-mono font-semibold select-all">
+												{confirmHint}
+											</span>
+											(must match exactly).
+										</p>
+										{confirmLiteralsFromResult.length > 1 && (
+											<p className="text-xs opacity-90 mt-1">
+												Allowed:{" "}
+												<span className="font-mono">
+													{confirmLiteralsFromResult.join(", ")}
+												</span>
+											</p>
+										)}
+									</div>
+								</div>
+							</div>
+						)}
+						{exampleParamsFromResult != null && (
+							<div className="rounded-lg border p-3">
+								<h4 className="text-sm font-medium mb-2">Example params</h4>
+								<pre className="text-xs font-mono bg-muted p-2 rounded overflow-x-auto">
+									{JSON.stringify(exampleParamsFromResult, null, 2)}
+								</pre>
+							</div>
+						)}
 						{isDestructive && (
 							<div className="rounded-lg border border-destructive/50 bg-destructive/5 p-3 text-sm text-destructive">
 								{t("ai.toolCall.cannotUndo")}

@@ -17,6 +17,15 @@ const listGithubProviders: Tool<
 	description:
 		"List GitHub providers (connected GitHub accounts) available in the organization.",
 	category: "github",
+	aliases: [
+		"github providers",
+		"list github accounts",
+		"github connections",
+		"GitHub账号列表",
+		"GitHub连接",
+		"GitHub提供商",
+	],
+	tags: ["github", "provider", "connection", "list", "账号", "连接", "列表"],
 	parameters: z.object({}),
 	riskLevel: "low",
 	requiresApproval: false,
@@ -57,6 +66,15 @@ const listGithubRepositories: Tool<
 	description:
 		"List repositories accessible to a given GitHub provider connection (GitHub App installation).",
 	category: "github",
+	aliases: [
+		"list github repos",
+		"repositories",
+		"repo list",
+		"仓库列表",
+		"查看仓库",
+		"项目仓库",
+	],
+	tags: ["github", "repo", "repository", "list", "仓库", "列表"],
 	parameters: z.object({
 		githubId: z.string().min(1).describe("GitHub provider ID"),
 		limit: z
@@ -106,6 +124,14 @@ const listGithubBranches: Tool<
 	name: "github_branch_list",
 	description: "List branches for a GitHub repository",
 	category: "github",
+	aliases: [
+		"list branches",
+		"github branches",
+		"branch list",
+		"分支列表",
+		"查看分支",
+	],
+	tags: ["github", "branch", "list", "分支", "列表"],
 	parameters: z.object({
 		githubId: z.string().min(1).describe("GitHub provider ID"),
 		owner: z.string().min(1).describe("Repository owner"),
@@ -161,6 +187,14 @@ const createRepoBranch: Tool<
 	name: "github_branch_create",
 	description: "Create a new branch in a GitHub repository",
 	category: "github",
+	aliases: [
+		"create branch",
+		"new branch",
+		"git branch",
+		"创建分支",
+		"新建分支",
+	],
+	tags: ["github", "branch", "create", "创建", "分支"],
 	parameters: z.object({
 		githubId: z.string().min(1).describe("GitHub provider ID"),
 		owner: z.string().min(1).describe("Repository owner"),
@@ -224,6 +258,8 @@ const getRepoFile: Tool<
 	name: "github_file_get",
 	description: "Get a file's content from a GitHub repository at a given ref",
 	category: "github",
+	aliases: ["get file", "read file", "github file", "读取文件", "查看文件"],
+	tags: ["github", "file", "read", "get", "文件", "读取"],
 	parameters: z.object({
 		githubId: z.string().min(1).describe("GitHub provider ID"),
 		owner: z.string().min(1).describe("Repository owner"),
@@ -290,6 +326,25 @@ const upsertRepoFile: Tool<
 	description:
 		"Create or update a file in a GitHub repository branch (createOrUpdateFileContents)",
 	category: "github",
+	aliases: [
+		"update file",
+		"write file",
+		"commit file",
+		"更新文件",
+		"写入文件",
+		"提交文件",
+	],
+	tags: [
+		"github",
+		"file",
+		"update",
+		"write",
+		"commit",
+		"文件",
+		"更新",
+		"写入",
+		"提交",
+	],
 	parameters: z.object({
 		githubId: z.string().min(1).describe("GitHub provider ID"),
 		owner: z.string().min(1).describe("Repository owner"),
@@ -378,6 +433,24 @@ const createPullRequest: Tool<
 	name: "github_pull_request_create",
 	description: "Create a GitHub pull request",
 	category: "github",
+	aliases: [
+		"create pr",
+		"open pr",
+		"pull request",
+		"创建PR",
+		"创建拉取请求",
+		"开PR",
+	],
+	tags: [
+		"github",
+		"pull",
+		"request",
+		"pr",
+		"create",
+		"拉取请求",
+		"合并请求",
+		"创建",
+	],
 	parameters: z.object({
 		githubId: z.string().min(1).describe("GitHub provider ID"),
 		owner: z.string().min(1).describe("Repository owner"),

@@ -25,18 +25,21 @@ import {
 	cancelRun,
 	chat,
 	createConversation,
-	createRun,
 	deleteAiSettings,
 	deleteConversation,
 	executeApprovedTool,
 	getAiSettingById,
 	getAiSettingsByOrganizationId,
 	getConversationById,
+	getConversationIdForToolExecution,
 	getMessages,
 	getRunById,
 	getToolExecutionById,
+	getToolExecutionsByIds,
 	listConversations,
+	resumeAgentRun,
 	saveAiSettings,
+	startAgentRun,
 	suggestVariants,
 	updateConversation,
 } from "@dokploy/server/services/ai";
@@ -72,7 +75,7 @@ export const aiRouter = createTRPCRouter({
 			if (aiSetting.organizationId !== ctx.session.activeOrganizationId) {
 				throw new TRPCError({
 					code: "UNAUTHORIZED",
-					message: "You don't have access to this AI configuration",
+					message: "settings.ai.errors.noAccessToAiConfig",
 				});
 			}
 			return aiSetting;
@@ -89,10 +92,7 @@ export const aiRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			try {
 				const detectedProvider = getProviderName(input.apiUrl);
-				const explicitProvider =
-					input.providerType === "custom"
-						? "openai_compatible"
-						: input.providerType;
+				const explicitProvider = input.providerType;
 				const providerName = explicitProvider
 					? explicitProvider
 					: detectedProvider === "custom"
@@ -115,11 +115,11 @@ export const aiRouter = createTRPCRouter({
 						);
 						break;
 					default:
-						if (!input.apiKey)
-							throw new TRPCError({
-								code: "BAD_REQUEST",
-								message: "API key must contain at least 1 character(s)",
-							});
+					if (!input.apiKey)
+						throw new TRPCError({
+							code: "BAD_REQUEST",
+							message: "settings.ai.errors.apiKeyRequired",
+						});
 						response = await fetch(`${apiUrl}/models`, { headers });
 				}
 
@@ -199,7 +199,7 @@ export const aiRouter = createTRPCRouter({
 			if (aiSetting.organizationId !== ctx.session.activeOrganizationId) {
 				throw new TRPCError({
 					code: "UNAUTHORIZED",
-					message: "You don't have access to this AI configuration",
+					message: "settings.ai.errors.noAccessToAiConfig",
 				});
 			}
 			return aiSetting;
@@ -212,7 +212,7 @@ export const aiRouter = createTRPCRouter({
 			if (aiSetting.organizationId !== ctx.session.activeOrganizationId) {
 				throw new TRPCError({
 					code: "UNAUTHORIZED",
-					message: "You don't have access to this AI configuration",
+					message: "settings.ai.errors.noAccessToAiConfig",
 				});
 			}
 			return await deleteAiSettings(input.aiId);
@@ -255,7 +255,7 @@ export const aiRouter = createTRPCRouter({
 			if (IS_CLOUD && !input.serverId) {
 				throw new TRPCError({
 					code: "UNAUTHORIZED",
-					message: "You need to use a server to create a compose",
+					message: "settings.ai.errors.serverRequiredForCompose",
 				});
 			}
 
@@ -340,7 +340,7 @@ export const aiRouter = createTRPCRouter({
 				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
 					throw new TRPCError({
 						code: "UNAUTHORIZED",
-						message: "You don't have access to this conversation",
+						message: "settings.ai.errors.noAccessToConversation",
 					});
 				}
 				return conversation;
@@ -363,7 +363,7 @@ export const aiRouter = createTRPCRouter({
 				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
 					throw new TRPCError({
 						code: "UNAUTHORIZED",
-						message: "You don't have access to this conversation",
+						message: "settings.ai.errors.noAccessToConversation",
 					});
 				}
 				return await updateConversation(input.conversationId, {
@@ -379,7 +379,7 @@ export const aiRouter = createTRPCRouter({
 				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
 					throw new TRPCError({
 						code: "UNAUTHORIZED",
-						message: "You don't have access to this conversation",
+						message: "settings.ai.errors.noAccessToConversation",
 					});
 				}
 				await deleteConversation(input.conversationId);
@@ -399,7 +399,7 @@ export const aiRouter = createTRPCRouter({
 				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
 					throw new TRPCError({
 						code: "UNAUTHORIZED",
-						message: "You don't have access to this conversation",
+						message: "settings.ai.errors.noAccessToConversation",
 					});
 				}
 
@@ -419,7 +419,7 @@ export const aiRouter = createTRPCRouter({
 				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
 					throw new TRPCError({
 						code: "UNAUTHORIZED",
-						message: "You don't have access to this conversation",
+						message: "settings.ai.errors.noAccessToConversation",
 					});
 				}
 				return await getMessages(input);
@@ -434,37 +434,78 @@ export const aiRouter = createTRPCRouter({
 		start: protectedProcedure
 			.input(apiStartAgent)
 			.mutation(async ({ ctx, input }) => {
-				const conversation = await getConversationById(input.conversationId);
-				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
-					throw new TRPCError({
-						code: "UNAUTHORIZED",
-						message: "You don't have access to this conversation",
-					});
-				}
-				return await createRun({
+				return await startAgentRun({
 					conversationId: input.conversationId,
 					goal: input.goal,
+					aiId: input.aiId,
+					organizationId: ctx.session.activeOrganizationId,
+					userId: ctx.user.id,
 				});
 			}),
 
-		getRun: protectedProcedure.input(apiGetRun).query(async ({ input }) => {
-			return await getRunById(input.runId);
-		}),
+		getRun: protectedProcedure
+			.input(apiGetRun)
+			.query(async ({ ctx, input }) => {
+				const run = await getRunById(input.runId);
+				const conversation = await getConversationById(run.conversationId);
+				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
+					throw new TRPCError({
+						code: "UNAUTHORIZED",
+						message: "settings.ai.errors.noAccessToRun",
+					});
+				}
+				return run;
+			}),
 
 		cancel: protectedProcedure
 			.input(apiCancelRun)
-			.mutation(async ({ input }) => {
+			.mutation(async ({ ctx, input }) => {
+				const run = await getRunById(input.runId);
+				const conversation = await getConversationById(run.conversationId);
+				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
+					throw new TRPCError({
+						code: "UNAUTHORIZED",
+						message: "settings.ai.errors.noAccessToRun",
+					});
+				}
 				return await cancelRun(input.runId);
 			}),
 
 		approve: protectedProcedure
 			.input(apiApproveExecution)
 			.mutation(async ({ ctx, input }) => {
-				return await approveToolExecution(
+				const conversationId = await getConversationIdForToolExecution(
+					input.executionId,
+				);
+				if (!conversationId) {
+					throw new TRPCError({
+						code: "BAD_REQUEST",
+						message: "settings.ai.errors.toolExecutionNotLinked",
+					});
+				}
+				const conversation = await getConversationById(conversationId);
+				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
+					throw new TRPCError({
+						code: "UNAUTHORIZED",
+						message: "settings.ai.errors.noAccessToToolExecution",
+					});
+				}
+
+				const updated = await approveToolExecution(
 					input.executionId,
 					input.approved,
 					ctx.user.id,
 				);
+
+				if (updated?.runId) {
+					await resumeAgentRun({
+						runId: updated.runId,
+						organizationId: ctx.session.activeOrganizationId,
+						userId: ctx.user.id,
+					});
+				}
+
+				return updated;
 			}),
 
 		execute: protectedProcedure
@@ -479,20 +520,29 @@ export const aiRouter = createTRPCRouter({
 				if (execution.status !== "approved") {
 					throw new TRPCError({
 						code: "BAD_REQUEST",
-						message: "Tool execution must be approved first",
+						message: "settings.ai.errors.toolExecutionMustBeApproved",
 					});
 				}
 
 				let projectId: string | undefined;
 				let serverId: string | undefined;
-				if (input.conversationId) {
-					const conversation = await getConversationById(input.conversationId);
+				const conversationId =
+					input.conversationId ??
+					(await getConversationIdForToolExecution(input.executionId));
+				if (!conversationId) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "settings.ai.errors.toolExecutionNotFound",
+					});
+				}
+				if (conversationId) {
+					const conversation = await getConversationById(conversationId);
 					if (
 						conversation.organizationId !== ctx.session.activeOrganizationId
 					) {
 						throw new TRPCError({
 							code: "UNAUTHORIZED",
-							message: "You don't have access to this conversation",
+							message: "settings.ai.errors.noAccessToToolExecution",
 						});
 					}
 					projectId = conversation.projectId || undefined;
@@ -509,8 +559,37 @@ export const aiRouter = createTRPCRouter({
 
 		getExecution: protectedProcedure
 			.input(z.object({ executionId: z.string() }))
-			.query(async ({ input }) => {
+			.query(async ({ ctx, input }) => {
+				const conversationId = await getConversationIdForToolExecution(
+					input.executionId,
+				);
+				if (!conversationId) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "settings.ai.errors.toolExecutionNotFound",
+					});
+				}
+				const conversation = await getConversationById(conversationId);
+				if (conversation.organizationId !== ctx.session.activeOrganizationId) {
+					throw new TRPCError({
+						code: "UNAUTHORIZED",
+						message: "settings.ai.errors.noAccessToToolExecution",
+					});
+				}
 				return await getToolExecutionById(input.executionId);
+			}),
+
+		getExecutions: protectedProcedure
+			.input(
+				z.object({
+					executionIds: z.array(z.string().min(1)).min(1).max(50),
+				}),
+			)
+			.query(async ({ ctx, input }) => {
+				return await getToolExecutionsByIds({
+					executionIds: input.executionIds,
+					organizationId: ctx.session.activeOrganizationId,
+				});
 			}),
 	}),
 });

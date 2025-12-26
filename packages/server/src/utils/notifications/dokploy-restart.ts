@@ -39,9 +39,13 @@ export const sendDokployRestartNotifications = async () => {
 			if (email) {
 				const emailContent = getDokployRestartEmailContent({
 					date: date.toLocaleString(),
+					notificationName: notification.name,
 				});
 				const template = await renderAsync(
-					DokployRestartEmail({ date: date.toLocaleString() }),
+					DokployRestartEmail({
+						date: date.toLocaleString(),
+						notificationName: notification.name,
+					}),
 				).catch();
 
 				await sendEmailNotification(email, emailContent.subject, template);

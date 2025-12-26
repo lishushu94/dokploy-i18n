@@ -1,5 +1,10 @@
 import { db } from "@dokploy/server/db";
-import { aiRuns, aiToolExecutions } from "@dokploy/server/db/schema";
+import {
+	aiConversations,
+	aiMessages,
+	aiRuns,
+	aiToolExecutions,
+} from "@dokploy/server/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import {
@@ -64,6 +69,35 @@ export type OrchestratorOutcome =
 
 function nowIso() {
 	return new Date().toISOString();
+}
+
+function safeTruncateString(value: string, maxLen: number) {
+	if (value.length <= maxLen) return value;
+	return `${value.slice(0, maxLen)}\n... (truncated)`;
+}
+
+function safeJsonStringify(value: unknown, maxLen: number) {
+	try {
+		return safeTruncateString(JSON.stringify(value), maxLen);
+	} catch {
+		return safeTruncateString(String(value), maxLen);
+	}
+}
+
+async function saveAgentEventMessage(params: {
+	conversationId: string;
+	payload: Record<string, unknown>;
+}) {
+	const content = safeJsonStringify(params.payload, 20000);
+	await db.insert(aiMessages).values({
+		conversationId: params.conversationId,
+		role: "system",
+		content,
+	});
+	await db
+		.update(aiConversations)
+		.set({ updatedAt: nowIso() })
+		.where(eq(aiConversations.conversationId, params.conversationId));
 }
 
 function mapRunStatusToState(status: AiRunDbStatus): AgentOrchestratorState {
@@ -150,16 +184,88 @@ async function updateExecution(
 	return updated;
 }
 
-async function createExecutionForStep(runId: string, step: AgentPlanStep) {
+async function createExecutionForStep(
+	runId: string,
+	conversationId: string,
+	step: AgentPlanStep,
+) {
+	const t = toolRegistry.get(step.toolName);
+	if (!t) {
+		const [execution] = await db
+			.insert(aiToolExecutions)
+			.values({
+				executionId: step.id,
+				conversationId,
+				runId,
+				toolName: step.toolName,
+				parameters: step.parameters,
+				requiresApproval: step.requiresApproval,
+				status: "failed",
+				error: `Unknown tool: ${step.toolName}`,
+				result: {
+					success: false,
+					message: "Tool not found",
+					error: `Unknown tool: ${step.toolName}`,
+				},
+				completedAt: nowIso(),
+				startedAt: undefined,
+			})
+			.returning();
+		if (!execution) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to create tool execution",
+			});
+		}
+		return execution;
+	}
+
+	const validation = t.parameters.safeParse(step.parameters || {});
+	if (!validation.success) {
+		const [execution] = await db
+			.insert(aiToolExecutions)
+			.values({
+				executionId: step.id,
+				conversationId,
+				runId,
+				toolName: step.toolName,
+				parameters: step.parameters,
+				requiresApproval: step.requiresApproval,
+				status: "failed",
+				error: validation.error.message,
+				result: {
+					success: false,
+					message: "Invalid parameters",
+					error: validation.error.message,
+				},
+				completedAt: nowIso(),
+				startedAt: undefined,
+			})
+			.returning();
+		if (!execution) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to create tool execution",
+			});
+		}
+		return execution;
+	}
+
+	const validatedParams = validation.data as unknown as Record<string, unknown>;
+	const initialStatus: AiToolExecutionDbStatus = step.requiresApproval
+		? "pending"
+		: "approved";
+
 	const [execution] = await db
 		.insert(aiToolExecutions)
 		.values({
 			executionId: step.id,
+			conversationId,
 			runId,
 			toolName: step.toolName,
-			parameters: step.parameters,
+			parameters: validatedParams,
 			requiresApproval: step.requiresApproval,
-			status: step.requiresApproval ? "pending" : "approved",
+			status: initialStatus,
 			startedAt: undefined,
 		})
 		.returning();
@@ -208,6 +314,22 @@ export async function orchestrateRun(
 			error: "Run plan is missing or empty",
 			completedAt: nowIso(),
 		});
+		await saveAgentEventMessage({
+			conversationId: run.conversationId,
+			payload: {
+				type: "agent.run.finish",
+				runId,
+				status: "failed",
+			},
+		});
+		await saveAgentEventMessage({
+			conversationId: run.conversationId,
+			payload: {
+				type: "agent.run.summary",
+				runId,
+				summary: "Run plan is missing or empty",
+			},
+		});
 		return { state: "FAILED", runId, error: "Run plan is missing or empty" };
 	}
 
@@ -240,6 +362,29 @@ export async function orchestrateRun(
 	for (const step of plan.steps) {
 		if (options.abortSignal?.aborted) {
 			await updateRun(runId, { status: "cancelled", completedAt: nowIso() });
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.finish",
+					runId,
+					status: "cancelled",
+				},
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.summary",
+					runId,
+					summary: "Cancelled",
+				},
+			});
+			return { state: "CANCELLED", runId };
+		}
+
+		const cancelled = await db.query.aiRuns.findFirst({
+			where: eq(aiRuns.runId, runId),
+		});
+		if (cancelled?.status === "cancelled") {
 			return { state: "CANCELLED", runId };
 		}
 
@@ -258,8 +403,20 @@ export async function orchestrateRun(
 
 		let exec = executionsById.get(step.id);
 		if (!exec) {
-			exec = await createExecutionForStep(runId, step);
+			exec = await createExecutionForStep(runId, run.conversationId, step);
 			executionsById.set(exec.executionId, exec);
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.step.start",
+					runId,
+					stepId: exec.executionId,
+					executionId: exec.executionId,
+					toolName: exec.toolName,
+					description: step.description,
+					requiresApproval: exec.requiresApproval,
+				},
+			});
 		}
 
 		const execStatus = exec.status as AiToolExecutionDbStatus;
@@ -267,6 +424,20 @@ export async function orchestrateRun(
 		if (execStatus === "pending") {
 			assertValidTransition("executing", "waiting_approval");
 			await updateRun(runId, { status: "waiting_approval" });
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.step.wait_approval",
+					runId,
+					stepId: exec.executionId,
+					executionId: exec.executionId,
+					toolName: exec.toolName,
+					parametersPreview:
+						exec.parameters != null
+							? safeJsonStringify(exec.parameters, 4000)
+							: undefined,
+				},
+			});
 			return {
 				state: "WAIT_APPROVAL",
 				runId,
@@ -281,6 +452,33 @@ export async function orchestrateRun(
 				error: `Execution rejected: ${exec.executionId}`,
 				completedAt: nowIso(),
 			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.step.result",
+					runId,
+					stepId: exec.executionId,
+					executionId: exec.executionId,
+					success: false,
+					summary: "Rejected",
+				},
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.finish",
+					runId,
+					status: "cancelled",
+				},
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.summary",
+					runId,
+					summary: `Execution rejected: ${exec.executionId}`,
+				},
+			});
 			return { state: "CANCELLED", runId };
 		}
 
@@ -289,6 +487,33 @@ export async function orchestrateRun(
 				status: "failed",
 				error: exec.error || `Execution failed: ${exec.executionId}`,
 				completedAt: nowIso(),
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.step.result",
+					runId,
+					stepId: exec.executionId,
+					executionId: exec.executionId,
+					success: false,
+					summary: exec.error || `Execution failed: ${exec.executionId}`,
+				},
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.finish",
+					runId,
+					status: "failed",
+				},
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.summary",
+					runId,
+					summary: exec.error || `Execution failed: ${exec.executionId}`,
+				},
 			});
 			return {
 				state: "FAILED",
@@ -331,6 +556,33 @@ export async function orchestrateRun(
 					error: errorMessage,
 					completedAt: nowIso(),
 				});
+				await saveAgentEventMessage({
+					conversationId: run.conversationId,
+					payload: {
+						type: "agent.step.result",
+						runId,
+						stepId: exec.executionId,
+						executionId: exec.executionId,
+						success: false,
+						summary: errorMessage,
+					},
+				});
+				await saveAgentEventMessage({
+					conversationId: run.conversationId,
+					payload: {
+						type: "agent.run.finish",
+						runId,
+						status: "failed",
+					},
+				});
+				await saveAgentEventMessage({
+					conversationId: run.conversationId,
+					payload: {
+						type: "agent.run.summary",
+						runId,
+						summary: errorMessage,
+					},
+				});
 				return { state: "FAILED", runId, error: errorMessage };
 			}
 
@@ -339,6 +591,21 @@ export async function orchestrateRun(
 					status: "completed",
 					result,
 					completedAt: nowIso(),
+				});
+				await saveAgentEventMessage({
+					conversationId: run.conversationId,
+					payload: {
+						type: "agent.step.result",
+						runId,
+						stepId: exec.executionId,
+						executionId: exec.executionId,
+						success: true,
+						summary: result.message || "Success",
+						dataPreview:
+							result.data != null
+								? safeJsonStringify(result.data, 4000)
+								: undefined,
+					},
 				});
 				continue;
 			}
@@ -353,6 +620,33 @@ export async function orchestrateRun(
 				status: "failed",
 				error: result.error || result.message,
 				completedAt: nowIso(),
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.step.result",
+					runId,
+					stepId: exec.executionId,
+					executionId: exec.executionId,
+					success: false,
+					summary: result.error || result.message || "Tool execution failed",
+				},
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.finish",
+					runId,
+					status: "failed",
+				},
+			});
+			await saveAgentEventMessage({
+				conversationId: run.conversationId,
+				payload: {
+					type: "agent.run.summary",
+					runId,
+					summary: result.error || result.message || "Tool execution failed",
+				},
 			});
 			return {
 				state: "FAILED",
@@ -380,6 +674,22 @@ export async function orchestrateRun(
 				summary: `Completed ${plan.steps.length} step(s)`,
 			},
 			completedAt: nowIso(),
+		});
+		await saveAgentEventMessage({
+			conversationId: run.conversationId,
+			payload: {
+				type: "agent.run.finish",
+				runId,
+				status: "completed",
+			},
+		});
+		await saveAgentEventMessage({
+			conversationId: run.conversationId,
+			payload: {
+				type: "agent.run.summary",
+				runId,
+				summary: `Completed ${plan.steps.length} step(s)`,
+			},
 		});
 	}
 

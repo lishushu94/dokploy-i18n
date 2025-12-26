@@ -20,6 +20,7 @@
 		"jsx": "preserve",
 		"plugins": [{ "name": "next" }],
 		"outDir": "./dist",
+		"rootDir": "./src",
 		/* Path Aliases */
 		"baseUrl": ".",
 		"paths": {

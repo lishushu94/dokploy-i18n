@@ -206,6 +206,7 @@ export type BuildSuccessEmailContent = {
 		beforeApplicationName: string;
 		afterApplicationName: string;
 	};
+	notificationNameLabel: string;
 	detailsLabel: string;
 	projectNameLabel: string;
 	applicationNameLabel: string;
@@ -223,13 +224,16 @@ export const getBuildSuccessEmailContent = (params: {
 	environmentName: string;
 	buildLink: string;
 	date: string;
+	notificationName?: string;
 	locale?: EmailLocale;
 }): BuildSuccessEmailContent => {
 	const locale = params.locale ?? getBackendLocale();
 
 	if (locale === "zh-Hans") {
 		return {
-			subject: "Dokploy 构建成功",
+			subject: params.notificationName
+				? `[${params.notificationName}] 构建成功`
+				: "构建成功",
 			previewText: `应用 ${params.applicationName} 构建成功`,
 			heading: {
 				beforeApplicationName: "应用 ",
@@ -237,9 +241,12 @@ export const getBuildSuccessEmailContent = (params: {
 			},
 			greeting: "你好，",
 			mainText: {
-				beforeApplicationName: "你在 Dokploy 上的应用 ",
+				beforeApplicationName: params.notificationName
+					? `你在 ${params.notificationName} 上的应用 `
+					: "你的应用 ",
 				afterApplicationName: " 构建已经成功完成。",
 			},
+			notificationNameLabel: "通知名称：",
 			detailsLabel: "详情：",
 			projectNameLabel: "项目名称：",
 			applicationNameLabel: "应用名称：",
@@ -252,7 +259,9 @@ export const getBuildSuccessEmailContent = (params: {
 	}
 
 	return {
-		subject: "Build success for dokploy",
+		subject: params.notificationName
+			? `[${params.notificationName}] Build success`
+			: "Build success",
 		previewText: `Build success for ${params.applicationName}`,
 		heading: {
 			beforeApplicationName: "Build success for ",
@@ -260,9 +269,12 @@ export const getBuildSuccessEmailContent = (params: {
 		},
 		greeting: "Hello,",
 		mainText: {
-			beforeApplicationName: "Your build for ",
+			beforeApplicationName: params.notificationName
+				? `Your build for ${params.notificationName} application `
+				: "Your build for application ",
 			afterApplicationName: " was successful",
 		},
+		notificationNameLabel: "Notification Name:",
 		detailsLabel: "Details:",
 		projectNameLabel: "Project Name:",
 		applicationNameLabel: "Application Name:",
@@ -286,6 +298,7 @@ export type BuildFailedEmailContent = {
 		beforeApplicationName: string;
 		afterApplicationName: string;
 	};
+	notificationNameLabel: string;
 	detailsLabel: string;
 	projectNameLabel: string;
 	applicationNameLabel: string;
@@ -302,13 +315,16 @@ export const getBuildFailedEmailContent = (params: {
 	applicationType: string;
 	buildLink: string;
 	date: string;
+	notificationName?: string;
 	locale?: EmailLocale;
 }): BuildFailedEmailContent => {
 	const locale = params.locale ?? getBackendLocale();
 
 	if (locale === "zh-Hans") {
 		return {
-			subject: "Dokploy 构建失败",
+			subject: params.notificationName
+				? `[${params.notificationName}] 构建失败`
+				: "构建失败",
 			previewText: `应用 ${params.applicationName} 构建失败`,
 			heading: {
 				beforeApplicationName: "应用 ",
@@ -316,9 +332,12 @@ export const getBuildFailedEmailContent = (params: {
 			},
 			greeting: "你好，",
 			mainText: {
-				beforeApplicationName: "你在 Dokploy 上的应用 ",
+				beforeApplicationName: params.notificationName
+					? `你在 ${params.notificationName} 上的应用 `
+					: "你的应用 ",
 				afterApplicationName: " 构建失败，请查看下面的错误信息。",
 			},
+			notificationNameLabel: "通知名称：",
 			detailsLabel: "详情：",
 			projectNameLabel: "项目名称：",
 			applicationNameLabel: "应用名称：",
@@ -331,7 +350,9 @@ export const getBuildFailedEmailContent = (params: {
 	}
 
 	return {
-		subject: "Build failed for dokploy",
+		subject: params.notificationName
+			? `[${params.notificationName}] Build failed`
+			: "Build failed",
 		previewText: `Build failed for ${params.applicationName}`,
 		heading: {
 			beforeApplicationName: "Build failed for ",
@@ -339,9 +360,12 @@ export const getBuildFailedEmailContent = (params: {
 		},
 		greeting: "Hello,",
 		mainText: {
-			beforeApplicationName: "Your build for ",
+			beforeApplicationName: params.notificationName
+				? `Your build for ${params.notificationName} application `
+				: "Your build for application ",
 			afterApplicationName: " failed. Please check the error message below.",
 		},
+		notificationNameLabel: "Notification Name:",
 		detailsLabel: "Details:",
 		projectNameLabel: "Project Name:",
 		applicationNameLabel: "Application Name:",
@@ -367,6 +391,7 @@ export type DatabaseBackupEmailContent = {
 		afterApplicationNameSuccess: string;
 		afterApplicationNameError: string;
 	};
+	notificationNameLabel: string;
 	detailsLabel: string;
 	projectNameLabel: string;
 	applicationNameLabel: string;
@@ -383,6 +408,7 @@ export const getDatabaseBackupEmailContent = (params: {
 	type: "error" | "success";
 	errorMessage?: string;
 	date: string;
+	notificationName?: string;
 	locale?: EmailLocale;
 }): DatabaseBackupEmailContent => {
 	const locale = params.locale ?? getBackendLocale();
@@ -390,7 +416,9 @@ export const getDatabaseBackupEmailContent = (params: {
 
 	if (locale === "zh-Hans") {
 		return {
-			subject: "Dokploy 数据库备份通知",
+			subject: params.notificationName
+				? `[${params.notificationName}] 数据库备份通知`
+				: "数据库备份通知",
 			previewText: isSuccess
 				? `应用 ${params.applicationName} 的数据库备份成功 ✅`
 				: `应用 ${params.applicationName} 的数据库备份失败 ❌`,
@@ -401,10 +429,13 @@ export const getDatabaseBackupEmailContent = (params: {
 				afterApplicationNameError: " 的数据库备份失败，请查看下面的错误信息。",
 			},
 			mainText: {
-				beforeApplicationName: "你在 Dokploy 上的应用 ",
+				beforeApplicationName: params.notificationName
+					? `你在 ${params.notificationName} 上的应用 `
+					: "你的应用 ",
 				afterApplicationNameSuccess: " 的数据库备份已经成功完成。",
 				afterApplicationNameError: " 的数据库备份失败，请查看下面的错误信息。",
 			},
+			notificationNameLabel: "通知名称：",
 			detailsLabel: "详情：",
 			projectNameLabel: "项目名称：",
 			applicationNameLabel: "应用名称：",
@@ -416,7 +447,9 @@ export const getDatabaseBackupEmailContent = (params: {
 	}
 
 	return {
-		subject: "Database backup for dokploy",
+		subject: params.notificationName
+			? `[${params.notificationName}] Database backup`
+			: "Database backup",
 		previewText: isSuccess
 			? `Database backup for ${params.applicationName} was successful ✅`
 			: `Database backup for ${params.applicationName} failed ❌`,
@@ -427,11 +460,14 @@ export const getDatabaseBackupEmailContent = (params: {
 			afterApplicationNameError: " failed",
 		},
 		mainText: {
-			beforeApplicationName: "Your database backup for ",
+			beforeApplicationName: params.notificationName
+				? `Your database backup for ${params.notificationName} application `
+				: "Your database backup for application ",
 			afterApplicationNameSuccess: " was successful ✅",
 			afterApplicationNameError:
 				" failed. Please check the error message below. ❌",
 		},
+		notificationNameLabel: "Notification Name:",
 		detailsLabel: "Details:",
 		projectNameLabel: "Project Name:",
 		applicationNameLabel: "Application Name:",
@@ -448,6 +484,7 @@ export type DockerCleanupEmailContent = {
 	headingText: string;
 	greeting: string;
 	bodyText: string;
+	notificationNameLabel: string;
 	detailsLabel: string;
 	messageLabel: string;
 	dateLabel: string;
@@ -456,17 +493,27 @@ export type DockerCleanupEmailContent = {
 export const getDockerCleanupEmailContent = (params: {
 	message: string;
 	date: string;
+	notificationName?: string;
 	locale?: EmailLocale;
 }): DockerCleanupEmailContent => {
 	const locale = params.locale ?? getBackendLocale();
 
 	if (locale === "zh-Hans") {
 		return {
-			subject: "Dokploy Docker 清理完成",
-			previewText: "Dokploy Docker 清理完成",
-			headingText: "Dokploy Docker 清理",
+			subject: params.notificationName
+				? `[${params.notificationName}] Docker 清理完成`
+				: "Docker 清理完成",
+			previewText: params.notificationName
+				? `${params.notificationName} Docker 清理完成`
+				: "Docker 清理完成",
+			headingText: params.notificationName
+				? `${params.notificationName} Docker 清理`
+				: "Docker 清理",
 			greeting: "你好，",
-			bodyText: "Dokploy 的 Docker 清理任务已经成功完成 ✅",
+			bodyText: params.notificationName
+				? `${params.notificationName} 的 Docker 清理任务已经成功完成 ✅`
+				: "Docker 清理任务已经成功完成 ✅",
+			notificationNameLabel: "通知名称：",
 			detailsLabel: "详情：",
 			messageLabel: "消息：",
 			dateLabel: "时间：",
@@ -474,11 +521,20 @@ export const getDockerCleanupEmailContent = (params: {
 	}
 
 	return {
-		subject: "Docker cleanup for dokploy",
-		previewText: "Docker cleanup for dokploy",
-		headingText: "Docker cleanup for dokploy",
+		subject: params.notificationName
+			? `[${params.notificationName}] Docker cleanup`
+			: "Docker cleanup",
+		previewText: params.notificationName
+			? `Docker cleanup for ${params.notificationName}`
+			: "Docker cleanup",
+		headingText: params.notificationName
+			? `Docker cleanup for ${params.notificationName}`
+			: "Docker cleanup",
 		greeting: "Hello,",
-		bodyText: "The docker cleanup for dokploy was successful ✅",
+		bodyText: params.notificationName
+			? `The docker cleanup for ${params.notificationName} was successful ✅`
+			: "The docker cleanup was successful ✅",
+		notificationNameLabel: "Notification Name:",
 		detailsLabel: "Details:",
 		messageLabel: "Message:",
 		dateLabel: "Date:",
@@ -491,34 +547,54 @@ export type DokployRestartEmailContent = {
 	headingText: string;
 	greeting: string;
 	bodyText: string;
+	notificationNameLabel: string;
 	detailsLabel: string;
 	dateLabel: string;
 };
 
 export const getDokployRestartEmailContent = (params: {
 	date: string;
+	notificationName?: string;
 	locale?: EmailLocale;
 }): DokployRestartEmailContent => {
 	const locale = params.locale ?? getBackendLocale();
 
 	if (locale === "zh-Hans") {
 		return {
-			subject: "Dokploy 服务已重启",
-			previewText: "你的 Dokploy 服务器已重启",
-			headingText: "Dokploy 服务器重启",
+			subject: params.notificationName
+				? `[${params.notificationName}] 服务已重启`
+				: "服务已重启",
+			previewText: params.notificationName
+				? `你的 ${params.notificationName} 服务器已重启`
+				: "你的服务器已重启",
+			headingText: params.notificationName
+				? `${params.notificationName} 服务器重启`
+				: "服务器重启",
 			greeting: "你好，",
-			bodyText: "你的 Dokploy 服务器已成功重启 ✅",
+			bodyText: params.notificationName
+				? `你的 ${params.notificationName} 服务器已成功重启 ✅`
+				: "你的服务器已成功重启 ✅",
+			notificationNameLabel: "通知名称：",
 			detailsLabel: "详情：",
 			dateLabel: "时间：",
 		};
 	}
 
 	return {
-		subject: "Dokploy Server Restarted",
-		previewText: "Your dokploy server was restarted",
-		headingText: "Dokploy Server Restart",
+		subject: params.notificationName
+			? `[${params.notificationName}] Server Restarted`
+			: "Server Restarted",
+		previewText: params.notificationName
+			? `Your ${params.notificationName} server was restarted`
+			: "Your server was restarted",
+		headingText: params.notificationName
+			? `${params.notificationName} Server Restart`
+			: "Server Restart",
 		greeting: "Hello,",
-		bodyText: "Your dokploy server was restarted ✅",
+		bodyText: params.notificationName
+			? `Your ${params.notificationName} server was restarted ✅`
+			: "Your server was restarted ✅",
+		notificationNameLabel: "Notification Name:",
 		detailsLabel: "Details:",
 		dateLabel: "Date:",
 	};

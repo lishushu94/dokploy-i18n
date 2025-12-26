@@ -90,11 +90,15 @@ export function useChat(options: UseChatOptions = {}) {
 		options.conversationId,
 	);
 	const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
+	const [isAgentRunning, setIsAgentRunning] = useState(false);
+	const [agentRunId, setAgentRunId] = useState<string>("");
 	const [toolCallMeta, setToolCallMeta] = useState<
 		Record<string, Pick<ToolCall, "status" | "executionId" | "result">>
 	>({});
 	const [isLoading, setIsLoading] = useState(false);
 	const [abortController, setAbortController] =
+		useState<AbortController | null>(null);
+	const [agentAbortController, setAgentAbortController] =
 		useState<AbortController | null>(null);
 	const approveExecution = api.ai.agent.approve.useMutation();
 	const executeExecution = api.ai.agent.execute.useMutation();
@@ -102,14 +106,35 @@ export function useChat(options: UseChatOptions = {}) {
 	useEffect(() => {
 		return () => {
 			abortController?.abort();
+			agentAbortController?.abort();
 		};
-	}, [abortController]);
+	}, [abortController, agentAbortController]);
 
 	const createConversation = api.ai.conversations.create.useMutation({
 		onSuccess: (data) => {
 			setConversationId(data?.conversationId);
 		},
 	});
+
+	const ensureConversation = useCallback(
+		async (aiId: string) => {
+			let currentConversationId = conversationId;
+			if (currentConversationId) return currentConversationId;
+
+			const newConversation = await createConversation.mutateAsync({
+				aiId,
+				projectId: options.projectId,
+				serverId: options.serverId,
+			});
+			if (!newConversation?.conversationId) {
+				throw new Error("settings.ai.errors.failedToCreateConversation");
+			}
+			currentConversationId = newConversation.conversationId;
+			setConversationId(currentConversationId);
+			return currentConversationId;
+		},
+		[conversationId, createConversation, options.projectId, options.serverId],
+	);
 
 	const { data: serverMessages, refetch: refetchMessages } =
 		api.ai.chat.messages.useQuery(
@@ -119,6 +144,95 @@ export function useChat(options: UseChatOptions = {}) {
 				refetchOnWindowFocus: false,
 			},
 		);
+
+	const executionHydrationTargets = useMemo(() => {
+		const toolCalls = ((serverMessages || []) as Message[])
+			.flatMap((m) => m.toolCalls || [])
+			.filter(
+				(tc) => typeof tc.executionId === "string" && tc.executionId.length > 0,
+			);
+
+		const toolCallIdsByExecutionId = new Map<string, string[]>();
+		const executionIds: string[] = [];
+		const seen = new Set<string>();
+
+		for (const tc of toolCalls) {
+			const executionId = tc.executionId as string;
+			if (!executionId) continue;
+
+			const currentStatus = toolCallMeta[tc.id]?.status ?? tc.status;
+			const isTerminal =
+				currentStatus === "completed" ||
+				currentStatus === "failed" ||
+				currentStatus === "rejected";
+			if (isTerminal) continue;
+
+			const existing = toolCallIdsByExecutionId.get(executionId) ?? [];
+			existing.push(tc.id);
+			toolCallIdsByExecutionId.set(executionId, existing);
+
+			if (!seen.has(executionId)) {
+				seen.add(executionId);
+				executionIds.push(executionId);
+				if (executionIds.length >= 50) break;
+			}
+		}
+
+		return { executionIds, toolCallIdsByExecutionId };
+	}, [serverMessages, toolCallMeta]);
+
+	const getExecutions = api.ai.agent.getExecutions.useQuery(
+		{ executionIds: executionHydrationTargets.executionIds },
+		{
+			enabled: executionHydrationTargets.executionIds.length > 0,
+			refetchOnWindowFocus: false,
+			refetchInterval:
+				executionHydrationTargets.executionIds.length > 0 ? 2000 : false,
+		},
+	);
+
+	useEffect(() => {
+		const data = getExecutions.data as
+			| Array<{
+					executionId: string;
+					status: ToolCall["status"];
+					result?: ToolCall["result"];
+			  }>
+			| undefined;
+		if (!data || data.length === 0) return;
+
+		setToolCallMeta((prev) => {
+			let changed = false;
+			const next = { ...prev };
+			for (const exec of data) {
+				const toolCallIds =
+					executionHydrationTargets.toolCallIdsByExecutionId.get(
+						exec.executionId,
+					) ?? [];
+				for (const toolCallId of toolCallIds) {
+					const prevMeta = next[toolCallId];
+					const shouldUpdateResult = !prevMeta?.result && exec.result != null;
+					const shouldUpdateStatus = prevMeta?.status !== exec.status;
+					const shouldUpdateExecutionId =
+						prevMeta?.executionId !== exec.executionId;
+					if (
+						!prevMeta ||
+						shouldUpdateStatus ||
+						shouldUpdateResult ||
+						shouldUpdateExecutionId
+					) {
+						next[toolCallId] = {
+							status: exec.status,
+							executionId: exec.executionId,
+							result: shouldUpdateResult ? exec.result : prevMeta?.result,
+						};
+						changed = true;
+					}
+				}
+			}
+			return changed ? next : prev;
+		});
+	}, [getExecutions.data, executionHydrationTargets.toolCallIdsByExecutionId]);
 
 	const messages = useMemo(() => {
 		const applyMeta = (msg: Message): Message => {
@@ -147,7 +261,13 @@ export function useChat(options: UseChatOptions = {}) {
 	const approveToolCall = useCallback(
 		async (toolCallId: string) => {
 			const meta = toolCallMeta[toolCallId];
-			const executionId = meta?.executionId;
+			let executionId = meta?.executionId;
+			if (!executionId) {
+				const fallback = messages
+					.flatMap((m) => m.toolCalls || [])
+					.find((tc) => tc.id === toolCallId);
+				executionId = fallback?.executionId;
+			}
 			if (!executionId) return;
 
 			type NormalizedToolResult = NonNullable<ToolCall["result"]>;
@@ -210,6 +330,7 @@ export function useChat(options: UseChatOptions = {}) {
 		[
 			approveExecution,
 			executeExecution,
+			messages,
 			refetchMessages,
 			toolCallMeta,
 			options,
@@ -219,7 +340,13 @@ export function useChat(options: UseChatOptions = {}) {
 	const rejectToolCall = useCallback(
 		async (toolCallId: string) => {
 			const meta = toolCallMeta[toolCallId];
-			const executionId = meta?.executionId;
+			let executionId = meta?.executionId;
+			if (!executionId) {
+				const fallback = messages
+					.flatMap((m) => m.toolCalls || [])
+					.find((tc) => tc.id === toolCallId);
+				executionId = fallback?.executionId;
+			}
 			if (!executionId) return;
 
 			try {
@@ -237,7 +364,7 @@ export function useChat(options: UseChatOptions = {}) {
 				options.onError?.(error as Error);
 			}
 		},
-		[approveExecution, refetchMessages, toolCallMeta, options],
+		[approveExecution, refetchMessages, toolCallMeta, options, messages],
 	);
 
 	const stopGeneration = useCallback(() => {
@@ -246,9 +373,17 @@ export function useChat(options: UseChatOptions = {}) {
 		setIsLoading(false);
 	}, [abortController]);
 
+	const stopAgentStream = useCallback(() => {
+		agentAbortController?.abort();
+		setAgentAbortController(null);
+		setIsAgentRunning(false);
+		setAgentRunId("");
+	}, [agentAbortController]);
+
 	const send = useCallback(
 		async (content: string, aiId: string) => {
 			if (!content.trim()) return;
+			if (isAgentRunning) return;
 
 			setIsLoading(true);
 
@@ -275,23 +410,14 @@ export function useChat(options: UseChatOptions = {}) {
 			setPendingMessages((prev) => [...prev, userMessage, assistantMessage]);
 
 			let currentConversationId = conversationId;
-
 			if (!currentConversationId) {
 				try {
-					const newConversation = await createConversation.mutateAsync({
-						aiId,
-						projectId: options.projectId,
-						serverId: options.serverId,
-					});
-					if (!newConversation?.conversationId) {
-						throw new Error("Failed to create conversation");
-					}
-					currentConversationId = newConversation.conversationId;
+					currentConversationId = await ensureConversation(aiId);
 				} catch (error) {
 					const errorMsg =
 						error instanceof Error
 							? error.message
-							: "Failed to create conversation";
+							: "settings.ai.errors.failedToCreateConversation";
 					setPendingMessages((prev) =>
 						prev.map((m) =>
 							m.messageId === userTempId || m.messageId === assistantTempId
@@ -329,7 +455,7 @@ export function useChat(options: UseChatOptions = {}) {
 				}
 
 				if (!response.body) {
-					throw new Error("Streaming response not available");
+					throw new Error("settings.ai.errors.streamingResponseNotAvailable");
 				}
 
 				setPendingMessages((prev) =>
@@ -382,6 +508,7 @@ export function useChat(options: UseChatOptions = {}) {
 												{
 													id: payload.toolCallId,
 													type: "function" as const,
+													status: "executing" as const,
 													function: {
 														name: payload.toolName,
 														arguments: argsString,
@@ -392,6 +519,16 @@ export function useChat(options: UseChatOptions = {}) {
 									: m,
 							),
 						);
+						setToolCallMeta((prev) => {
+							if (prev[payload.toolCallId]?.status) return prev;
+							return {
+								...prev,
+								[payload.toolCallId]: {
+									...(prev[payload.toolCallId] ?? {}),
+									status: "executing",
+								},
+							};
+						});
 					}
 
 					if (evt.event === "tool-result") {
@@ -432,14 +569,23 @@ export function useChat(options: UseChatOptions = {}) {
 								) {
 									status = "pending";
 									executionId = payloadResult.executionId;
-									result = payloadResult.message
-										? { success: true, message: String(payloadResult.message) }
-										: undefined;
+									result = {
+										success: true,
+										message:
+											typeof payloadResult.message === "string"
+												? payloadResult.message
+												: undefined,
+										data: payloadResult.data,
+									};
 								} else if (
 									payloadResult &&
 									typeof payloadResult.success === "boolean"
 								) {
 									status = payloadResult.success ? "completed" : "failed";
+									executionId =
+										typeof payloadResult.executionId === "string"
+											? payloadResult.executionId
+											: undefined;
 									result = {
 										success: payloadResult.success,
 										message: payloadResult.message as string | undefined,
@@ -497,7 +643,7 @@ export function useChat(options: UseChatOptions = {}) {
 							error?: string;
 						};
 						throw new Error(
-							payload.message || payload.error || "Streaming error",
+							payload.message || payload.error || "settings.ai.errors.streamingError",
 						);
 					}
 				}
@@ -525,7 +671,7 @@ export function useChat(options: UseChatOptions = {}) {
 					);
 				} else {
 					const errorMsg =
-						error instanceof Error ? error.message : "Unknown error";
+						error instanceof Error ? error.message : "settings.ai.errors.unknownError";
 					setPendingMessages((prev) =>
 						prev.map((m) =>
 							m.messageId === userTempId || m.messageId === assistantTempId
@@ -558,16 +704,134 @@ export function useChat(options: UseChatOptions = {}) {
 			options.projectId,
 			options.serverId,
 			options,
+			isAgentRunning,
+		],
+	);
+
+	const startAgent = useCallback(
+		async (goal: string, aiId: string) => {
+			if (!goal.trim()) return;
+			if (!aiId.trim()) return;
+			if (isLoading) return;
+			if (isAgentRunning) return;
+
+			stopGeneration();
+			stopAgentStream();
+			setIsAgentRunning(true);
+			setAgentRunId("");
+
+			let currentConversationId = conversationId;
+			if (!currentConversationId) {
+				currentConversationId = await ensureConversation(aiId);
+			}
+
+			const controller = new AbortController();
+			setAgentAbortController(controller);
+
+			try {
+				const response = await fetch("/api/ai/agent/stream", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "text/event-stream",
+					},
+					body: JSON.stringify({
+						conversationId: currentConversationId,
+						aiId,
+						goal: goal.trim(),
+					}),
+					signal: controller.signal,
+				});
+
+				if (!response.ok) {
+					const errorText = await response.text().catch(() => "");
+					throw new Error(errorText || `Request failed (${response.status})`);
+				}
+
+				if (!response.body) {
+					throw new Error("settings.ai.errors.streamingResponseNotAvailable");
+				}
+
+				for await (const evt of readSseStream(response.body)) {
+					if (controller.signal.aborted) break;
+					if (evt.event === "ping") continue;
+
+					if (evt.event === "done") {
+						break;
+					}
+
+					if (evt.event === "error") {
+						const payload = JSON.parse(evt.data) as { message?: string };
+						throw new Error(payload.message || "settings.ai.errors.agentStreamError");
+					}
+
+					if (!evt.event.startsWith("agent.")) continue;
+					const envelope = JSON.parse(evt.data) as {
+						messageId?: string;
+						createdAt?: string;
+						payload?: unknown;
+					};
+					const payload = envelope.payload;
+					if (!payload || typeof payload !== "object") continue;
+
+					const payloadRunId = (payload as { runId?: unknown }).runId;
+					if (
+						evt.event === "agent.run.start" &&
+						typeof payloadRunId === "string"
+					) {
+						setAgentRunId(payloadRunId);
+					}
+
+					const msg: Message = {
+						messageId:
+							typeof envelope.messageId === "string"
+								? envelope.messageId
+								: `temp-agent-${Date.now()}`,
+						role: "system",
+						content: JSON.stringify(payload),
+						createdAt:
+							typeof envelope.createdAt === "string"
+								? envelope.createdAt
+								: new Date().toISOString(),
+						status: "sent",
+					};
+					setPendingMessages((prev) => [...prev, msg]);
+				}
+			} catch (error) {
+				if ((error as Error).name !== "AbortError") {
+					options.onError?.(error as Error);
+				}
+			} finally {
+				setIsAgentRunning(false);
+				setAgentAbortController(null);
+				try {
+					await refetchMessages();
+				} catch {}
+			}
+		},
+		[
+			conversationId,
+			ensureConversation,
+			isAgentRunning,
+			isLoading,
+			options,
+			refetchMessages,
+			stopAgentStream,
+			stopGeneration,
 		],
 	);
 
 	const reset = useCallback(() => {
 		abortController?.abort();
 		setAbortController(null);
+		agentAbortController?.abort();
+		setAgentAbortController(null);
+		setIsAgentRunning(false);
+		setAgentRunId("");
 		setConversationId(undefined);
 		setPendingMessages([]);
 		setToolCallMeta({});
-	}, [abortController]);
+	}, [abortController, agentAbortController]);
 
 	const retryMessage = useCallback(
 		async (messageId: string, aiId: string) => {
@@ -584,15 +848,20 @@ export function useChat(options: UseChatOptions = {}) {
 	);
 
 	return {
+		ensureConversation,
 		conversationId,
 		messages,
 		isLoading,
+		isAgentRunning,
+		agentRunId,
 		send,
+		startAgent,
 		approveToolCall,
 		rejectToolCall,
 		reset,
 		retryMessage,
 		refetchMessages,
 		stopGeneration,
+		stopAgentStream,
 	};
 }
