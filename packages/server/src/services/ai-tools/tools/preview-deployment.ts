@@ -9,6 +9,10 @@ import { z } from "zod";
 import { toolRegistry } from "../registry";
 import type { Tool, ToolContext, ToolResult } from "../types";
 
+type PreviewDeploymentRow = Awaited<
+	ReturnType<typeof findPreviewDeploymentsByApplicationId>
+>[number];
+
 type PreviewDeploymentSummary = {
 	previewDeploymentId: string;
 	applicationId: string;
@@ -95,7 +99,7 @@ const deploymentListPreviews: Tool<
 		return {
 			success: true,
 			message: `Found ${rows.length} preview deployment(s)`,
-			data: rows.map((r) =>
+			data: rows.map((r: PreviewDeploymentRow) =>
 				toSummary({
 					previewDeploymentId: r.previewDeploymentId,
 					applicationId: r.applicationId,
